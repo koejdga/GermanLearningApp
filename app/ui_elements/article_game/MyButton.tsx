@@ -5,14 +5,27 @@ interface MyButtonProps {
   text: string;
   backgroundColor: string;
   color: string;
+  onPress: () => void;
+  disabled: boolean;
+  disabledBgColor: string;
 }
 
 const MyButton: React.FC<MyButtonProps> = ({
   text,
   backgroundColor,
   color,
+  onPress,
+  disabled,
+  disabledBgColor,
 }) => (
-  <TouchableOpacity style={[styles.button, { backgroundColor }]}>
+  <TouchableOpacity
+    style={[
+      styles.button,
+      { backgroundColor: disabled ? disabledBgColor : backgroundColor },
+    ]}
+    onPress={onPress}
+    disabled={disabled}
+  >
     <Text style={[styles.text, { color }]}>{text}</Text>
   </TouchableOpacity>
 );
