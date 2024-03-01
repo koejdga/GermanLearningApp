@@ -1,46 +1,51 @@
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import ArticleGame from "./app/screens/ArticleGame";
+import { Button, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import ArticleGameRound from "./app/screens/ArticleGameRound";
 import { useEffect, useState } from "react";
-import ArticleGameTest from "./app/screens/ArticleGameTest";
+import ArticleGame from "./app/screens/ArticleGame";
+import HomePage from "./app/screens/HomePage";
+import Navigation from "./app/ui_elements/Navigation";
+
+enum Screen {
+  ArticleGame,
+  HomePage,
+}
 
 export default function App() {
-  const initialWords = [
-    {
-      word: "Radio",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Haus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Maus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-  ];
+  const [screen, setScreen] = useState(Screen.HomePage);
+  const handleGameStart = () => {
+    setScreen(Screen.ArticleGame);
+  };
 
-  const [words, setWords] = useState(initialWords);
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const backgrounds = {
+    [Screen.HomePage]: "#FEFCFF",
+    [Screen.ArticleGame]: "#fff8f5",
+    // [Screen.ArticleGame]: "#fdd8d6",
+  };
 
-  const handleRoundEnd = () => {
-    if (currentWordIndex < words.length - 1) {
-      setCurrentWordIndex(currentWordIndex + 1);
-    } else {
-      setCurrentWordIndex(0);
-    }
+  const handleGoToHomePage = () => {
+    setScreen(Screen.HomePage);
   };
 
   return (
-    <ArticleGame word={words[currentWordIndex]} onRoundEnd={handleRoundEnd} />
+    <View style={[styles.container, { backgroundColor: backgrounds[screen] }]}>
+      <SafeAreaView style={[styles.container]}>
+        <View style={styles.container}>
+          {screen == Screen.ArticleGame && <ArticleGame />}
+          {screen == Screen.HomePage && (
+            <HomePage onGameStart={handleGameStart} />
+          )}
+        </View>
+        <Navigation onGoToHomePage={handleGoToHomePage} />
+      </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    // justifyContent: "center",
+    // alignItems: "center",
+  },
+});
