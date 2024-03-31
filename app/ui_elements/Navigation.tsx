@@ -8,9 +8,14 @@ import { darkColor } from "../config/Colors";
 interface Props {
   style?: object;
   onGoToHomePage: () => void;
+  onGoToDictPage: () => void;
 }
 
-const Navigation: React.FC<Props> = ({ style, onGoToHomePage }) => {
+const Navigation: React.FC<Props> = ({
+  style,
+  onGoToHomePage,
+  onGoToDictPage,
+}) => {
   return (
     <View style={[{ width: "100%" }, style]}>
       <View style={styles.line}></View>
@@ -20,7 +25,7 @@ const Navigation: React.FC<Props> = ({ style, onGoToHomePage }) => {
         </Pressable>
 
         <Pressable>
-          <FontBook />
+          <FontBook onPress={() => onGoToDictPage()} />
         </Pressable>
 
         <Pressable>

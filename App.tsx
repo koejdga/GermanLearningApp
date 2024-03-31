@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import ArticleGame from "./app/screens/ArticleGame";
 import HomePage from "./app/screens/HomePage";
 import Navigation from "./app/ui_elements/Navigation";
+import Dictionary from "./app/screens/Dictionary";
+import WordTranslation from "./app/screens/WordTranslation";
 
 enum Screen {
   ArticleGame,
   HomePage,
+  Dictionary,
 }
 
 export default function App() {
@@ -20,11 +23,16 @@ export default function App() {
   const backgrounds = {
     [Screen.HomePage]: "#FEFCFF",
     [Screen.ArticleGame]: "#fff8f5",
+    [Screen.Dictionary]: "lightblue",
     // [Screen.ArticleGame]: "#fdd8d6",
   };
 
   const handleGoToHomePage = () => {
     setScreen(Screen.HomePage);
+  };
+
+  const handleGoToDictPage = () => {
+    setScreen(Screen.Dictionary);
   };
 
   return (
@@ -35,8 +43,12 @@ export default function App() {
           {screen == Screen.HomePage && (
             <HomePage onGameStart={handleGameStart} />
           )}
+          {screen == Screen.Dictionary && <WordTranslation />}
         </View>
-        <Navigation onGoToHomePage={handleGoToHomePage} />
+        <Navigation
+          onGoToHomePage={handleGoToHomePage}
+          onGoToDictPage={handleGoToDictPage}
+        />
       </SafeAreaView>
     </View>
   );
@@ -45,7 +57,5 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: "center",
-    // alignItems: "center",
   },
 });
