@@ -1,6 +1,6 @@
 import { View, StyleSheet, Text } from "react-native";
-import Trophy2 from "../icons/Trophy2";
 import { useFonts, Roboto_400Regular } from "@expo-google-fonts/roboto";
+import { Ionicons } from "@expo/vector-icons";
 
 interface Props {
   description: string;
@@ -17,7 +17,7 @@ const Achievement: React.FC<Props> = ({ description }) => {
   return (
     <View style={styles.container}>
       <View style={styles.trophyContainer}>
-        <Trophy2 size={34}></Trophy2>
+        <Ionicons name="trophy" size={24} color={"black"} />
       </View>
       <Text style={styles.description}>{description}</Text>
     </View>

@@ -1,9 +1,16 @@
+import { RouteProp } from "@react-navigation/native";
 import { View, Text, StyleSheet } from "react-native";
 
-const WordTranslation = () => {
+interface Props {
+  route: RouteProp<{ params: { word: string } }, "params">;
+}
+
+const WordTranslation = ({ route }) => {
+  const { word } = route.params;
+
   return (
     <View style={styles.container}>
-      <Text style={styles.word}>attorney</Text>
+      <Text style={styles.word}>{word}</Text>
       <Text style={styles.transcription}>[eteni]</Text>
       <Text style={styles.characteristics}>ім., юр.</Text>
 

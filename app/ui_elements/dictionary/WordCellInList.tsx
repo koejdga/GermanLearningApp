@@ -1,4 +1,5 @@
 import { Text, View, StyleSheet } from "react-native";
+import { RouteProp } from "@react-navigation/native";
 
 interface Props {
   word: string;
