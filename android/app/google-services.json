@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "838111297953",
+    "project_id": "germanlearningapp-91d75",
+    "storage_bucket": "germanlearningapp-91d75.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838111297953:android:39735a8f810aedbede0be0",
+        "android_client_info": {
+          "package_name": "com.budilova.germanApp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBOlG71yjfNg7ULv6sBUOIlItrCujBSDMI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
