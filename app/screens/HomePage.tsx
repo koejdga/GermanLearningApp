@@ -1,19 +1,9 @@
-import {
-  SafeAreaView,
-  Text,
-  StyleSheet,
-  View,
-  Button,
-  Image,
-  ImageBackground,
-  ScrollView,
-} from "react-native";
-import Navigation from "../ui_elements/Navigation";
-import { generalStyles } from "../config/General";
-import { useFonts, Roboto_500Medium } from "@expo-google-fonts/roboto";
-import Task from "../ui_elements/home_page/Task";
+import { Roboto_500Medium, useFonts } from "@expo-google-fonts/roboto";
+import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
+import { generalStyles } from "../config/General";
 import Achievement from "../ui_elements/home_page/Achievement";
+import Task from "../ui_elements/home_page/Task";
 
 interface Props {
   onGameStart: () => void;

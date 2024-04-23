@@ -16,7 +16,7 @@ export const LoadingScreen = () => {
       } else {
         nav.replace("Login");
       }
-    }, 1000);
+    }, 100);
   }
 
   useEffect(() => {

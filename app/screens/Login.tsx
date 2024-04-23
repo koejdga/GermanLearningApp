@@ -1,17 +1,17 @@
+import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import React, { useState } from "react";
 import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  Keyboard,
   Alert,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
 import { CTAButton } from "../ui_elements/CTAButton";
-import auth from "@react-native-firebase/auth";
 
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 

@@ -19,7 +19,6 @@ import {
   RobotoCondensed_300Light_Italic,
   useFonts,
 } from "@expo-google-fonts/roboto-condensed";
-import Navigation from "../ui_elements/Navigation";
 
 const bgImage = require("../assets/article-game-bg.jpg");
 
