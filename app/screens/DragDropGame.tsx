@@ -2,10 +2,10 @@ import React from "react";
 import { View, StyleSheet, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import WordList from "./WordList";
-import Word from "./Word";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
+import DragDropWords from "../ui_elements/drag_drop_game/DragDropWords";
+import Word from "../ui_elements/drag_drop_game/Word";
+import Header from "../ui_elements/drag_drop_game/Header";
+import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
 
 const words = [
   { id: 1, word: "Er" },
@@ -17,6 +17,7 @@ const words = [
   { id: 5, word: "," },
   { id: 3, word: "einen" },
   { id: 4, word: "Apfel" },
+  { id: 10, word: "Hallo" },
 ];
 
 const styles = StyleSheet.create({
@@ -26,20 +27,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const Duolingo = () => {
+const DragDropGame = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
-      <View style={styles.container}>
-        <Header />
-        <WordList>
-          {words.map((word) => (
-            <Word key={word.id} {...word} />
-          ))}
-        </WordList>
-        <Footer />
-      </View>
+      {/* <Header /> */}
+      <DragDropWords>
+        {words.map((word) => (
+          <Word key={word.id} {...word} />
+        ))}
+      </DragDropWords>
+      {/* <ReadyButton /> */}
     </GestureHandlerRootView>
   );
 };
 
-export default Duolingo;
+export default DragDropGame;

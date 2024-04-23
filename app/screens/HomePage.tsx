@@ -4,12 +4,15 @@ import Icon from "react-native-vector-icons/Entypo";
 import { generalStyles } from "../config/General";
 import Achievement from "../ui_elements/home_page/Achievement";
 import Task from "../ui_elements/home_page/Task";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Props {
   onGameStart: () => void;
 }
 
 const HomePage: React.FC<Props> = ({ onGameStart }) => {
+  const nav = useNavigation<NativeStackNavigationProp<any>>();
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
   });
@@ -55,6 +58,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
               title="Нові слова"
               contrastForTitle={true}
               background={require("../assets/tasks_backgrounds/pink-flowers.png")}
+              onPress={() => nav.navigate("DragDropGame")}
             ></Task>
             <Task
               title="Діалог"

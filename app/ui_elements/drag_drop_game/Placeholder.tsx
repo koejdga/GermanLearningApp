@@ -1,7 +1,7 @@
 import React from "react";
 import { View } from "react-native";
 
-import { MARGIN_LEFT, MARGIN_TOP, Offset, WORD_HEIGHT } from "../Layout";
+import { MARGIN_LEFT, MARGIN_TOP, Offset, WORD_HEIGHT } from "./Layout";
 
 interface PlaceholderProps {
   offset: Offset;

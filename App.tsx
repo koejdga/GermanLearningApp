@@ -11,7 +11,8 @@ import { Login } from "./app/screens/Login";
 import { Register } from "./app/screens/Register";
 import EndingsGame from "./app/screens/EndingsGame";
 import ArticleGame from "./app/screens/ArticleGame";
-import Duolingo from "./app/screens/Duolingo";
+import DragDropGame from "./app/screens/DragDropGame";
+import HomeStack from "./app/screens/HomeStack";
 
 enum Screen {
   ArticleGame,
@@ -59,8 +60,7 @@ function MainApp() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen name="Home" component={Duolingo} />
-      {/* <Tab.Screen name="Home" component={HomePage} /> */}
+      <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen
         name="Dictionary"
         component={Dictionary}

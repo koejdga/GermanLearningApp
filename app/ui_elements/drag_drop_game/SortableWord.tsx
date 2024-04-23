@@ -2,15 +2,11 @@ import React, { ReactElement } from "react";
 import { StyleSheet } from "react-native";
 import Animated, {
   useAnimatedStyle,
-  useAnimatedGestureHandler,
   withSpring,
   useSharedValue,
   useDerivedValue,
 } from "react-native-reanimated";
-import {
-  PanGestureHandler,
-  PanGestureHandlerGestureEvent,
-} from "react-native-gesture-handler";
+import { GestureDetector, Gesture } from "react-native-gesture-handler";
 import { between, useVector } from "react-native-redash";
 
 import {
@@ -24,7 +20,7 @@ import {
   MARGIN_LEFT,
   MARGIN_TOP,
 } from "./Layout";
-import Placeholder from "./components/Placeholder";
+import Placeholder from "./Placeholder";
 
 interface SortableWordProps {
   offsets: Offset[];
@@ -44,11 +40,11 @@ const SortableWord = ({
   const isAnimating = useSharedValue(false);
   const translation = useVector();
   const isInBank = useDerivedValue(() => offset.order.value === -1);
-  const onGestureEvent = useAnimatedGestureHandler<
-    PanGestureHandlerGestureEvent,
-    { x: number; y: number }
-  >({
-    onStart: (_, ctx) => {
+  const ctx_x = useSharedValue(0);
+  const ctx_y = useSharedValue(0);
+
+  const panGesture = Gesture.Pan()
+    .onStart((_) => {
       if (isInBank.value) {
         translation.x.value = offset.originalX.value - MARGIN_LEFT;
         translation.y.value = offset.originalY.value + MARGIN_TOP;
@@ -56,13 +52,24 @@ const SortableWord = ({
         translation.x.value = offset.x.value;
         translation.y.value = offset.y.value;
       }
-      ctx.x = translation.x.value;
-      ctx.y = translation.y.value;
+
+      ctx_x.value = translation.x.value;
+      ctx_y.value = translation.y.value;
       isGestureActive.value = true;
-    },
-    onActive: ({ translationX, translationY }, ctx) => {
-      translation.x.value = ctx.x + translationX;
-      translation.y.value = ctx.y + translationY;
+    })
+    .onEnd(({ velocityX, velocityY }) => {
+      isAnimating.value = true;
+      translation.x.value = withSpring(
+        offset.x.value,
+        { velocity: velocityX },
+        () => (isAnimating.value = false)
+      );
+      translation.y.value = withSpring(offset.y.value, { velocity: velocityY });
+      isGestureActive.value = false;
+    })
+    .onUpdate(({ translationX, translationY }) => {
+      translation.x.value = ctx_x.value + translationX;
+      translation.y.value = ctx_y.value + translationY;
       if (isInBank.value && translation.y.value < SENTENCE_HEIGHT) {
         offset.order.value = lastOrder(offsets);
         calculateLayout(offsets, containerWidth);
@@ -85,18 +92,8 @@ const SortableWord = ({
           break;
         }
       }
-    },
-    onEnd: ({ velocityX, velocityY }) => {
-      isAnimating.value = true;
-      translation.x.value = withSpring(
-        offset.x.value,
-        { velocity: velocityX },
-        () => (isAnimating.value = false)
-      );
-      translation.y.value = withSpring(offset.y.value, { velocity: velocityY });
-      isGestureActive.value = false;
-    },
-  });
+    });
+
   const translateX = useDerivedValue(() => {
     if (isGestureActive.value) {
       return translation.x.value;
@@ -132,11 +129,11 @@ const SortableWord = ({
     <>
       <Placeholder offset={offset} />
       <Animated.View style={style}>
-        <PanGestureHandler onGestureEvent={onGestureEvent}>
+        <GestureDetector gesture={panGesture}>
           <Animated.View style={StyleSheet.absoluteFill}>
             {children}
           </Animated.View>
-        </PanGestureHandler>
+        </GestureDetector>
       </Animated.View>
     </>
   );

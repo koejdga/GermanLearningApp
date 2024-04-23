@@ -1,7 +1,5 @@
-import React from "react";
 import { StyleSheet, View } from "react-native";
-
-import { WORD_HEIGHT, NUMBER_OF_LINES } from "../Layout";
+import { NUMBER_OF_LINES, WORD_HEIGHT } from "./Layout";
 
 const Lines = () => {
   return (

@@ -1,3 +1,5 @@
+// TODO: maybe remove this file and use navigation arrow instead
+
 import * as React from "react";
 import Svg, { Path } from "react-native-svg";
 

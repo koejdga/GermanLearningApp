@@ -3,9 +3,8 @@ import { View, Dimensions } from "react-native";
 import Svg, { G, Path } from "react-native-svg";
 
 import { CROSS_SIZE } from "./Cross";
-import { HEART_SIZE } from "./Heart";
 
-const width = Dimensions.get("window").width - 16 * 4 - CROSS_SIZE - HEART_SIZE;
+const width = Dimensions.get("window").width - 16 * 4 - CROSS_SIZE;
 // TODO: write it in another way, without svg, so that i can change width of green
 const SvgComponent = () => {
   return (

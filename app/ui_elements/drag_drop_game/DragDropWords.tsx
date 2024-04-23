@@ -4,7 +4,7 @@ import { View, StyleSheet, Dimensions } from "react-native";
 import { useSharedValue, runOnUI, runOnJS } from "react-native-reanimated";
 
 import SortableWord from "./SortableWord";
-import Lines from "./components/Lines";
+import Lines from "./Lines";
 import { MARGIN_LEFT } from "./Layout";
 
 const containerWidth = Dimensions.get("window").width - MARGIN_LEFT * 2;
@@ -22,11 +22,11 @@ const styles = StyleSheet.create({
   },
 });
 
-interface WordListProps {
+interface DragDropWordsProps {
   children: ReactElement<{ id: number }>[];
 }
 
-const WordList = ({ children }: WordListProps) => {
+const DragDropWords = ({ children }: DragDropWordsProps) => {
   const [ready, setReady] = useState(false);
   const offsets = children.map(() => ({
     order: useSharedValue(0),
@@ -89,4 +89,4 @@ const WordList = ({ children }: WordListProps) => {
   );
 };
 
-export default WordList;
+export default DragDropWords;

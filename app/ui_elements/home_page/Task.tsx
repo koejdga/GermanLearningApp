@@ -1,6 +1,7 @@
 import {
   ImageBackground,
   ImageSourcePropType,
+  Pressable,
   StyleSheet,
   Text,
   View,
@@ -13,12 +14,14 @@ interface Props {
   background: ImageSourcePropType;
   contrastForTitle?: boolean;
   title: string;
+  onPress?: () => void;
 }
 
 const Task: React.FC<Props> = ({
   background,
   contrastForTitle = false,
   title,
+  onPress,
 }) => {
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -80,24 +83,26 @@ const Task: React.FC<Props> = ({
   });
 
   return (
-    <ImageBackground
-      style={[styles.task, styles.taskImageStyle]}
-      imageStyle={styles.taskImageStyle}
-      source={background}
-    >
-      <View style={styles.rewardContainer}>
-        <Text style={styles.rewardText}>+50</Text>
-      </View>
-      <Icon
-        name="info-outline"
-        size={26}
-        color="#00000080"
-        style={styles.info}
-      ></Icon>
-      <View style={styles.titleContainer}>
-        <Text style={styles.titleText}>{title}</Text>
-      </View>
-    </ImageBackground>
+    <Pressable onPress={onPress} style={[styles.task, styles.taskImageStyle]}>
+      <ImageBackground
+        style={[styles.task, styles.taskImageStyle]}
+        imageStyle={styles.taskImageStyle}
+        source={background}
+      >
+        <View style={styles.rewardContainer}>
+          <Text style={styles.rewardText}>+50</Text>
+        </View>
+        <Icon
+          name="info-outline"
+          size={26}
+          color="#00000080"
+          style={styles.info}
+        ></Icon>
+        <View style={styles.titleContainer}>
+          <Text style={styles.titleText}>{title}</Text>
+        </View>
+      </ImageBackground>
+    </Pressable>
   );
 };
 

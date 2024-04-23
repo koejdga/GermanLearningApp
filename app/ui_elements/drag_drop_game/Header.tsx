@@ -3,9 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
 import Cross from "./Cross";
-import Heart from "./Heart";
 import Progress from "./Progress";
-import Character from "./Character";
 
 const styles = StyleSheet.create({
   row: {
@@ -28,10 +26,8 @@ const Header = () => {
         <Cross />
         <Progress />
         <Icon name="heart" size={24} color="#CD2424" />
-        {/* <Heart /> */}
       </View>
       <Text style={styles.title}>Translate this sentence</Text>
-      <Character />
     </View>
   );
 };

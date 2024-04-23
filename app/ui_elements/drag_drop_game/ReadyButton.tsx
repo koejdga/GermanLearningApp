@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Footer = () => {
+const ReadyButton = () => {
   const insets = useSafeAreaInsets();
   return (
     <View
@@ -39,10 +39,10 @@ const Footer = () => {
         }}
       />
       <RectButton style={styles.button}>
-        <Text style={styles.label}>CHECK</Text>
+        <Text style={styles.label}>ГОТОВО</Text>
       </RectButton>
     </View>
   );
 };
 
-export default Footer;
+export default ReadyButton;
