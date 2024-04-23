@@ -11,6 +11,7 @@ import { Login } from "./app/screens/Login";
 import { Register } from "./app/screens/Register";
 import EndingsGame from "./app/screens/EndingsGame";
 import ArticleGame from "./app/screens/ArticleGame";
+import Duolingo from "./app/screens/Duolingo";
 
 enum Screen {
   ArticleGame,
@@ -58,7 +59,7 @@ function MainApp() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen name="Home" component={EndingsGame} />
+      <Tab.Screen name="Home" component={Duolingo} />
       {/* <Tab.Screen name="Home" component={HomePage} /> */}
       <Tab.Screen
         name="Dictionary"
@@ -82,6 +83,7 @@ export default function App() {
   };
 
   return (
+    // <GestureHandlerRootView>
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen
@@ -114,6 +116,7 @@ export default function App() {
         />
       </Stack.Navigator>
     </NavigationContainer>
+    // </GestureHandlerRootView>
   );
 }
 
