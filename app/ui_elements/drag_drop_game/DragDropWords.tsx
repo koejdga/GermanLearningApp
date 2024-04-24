@@ -1,7 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import React, { ReactElement, useState } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import React, { ReactElement, useEffect, useState } from "react";
+import { View, StyleSheet, Dimensions, Button } from "react-native";
 import { useSharedValue, runOnUI, runOnJS } from "react-native-reanimated";
+import ReadyButton from "./ReadyButton";
 
 import SortableWord from "./SortableWord";
 import Lines from "./Lines";
@@ -10,8 +11,8 @@ import { MARGIN_LEFT } from "./Layout";
 const containerWidth = Dimensions.get("window").width - MARGIN_LEFT * 2;
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     margin: MARGIN_LEFT,
+    height: 260,
   },
   row: {
     flex: 1,
@@ -24,9 +25,10 @@ const styles = StyleSheet.create({
 
 interface DragDropWordsProps {
   children: ReactElement<{ id: number }>[];
+  checkUserAnswer: (answer: number[]) => void;
 }
 
-const DragDropWords = ({ children }: DragDropWordsProps) => {
+const DragDropWords = ({ children, checkUserAnswer }: DragDropWordsProps) => {
   const [ready, setReady] = useState(false);
   const offsets = children.map(() => ({
     order: useSharedValue(0),
@@ -37,6 +39,7 @@ const DragDropWords = ({ children }: DragDropWordsProps) => {
     originalX: useSharedValue(0),
     originalY: useSharedValue(0),
   }));
+
   if (!ready) {
     return (
       <View style={styles.row}>
@@ -72,19 +75,27 @@ const DragDropWords = ({ children }: DragDropWordsProps) => {
       </View>
     );
   }
+
+  const submitAnswer = () => {
+    checkUserAnswer(offsets.map((o) => o.order.value));
+  };
+
   return (
-    <View style={styles.container}>
-      <Lines />
-      {children.map((child, index) => (
-        <SortableWord
-          key={index}
-          offsets={offsets}
-          index={index}
-          containerWidth={containerWidth}
-        >
-          {child}
-        </SortableWord>
-      ))}
+    <View>
+      <View style={styles.container}>
+        <Lines />
+        {children.map((child, index) => (
+          <SortableWord
+            key={index}
+            offsets={offsets}
+            index={index}
+            containerWidth={containerWidth}
+          >
+            {child}
+          </SortableWord>
+        ))}
+      </View>
+      <ReadyButton onPress={submitAnswer}></ReadyButton>
     </View>
   );
 };

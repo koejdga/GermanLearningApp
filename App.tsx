@@ -11,7 +11,7 @@ import { Login } from "./app/screens/Login";
 import { Register } from "./app/screens/Register";
 import EndingsGame from "./app/screens/EndingsGame";
 import ArticleGame from "./app/screens/ArticleGame";
-import DragDropGame from "./app/screens/DragDropGame";
+import DragDropGameRound from "./app/screens/DragDropGameRound";
 import HomeStack from "./app/screens/HomeStack";
 
 enum Screen {
@@ -24,30 +24,37 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MainApp() {
+  enum TabNames {
+    HOME = "HomeStack",
+    DICTIONARY = "Dictionary",
+    ACHIEVEMENTS = "Achievements",
+    ACCOUNT = "Account",
+  }
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
           switch (route.name) {
-            case "Home":
+            case TabNames.HOME:
               return focused ? (
                 <Ionicons name="home" size={size} color={color} />
               ) : (
                 <Ionicons name="home-outline" size={size} color={color} />
               );
-            case "Dictionary":
+            case TabNames.DICTIONARY:
               return focused ? (
                 <Ionicons name="bookmarks" size={size} color={color} />
               ) : (
                 <Ionicons name="bookmarks-outline" size={size} color={color} />
               );
-            case "Achievements":
+            case TabNames.ACHIEVEMENTS:
               return focused ? (
                 <Ionicons name="trophy" size={size} color={color} />
               ) : (
                 <Ionicons name="trophy-outline" size={size} color={color} />
               );
-            case "Account":
+            case TabNames.ACCOUNT:
               return focused ? (
                 <Ionicons name="person" size={size} color={color} />
               ) : (
@@ -60,14 +67,14 @@ function MainApp() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name={TabNames.HOME} component={HomeStack} />
       <Tab.Screen
-        name="Dictionary"
+        name={TabNames.DICTIONARY}
         component={Dictionary}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name="Achievements" component={Dictionary} />
-      <Tab.Screen name="Account" component={Dictionary} />
+      <Tab.Screen name={TabNames.ACHIEVEMENTS} component={Dictionary} />
+      <Tab.Screen name={TabNames.ACCOUNT} component={Dictionary} />
     </Tab.Navigator>
   );
 }

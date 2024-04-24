@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomePage from "./HomePage";
-import DragDropGame from "./DragDropGame";
+import DragDropGameRound from "./DragDropGameRound";
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
@@ -15,7 +15,7 @@ const HomeStack = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="DragDropGame" component={DragDropGame} />
+      <Stack.Screen name="DragDropGame" component={DragDropGameRound} />
     </Stack.Navigator>
   );
 };

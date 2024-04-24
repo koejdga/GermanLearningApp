@@ -29,7 +29,6 @@ const styles = StyleSheet.create({
 });
 
 interface WordProps {
-  id: number;
   word: string;
 }
 

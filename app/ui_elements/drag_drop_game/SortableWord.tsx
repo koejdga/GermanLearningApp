@@ -130,7 +130,9 @@ const SortableWord = ({
       <Placeholder offset={offset} />
       <Animated.View style={style}>
         <GestureDetector gesture={panGesture}>
-          <Animated.View style={StyleSheet.absoluteFill}>
+          <Animated.View
+          // style={StyleSheet.absoluteFill}
+          >
             {children}
           </Animated.View>
         </GestureDetector>
