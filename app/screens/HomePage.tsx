@@ -1,5 +1,12 @@
 import { Roboto_500Medium, useFonts } from "@expo-google-fonts/roboto";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  SafeAreaView,
+} from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import { generalStyles } from "../config/General";
 import Achievement from "../ui_elements/home_page/Achievement";
@@ -21,7 +28,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
   }
 
   return (
-    <>
+    <SafeAreaView>
       {/* This is something like header */}
       <View
         style={{
@@ -88,7 +95,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
           <Achievement description="30 нових слів"></Achievement>
         </View>
       </ScrollView>
-    </>
+    </SafeAreaView>
   );
 };
 

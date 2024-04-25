@@ -4,7 +4,6 @@ import React from "react";
 const styles = StyleSheet.create({
   sentense: {
     flexDirection: "row",
-    justifyContent: "center",
   },
   word: {
     fontSize: 19,

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import {
   GestureHandlerRootView,
   RectButton,
 } from "react-native-gesture-handler";
-
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -71,54 +70,48 @@ const styles = StyleSheet.create({
   },
 });
 
-interface Props {
-  words: { word: string }[];
-  wordsNumberInAnswer: number;
-  sentenseToTranslate: { word: string; translation: number }[];
-}
+const DragDropGameRound = ({ route, navigation }) => {
+  const currentRound = route.params?.currentRound;
+  const amountOfRounds = route.params?.amountOfRounds;
+  const exercises = route.params?.exercises;
+  const currentExercise = exercises[currentRound];
 
-const DragDropGameRound: React.FC<Props> = () => {
-  // test data
-  const words = [
-    { word: "Er" },
-    { word: "isst" },
-    { word: "einen" },
-    { word: "Apfel" },
-    { word: "," },
-    { word: "weil" },
-    { word: "er" },
-    { word: "hungrig" },
-    { word: "ist" },
-    { word: "Hallo" },
-  ];
-  const wordsNumberInAnswer = 9;
-  const sentenseToTranslate = [
-    { word: "Він", translation: 1 },
-    { word: "їсть", translation: 2 },
-    { word: "яблуко", translation: 3 },
-    { word: ",", translation: -1 },
-    { word: "тому що", translation: 4 },
-    { word: "він", translation: 1 },
-    { word: "голодний", translation: 5 },
-  ];
-  // end of test data
-
-  const [shuffledWords, setShuffledWords] = useState(shuffle(words));
+  const [shuffledWords, _] = useState(
+    shuffle(currentExercise.wordsForTranslation)
+  );
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
   const checkUserAnswer = (answer: number[]) => {
-    if (answer.filter((x) => x != -1).length != wordsNumberInAnswer) {
+    if (
+      answer.filter((x) => x != -1).length !=
+      currentExercise.wordsNumberInAnswer
+    ) {
       setAnswerIsCorrect(false);
       return;
     }
 
     for (let i = 0; i < answer.length; i++) {
-      if (answer[i] != -1 && words[answer[i]] !== shuffledWords[i]) {
+      if (
+        answer[i] != -1 &&
+        currentExercise.wordsForTranslation[answer[i]] !== shuffledWords[i]
+      ) {
         setAnswerIsCorrect(false);
         return;
       }
     }
     setAnswerIsCorrect(true);
+  };
+
+  const loadNextRound = () => {
+    if (currentRound < amountOfRounds - 1) {
+      navigation.push("DragDropGameRound", {
+        currentRound: currentRound + 1,
+        amountOfRounds,
+        exercises,
+      });
+    } else {
+      navigation.push("EndOfDragDropGame");
+    }
   };
 
   useEffect(() => {
@@ -127,13 +120,8 @@ const DragDropGameRound: React.FC<Props> = () => {
     }
   }, [answerIsCorrect]);
 
-  const onPress = () => {
-    // here will go some navigation to next round
-    console.log("next round or end of game");
-  };
-
   const translateY = useSharedValue(300);
-  const style = useAnimatedStyle(() => {
+  const transformStyle = useAnimatedStyle(() => {
     return {
       transform: [{ translateY: translateY.value }],
     };
@@ -145,22 +133,43 @@ const DragDropGameRound: React.FC<Props> = () => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text style={styles.upperText}>Перекладіть це речення</Text>
-      <SentenseFromArray words={sentenseToTranslate} />
+      <SentenseFromArray
+        words={currentExercise.sentenseToTranslate}
+        style={{ paddingHorizontal: 30 }}
+      />
       <View style={styles.spacer}></View>
       <DragDropWords checkUserAnswer={checkUserAnswer}>
-        {shuffledWords.map((word, index) => (
+        {shuffledWords.map((word: { word: string }, index) => (
           <Word key={index} {...word} />
         ))}
       </DragDropWords>
 
-      <Animated.View id="modal" style={[styles.modal, style]}>
-        <Text style={styles.subheader}>Richtig!</Text>
+      <Animated.View
+        id="modal"
+        style={[
+          styles.modal,
+          transformStyle,
+          { backgroundColor: answerIsCorrect ? "#B3F9E2" : "#F9C8D1" },
+        ]}
+      >
+        <Text style={styles.subheader}>
+          {answerIsCorrect ? "Richtig!" : "Falsch!"}
+        </Text>
         <View style={{ borderWidth: 1 }}></View>
         <SentenseFromArray
           style={{ padding: 35 }}
-          words={words.slice(0, wordsNumberInAnswer)}
+          words={currentExercise.wordsForTranslation.slice(
+            0,
+            currentExercise.wordsNumberInAnswer
+          )}
         />
-        <RectButton style={styles.button} onPress={onPress}>
+        <RectButton
+          style={[
+            styles.button,
+            { backgroundColor: answerIsCorrect ? "#15AB76" : "#E9526E" },
+          ]}
+          onPress={loadNextRound}
+        >
           <Text style={styles.label}>ДАЛІ</Text>
         </RectButton>
       </Animated.View>

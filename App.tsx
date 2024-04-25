@@ -67,7 +67,13 @@ function MainApp() {
         tabBarShowLabel: false,
       })}
     >
-      <Tab.Screen name={TabNames.HOME} component={HomeStack} />
+      <Tab.Screen
+        name={TabNames.HOME}
+        component={HomeStack}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Tab.Screen
         name={TabNames.DICTIONARY}
         component={Dictionary}
