@@ -12,7 +12,7 @@ const Dictionary = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Словник"
+        name="DictionaryWords"
         component={DictionaryWords}
         options={{
           headerStyle: {
@@ -22,7 +22,7 @@ const Dictionary = () => {
         }}
       />
       <Stack.Screen
-        name="Word"
+        name="WordTranslation"
         component={WordTranslation}
         options={{
           headerTitle: "",

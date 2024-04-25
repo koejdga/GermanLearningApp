@@ -13,6 +13,7 @@ import { shuffle } from "../Utils";
 import DragDropWords from "../ui_elements/drag_drop_game/DragDropWords";
 import SentenseFromArray from "../ui_elements/drag_drop_game/SentenseFromArray";
 import Word from "../ui_elements/drag_drop_game/Word";
+import WordsWithTips from "../ui_elements/drag_drop_game/WordsWithTips";
 
 const styles = StyleSheet.create({
   container: {
@@ -133,11 +134,10 @@ const DragDropGameRound = ({ route, navigation }) => {
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text style={styles.upperText}>Перекладіть це речення</Text>
-      <SentenseFromArray
+      <WordsWithTips
         words={currentExercise.sentenseToTranslate}
         style={{ paddingHorizontal: 30 }}
       />
-      <View style={styles.spacer}></View>
       <DragDropWords checkUserAnswer={checkUserAnswer}>
         {shuffledWords.map((word: { word: string }, index) => (
           <Word key={index} {...word} />

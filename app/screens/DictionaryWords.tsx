@@ -61,7 +61,9 @@ function DictionaryWords({ navigation }) {
         {currentArr.map((obj, index) => (
           <Pressable
             key={obj.word}
-            onPress={() => navigation.navigate("Word", { word: obj.word })}
+            onPress={() =>
+              navigation.navigate("WordTranslation", { word: obj.word })
+            }
           >
             <WordCellInList word={obj.word} translations={obj.translations} />
           </Pressable>
