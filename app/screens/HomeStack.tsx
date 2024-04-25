@@ -1,9 +1,7 @@
-import { View, Text } from "react-native";
-import React from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomePage from "./HomePage";
-import DragDropGameRound from "./DragDropGameRound";
+import ArticleGame from "./ArticleGame";
 import DragDropGame from "./DragDropGame";
+import HomePage from "./HomePage";
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
@@ -17,6 +15,7 @@ const HomeStack = () => {
         }}
       />
       <Stack.Screen name="DragDropGame" component={DragDropGame} />
+      <Stack.Screen name="ArticleGame" component={ArticleGame} />
     </Stack.Navigator>
   );
 };

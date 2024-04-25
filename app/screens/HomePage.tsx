@@ -14,11 +14,7 @@ import Task from "../ui_elements/home_page/Task";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-interface Props {
-  onGameStart: () => void;
-}
-
-const HomePage: React.FC<Props> = ({ onGameStart }) => {
+const HomePage = () => {
   const nav = useNavigation<NativeStackNavigationProp<any>>();
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -29,7 +25,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
 
   return (
     <SafeAreaView>
-      {/* This is something like header */}
+      {/* Header */}
       <View
         style={{
           flexDirection: "row",
@@ -44,7 +40,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
         <Text style={generalStyles.score}>100</Text>
       </View>
 
-      {/* This is something like body */}
+      {/* Body */}
       <ScrollView style={styles.body}>
         <View style={{ height: 57 }}></View>
         <Text style={styles.title}>Для Вас</Text>
@@ -58,6 +54,7 @@ const HomePage: React.FC<Props> = ({ onGameStart }) => {
               title="Артиклі"
               contrastForTitle={true}
               background={require("../assets/tasks_backgrounds/flowers7.jpeg")}
+              onPress={() => nav.navigate("ArticleGame")}
             ></Task>
           </View>
           <View style={styles.tasksRow}>
