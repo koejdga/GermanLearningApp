@@ -10,6 +10,7 @@ const HomeStack = () => {
     {
       wordsForTranslation: [
         { word: "Er" },
+        { word: "," },
         { word: "isst" },
         { word: "einen" },
         { word: "Apfel" },
@@ -49,6 +50,7 @@ const HomeStack = () => {
       ],
     },
   ];
+
   return (
     <Stack.Navigator>
       <Stack.Screen

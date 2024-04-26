@@ -38,7 +38,6 @@ const WordsWithTips = ({ words, style }) => {
   const tipScales = words.map(() => useSharedValue(0));
 
   const handlePress = (index: number) => {
-    console.log(words[index]);
     if (activeIndex !== null) {
       tipScales[activeIndex].value = 0;
     }
@@ -76,7 +75,6 @@ const WordsWithTips = ({ words, style }) => {
                   layout: { x },
                 },
               }) => {
-                console.log(x);
                 setPositionStyles(
                   positionStyles.map((s: { left: number }, i: number) =>
                     i == index ? { left: x } : s
@@ -92,7 +90,6 @@ const WordsWithTips = ({ words, style }) => {
 
       <View style={{ flex: 1 }}>
         {words.map((word: { word: string }, index: number) => {
-          console.log(positionStyles[index]);
           return (
             <Animated.View
               style={[styles.tip, positionStyles[index], animatedStyles[index]]}

@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  Keyboard,
+  Pressable,
+} from "react-native";
 import {
   GestureHandlerRootView,
   RectButton,
@@ -76,43 +85,23 @@ const WriteTranslationGame = ({ route, navigation }) => {
   const amountOfRounds = route.params?.amountOfRounds;
   const exercises = route.params?.exercises;
   const currentExercise = exercises[currentRound];
-
-  const [shuffledWords, _] = useState(
-    shuffle(currentExercise.wordsForTranslation)
+  const correctAnswer = currentExercise.wordsForTranslation.slice(
+    0,
+    currentExercise.wordsNumberInAnswer
   );
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
-  const checkUserAnswer = (answer: number[]) => {
-    if (
-      answer.filter((x) => x != -1).length !=
-      currentExercise.wordsNumberInAnswer
-    ) {
-      setAnswerIsCorrect(false);
-      return;
-    }
-
-    for (let i = 0; i < answer.length; i++) {
-      if (
-        answer[i] != -1 &&
-        currentExercise.wordsForTranslation[answer[i]] !== shuffledWords[i]
-      ) {
-        setAnswerIsCorrect(false);
-        return;
-      }
-    }
-    setAnswerIsCorrect(true);
-  };
-
   const loadNextRound = () => {
-    if (currentRound < amountOfRounds - 1) {
-      navigation.push("DragDropGameRound", {
-        currentRound: currentRound + 1,
-        amountOfRounds,
-        exercises,
-      });
-    } else {
-      navigation.push("EndOfDragDropGame");
-    }
+    console.log("load next round");
+    // if (currentRound < amountOfRounds - 1) {
+    //   navigation.push("DragDropGameRound", {
+    //     currentRound: currentRound + 1,
+    //     amountOfRounds,
+    //     exercises,
+    //   });
+    // } else {
+    //   navigation.push("EndOfDragDropGame");
+    // }
   };
 
   useEffect(() => {
@@ -131,47 +120,79 @@ const WriteTranslationGame = ({ route, navigation }) => {
     translateY.value = withTiming(0, { duration: 200 });
   };
 
+  const [userInput, setUserInput] = useState("");
+
+  const checkUserAnswer = () => {
+    const arrayWithCommas = userInput
+      .split(",")
+      .flatMap((word, index, array) =>
+        index < array.length - 1 ? [word, ","] : [word]
+      );
+
+    const splittedAnswer = arrayWithCommas
+      .flatMap((item) => item.split(/\s+/))
+      .filter((x) => x !== "");
+
+    const answerWithoutCommas =
+      splittedAnswer.length !== correctAnswer.length
+        ? correctAnswer.filter((x: { word: string }) => x.word !== ",")
+        : correctAnswer;
+
+    const allEqual = splittedAnswer.every(
+      (x, i) => x === answerWithoutCommas[i].word
+    );
+    setAnswerIsCorrect(allEqual);
+  };
+
   return (
     <GestureHandlerRootView style={styles.container}>
-      <Text style={styles.upperText}>Перекладіть це речення</Text>
-      <WordsWithTips
-        words={currentExercise.sentenseToTranslate}
-        style={{ paddingHorizontal: 30 }}
-      />
-      <TextInput
-        style={{ backgroundColor: "lightgray", margin: 16 }}
-      ></TextInput>
-      <ReadyButton></ReadyButton>
-
-      <Animated.View
-        id="modal"
-        style={[
-          styles.modal,
-          transformStyle,
-          { backgroundColor: answerIsCorrect ? "#B3F9E2" : "#F9C8D1" },
-        ]}
-      >
-        <Text style={styles.subheader}>
-          {answerIsCorrect ? "Richtig!" : "Falsch!"}
-        </Text>
-        <View style={{ borderWidth: 1 }}></View>
-        <SentenseFromArray
-          style={{ padding: 35 }}
-          words={currentExercise.wordsForTranslation.slice(
-            0,
-            currentExercise.wordsNumberInAnswer
-          )}
+      <Pressable style={styles.container} onPress={Keyboard.dismiss}>
+        <Text style={styles.upperText}>Перекладіть це речення</Text>
+        <WordsWithTips
+          words={currentExercise.sentenseToTranslate}
+          style={{ paddingHorizontal: 30 }}
         />
-        <RectButton
-          style={[
-            styles.button,
-            { backgroundColor: answerIsCorrect ? "#15AB76" : "#E9526E" },
-          ]}
-          onPress={loadNextRound}
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "position" : "height"}
+          keyboardVerticalOffset={90}
         >
-          <Text style={styles.label}>ДАЛІ</Text>
-        </RectButton>
-      </Animated.View>
+          <TextInput
+            style={{ backgroundColor: "lightgray", margin: 16 }}
+            onChangeText={(string) => setUserInput(string)}
+          ></TextInput>
+        </KeyboardAvoidingView>
+        <ReadyButton onPress={checkUserAnswer} />
+
+        <Animated.View
+          id="modal"
+          style={[
+            styles.modal,
+            transformStyle,
+            { backgroundColor: answerIsCorrect ? "#B3F9E2" : "#F9C8D1" },
+          ]}
+        >
+          <Text style={styles.subheader}>
+            {answerIsCorrect ? "Richtig!" : "Falsch!"}
+          </Text>
+          <View style={{ borderWidth: 1 }}></View>
+          <SentenseFromArray
+            style={{ padding: 35 }}
+            words={currentExercise.wordsForTranslation.slice(
+              0,
+              currentExercise.wordsNumberInAnswer
+            )}
+          />
+          <RectButton
+            style={[
+              styles.button,
+              { backgroundColor: answerIsCorrect ? "#15AB76" : "#E9526E" },
+            ]}
+            onPress={loadNextRound}
+          >
+            <Text style={styles.label}>ДАЛІ</Text>
+          </RectButton>
+        </Animated.View>
+      </Pressable>
     </GestureHandlerRootView>
   );
 };
