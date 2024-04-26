@@ -65,8 +65,9 @@ const HomePage = () => {
               onPress={() => nav.navigate("DragDropGame")}
             ></Task>
             <Task
-              title="Діалог"
+              title="Письмо"
               background={require("../assets/tasks_backgrounds/yellow-bg.jpeg")}
+              onPress={() => nav.navigate("WriteTranslationGame")}
             ></Task>
           </View>
         </View>
