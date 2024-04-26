@@ -1,14 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import DragDropGameRound from "./DragDropGameRound";
-import EndOfGame from "./EndOfGame";
-
+import ArticleGame from "../article_game/ArticleGame";
+import DragDropGame from "../drag_drop_game/DragDropGame";
+import HomePage from "./HomePage";
+import WriteTranslationGame from "../write_translation_game/WriteTranslationGame";
 const Stack = createNativeStackNavigator();
 
-const DragDropGame = () => {
+const HomeStack = () => {
   const exercises = [
     {
       wordsForTranslation: [
         { word: "Er" },
+        { word: "," },
         { word: "isst" },
         { word: "einen" },
         { word: "Apfel" },
@@ -50,25 +52,22 @@ const DragDropGame = () => {
   ];
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        gestureEnabled: true,
-        gestureDirection: "horizontal",
-      }}
-    >
+    <Stack.Navigator>
       <Stack.Screen
-        name="DragDropGameRound"
-        component={DragDropGameRound}
-        initialParams={{
-          currentRound: 0,
-          amountOfRounds: exercises.length,
-          exercises,
+        name="Home"
+        component={HomePage}
+        options={{
+          headerShown: false,
         }}
       />
-      <Stack.Screen name="EndOfDragDropGame" component={EndOfGame} />
+      <Stack.Screen name="DragDropGame" component={DragDropGame} />
+      <Stack.Screen name="ArticleGame" component={ArticleGame} />
+      <Stack.Screen
+        name="WriteTranslationGame"
+        component={WriteTranslationGame}
+      />
     </Stack.Navigator>
   );
 };
 
-export default DragDropGame;
+export default HomeStack;

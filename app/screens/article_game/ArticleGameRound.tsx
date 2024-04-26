@@ -7,12 +7,12 @@ import {
   Text,
   View,
 } from "react-native";
-import { darkColor, whiteColor } from "../config/Colors";
-import { generalStyles } from "../config/General";
+import { darkColor, whiteColor } from "../../config/Colors";
+import { generalStyles } from "../../config/General";
 
 import FlipCard from "react-native-flip-card";
 import Icon from "react-native-vector-icons/AntDesign";
-import MyButton from "../ui_elements/article_game/MyButton";
+import MyButton from "../../ui_elements/article_game/MyButton";
 
 import { Roboto_400Regular, Roboto_500Medium } from "@expo-google-fonts/roboto";
 import {
@@ -20,7 +20,7 @@ import {
   useFonts,
 } from "@expo-google-fonts/roboto-condensed";
 
-const bgImage = require("../assets/article-game-bg.jpg");
+const bgImage = require("../../assets/article-game-bg.jpg");
 
 let correctGreenForBox = "rgba(229, 247, 237, 0.7)";
 let defaultColor = "rgba(242, 245, 246, 0.5)";

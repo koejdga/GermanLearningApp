@@ -19,10 +19,9 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { shuffle } from "../Utils";
-import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
-import SentenseFromArray from "../ui_elements/drag_drop_game/SentenseFromArray";
-import WordsWithTips from "../ui_elements/drag_drop_game/WordsWithTips";
+import ReadyButton from "../../ui_elements/drag_drop_game/ReadyButton";
+import SentenseFromArray from "../../ui_elements/drag_drop_game/SentenseFromArray";
+import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 
 const styles = StyleSheet.create({
   container: {
@@ -80,7 +79,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const WriteTranslationGame = ({ route, navigation }) => {
+const WriteTranslationGameRound = ({ route, navigation }) => {
   const currentRound = route.params?.currentRound;
   const amountOfRounds = route.params?.amountOfRounds;
   const exercises = route.params?.exercises;
@@ -92,16 +91,15 @@ const WriteTranslationGame = ({ route, navigation }) => {
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
   const loadNextRound = () => {
-    console.log("load next round");
-    // if (currentRound < amountOfRounds - 1) {
-    //   navigation.push("DragDropGameRound", {
-    //     currentRound: currentRound + 1,
-    //     amountOfRounds,
-    //     exercises,
-    //   });
-    // } else {
-    //   navigation.push("EndOfDragDropGame");
-    // }
+    if (currentRound < amountOfRounds - 1) {
+      navigation.push("WriteTranslationGameRound", {
+        currentRound: currentRound + 1,
+        amountOfRounds,
+        exercises,
+      });
+    } else {
+      navigation.push("EndOfGame");
+    }
   };
 
   useEffect(() => {
@@ -123,6 +121,10 @@ const WriteTranslationGame = ({ route, navigation }) => {
   const [userInput, setUserInput] = useState("");
 
   const checkUserAnswer = () => {
+    if (userInput === "") {
+      setAnswerIsCorrect(false);
+      return;
+    }
     const arrayWithCommas = userInput
       .split(",")
       .flatMap((word, index, array) =>
@@ -132,6 +134,9 @@ const WriteTranslationGame = ({ route, navigation }) => {
     const splittedAnswer = arrayWithCommas
       .flatMap((item) => item.split(/\s+/))
       .filter((x) => x !== "");
+
+    console.log(splittedAnswer.length);
+    console.log(splittedAnswer);
 
     const answerWithoutCommas =
       splittedAnswer.length !== correctAnswer.length
@@ -197,4 +202,4 @@ const WriteTranslationGame = ({ route, navigation }) => {
   );
 };
 
-export default WriteTranslationGame;
+export default WriteTranslationGameRound;

@@ -7,7 +7,7 @@ import {
   ScrollView,
   Pressable,
 } from "react-native";
-import WordCellInList from "../ui_elements/dictionary/WordCellInList";
+import WordCellInList from "../../ui_elements/dictionary/WordCellInList";
 
 function DictionaryWords({ navigation }) {
   const generateNumbers = (start, end) => {

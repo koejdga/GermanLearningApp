@@ -9,11 +9,11 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { shuffle } from "../Utils";
-import DragDropWords from "../ui_elements/drag_drop_game/DragDropWords";
-import SentenseFromArray from "../ui_elements/drag_drop_game/SentenseFromArray";
-import Word from "../ui_elements/drag_drop_game/Word";
-import WordsWithTips from "../ui_elements/drag_drop_game/WordsWithTips";
+import { shuffle } from "../../Utils";
+import DragDropWords from "../../ui_elements/drag_drop_game/DragDropWords";
+import SentenseFromArray from "../../ui_elements/drag_drop_game/SentenseFromArray";
+import Word from "../../ui_elements/drag_drop_game/Word";
+import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 
 const styles = StyleSheet.create({
   container: {
@@ -111,7 +111,7 @@ const DragDropGameRound = ({ route, navigation }) => {
         exercises,
       });
     } else {
-      navigation.push("EndOfDragDropGame");
+      navigation.push("EndOfGame");
     }
   };
 

@@ -8,9 +8,9 @@ import {
   SafeAreaView,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
-import { generalStyles } from "../config/General";
-import Achievement from "../ui_elements/home_page/Achievement";
-import Task from "../ui_elements/home_page/Task";
+import { generalStyles } from "../../config/General";
+import Achievement from "../../ui_elements/home_page/Achievement";
+import Task from "../../ui_elements/home_page/Task";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -34,7 +34,7 @@ const HomePage = () => {
         }}
       >
         <Image
-          source={require("../assets/app-logo.png")}
+          source={require("../../assets/app-logo.png")}
           style={{ width: 70, height: 70 }}
         />
         <Text style={generalStyles.score}>100</Text>
@@ -48,12 +48,12 @@ const HomePage = () => {
           <View style={styles.tasksRow}>
             <Task
               title="Дієслова"
-              background={require("../assets/tasks_backgrounds/pastel-gradient-bg.jpg")}
+              background={require("../../assets/tasks_backgrounds/pastel-gradient-bg.jpg")}
             ></Task>
             <Task
               title="Артиклі"
               contrastForTitle={true}
-              background={require("../assets/tasks_backgrounds/flowers7.jpeg")}
+              background={require("../../assets/tasks_backgrounds/flowers7.jpeg")}
               onPress={() => nav.navigate("ArticleGame")}
             ></Task>
           </View>
@@ -61,12 +61,12 @@ const HomePage = () => {
             <Task
               title="Нові слова"
               contrastForTitle={true}
-              background={require("../assets/tasks_backgrounds/pink-flowers.png")}
+              background={require("../../assets/tasks_backgrounds/pink-flowers.png")}
               onPress={() => nav.navigate("DragDropGame")}
             ></Task>
             <Task
               title="Письмо"
-              background={require("../assets/tasks_backgrounds/yellow-bg.jpeg")}
+              background={require("../../assets/tasks_backgrounds/yellow-bg.jpeg")}
               onPress={() => nav.navigate("WriteTranslationGame")}
             ></Task>
           </View>
