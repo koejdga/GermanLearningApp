@@ -58,7 +58,7 @@ const WordsWithTips = ({ words, style }) => {
   );
 
   return (
-    <>
+    <View>
       <View style={[styles.sentense, style]}>
         {words.map((word: { word: string }, index: number) => {
           const addBlankspace =
@@ -109,7 +109,7 @@ const WordsWithTips = ({ words, style }) => {
           );
         })}
       </View>
-    </>
+    </View>
   );
 };
 

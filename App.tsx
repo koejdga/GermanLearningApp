@@ -4,9 +4,9 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import { LoadingScreen } from "./app/screens/LoadingScreen";
-import { Login } from "./app/screens/Login";
-import { Register } from "./app/screens/Register";
+import { LoadingScreen } from "./app/screens/login_signup/LoadingScreen";
+import { Login } from "./app/screens/login_signup/Login";
+import { Register } from "./app/screens/login_signup/Register";
 import Dictionary from "./app/screens/dictionary/Dictionary";
 import HomeStack from "./app/screens/home/HomeStack";
 

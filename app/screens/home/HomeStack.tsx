@@ -34,6 +34,13 @@ const HomeStack = () => {
           gameName: "WriteTranslationGame",
         }}
       />
+      <Stack.Screen
+        name="EndingsGame"
+        component={GameFlow}
+        initialParams={{
+          gameName: "EndingsGame",
+        }}
+      />
     </Stack.Navigator>
   );
 };

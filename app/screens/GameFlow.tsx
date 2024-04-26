@@ -1,8 +1,9 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import EndOfGame from "./EndOfGame";
+import GameEnd from "./GameEnd";
 import DragDropGameRound from "./drag_drop_game/DragDropGameRound";
 import WriteTranslationGameRound from "./write_translation_game/WriteTranslationGameRound";
 import ArticleGameRound from "./article_game/ArticleGameRound";
+import EndingsGameRound from "./EndingsGameRound";
 import { getDataForGame } from "../Utils";
 
 const Stack = createNativeStackNavigator();
@@ -10,6 +11,7 @@ const gameRoundsMap = {
   DragDropGameRound,
   WriteTranslationGameRound,
   ArticleGameRound,
+  EndingsGameRound,
 };
 
 const GameFlow = ({ route }) => {
@@ -36,7 +38,7 @@ const GameFlow = ({ route }) => {
           exercises: dataForGame,
         }}
       />
-      <Stack.Screen name="EndOfGame" component={EndOfGame} />
+      <Stack.Screen name="EndOfGame" component={GameEnd} />
     </Stack.Navigator>
   );
 };

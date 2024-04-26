@@ -47,8 +47,9 @@ const HomePage = () => {
         <View style={styles.tasks}>
           <View style={styles.tasksRow}>
             <Task
-              title="Дієслова"
+              title="Закінчення"
               background={require("../../assets/tasks_backgrounds/pastel-gradient-bg.jpg")}
+              onPress={() => nav.navigate("EndingsGame")}
             ></Task>
             <Task
               title="Артиклі"

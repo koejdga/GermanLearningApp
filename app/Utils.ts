@@ -11,9 +11,11 @@ export enum Game {
   DRAP_DROP = "DragDropGame",
   WRITE_TRANSLATION = "WriteTranslationGame",
   ARTICLE = "ArticleGame",
+  ENDINGS = "EndingsGame",
 }
 
 export const getDataForGame = (gameName: string) => {
+  // mocking data for now
   const exercises = [
     {
       wordsForTranslation: [
@@ -81,6 +83,23 @@ export const getDataForGame = (gameName: string) => {
       translation: "радіо",
     },
   ];
+  const endings = [
+    {
+      sentense: [
+        [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
+        [{ word: "Mutter" }],
+      ],
+      endings: ["e"],
+    },
+    {
+      sentense: [
+        [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
+        [{ word: "Mutter" }, { word: "und" }, { word: "mein" }],
+        [{ word: "Vatter" }],
+      ],
+      endings: ["e", "en"],
+    },
+  ];
 
   switch (gameName) {
     case Game.ARTICLE:
@@ -89,5 +108,7 @@ export const getDataForGame = (gameName: string) => {
       return exercises;
     case Game.WRITE_TRANSLATION:
       return exercises;
+    case Game.ENDINGS:
+      return endings;
   }
 };

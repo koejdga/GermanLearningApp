@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
 
-const EndOfGame = () => {
+const GameEnd = () => {
   let [fontsLoaded] = useFonts({
     Aclonica_400Regular,
   });
@@ -48,7 +48,7 @@ const EndOfGame = () => {
   );
 };
 
-export default EndOfGame;
+export default GameEnd;
 
 // TODO: put https://lordicon.com/icons/wired/lineal?group=free&categoryId=9 somewhere if I used icon from there
 // TODO: maybe there will be problems with lottie animation

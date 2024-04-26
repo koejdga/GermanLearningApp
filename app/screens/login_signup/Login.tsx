@@ -11,7 +11,7 @@ import {
   TextInput,
   View,
 } from "react-native";
-import { CTAButton } from "../ui_elements/CTAButton";
+import { CTAButton } from "../../ui_elements/CTAButton";
 
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
