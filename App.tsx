@@ -4,14 +4,10 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
-import Dictionary from "./app/screens/dictionary/Dictionary";
-import HomePage from "./app/screens/home/HomePage";
 import { LoadingScreen } from "./app/screens/LoadingScreen";
 import { Login } from "./app/screens/Login";
 import { Register } from "./app/screens/Register";
-import EndingsGame from "./app/screens/EndingsGame";
-import ArticleGame from "./app/screens/article_game/ArticleGame";
-import DragDropGameRound from "./app/screens/drag_drop_game/DragDropGameRound";
+import Dictionary from "./app/screens/dictionary/Dictionary";
 import HomeStack from "./app/screens/home/HomeStack";
 
 enum Screen {

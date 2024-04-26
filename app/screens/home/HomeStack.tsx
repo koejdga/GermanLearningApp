@@ -1,8 +1,7 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import GameFlow from "../GameFlow";
 import ArticleGame from "../article_game/ArticleGame";
-import DragDropGame from "../drag_drop_game/DragDropGame";
 import HomePage from "./HomePage";
-import WriteTranslationGame from "../write_translation_game/WriteTranslationGame";
 const Stack = createNativeStackNavigator();
 
 const HomeStack = () => {
@@ -60,11 +59,20 @@ const HomeStack = () => {
           headerShown: false,
         }}
       />
-      <Stack.Screen name="DragDropGame" component={DragDropGame} />
       <Stack.Screen name="ArticleGame" component={ArticleGame} />
       <Stack.Screen
+        name="DragDropGame"
+        component={GameFlow}
+        initialParams={{
+          gameName: "DragDropGame",
+        }}
+      />
+      <Stack.Screen
         name="WriteTranslationGame"
-        component={WriteTranslationGame}
+        component={GameFlow}
+        initialParams={{
+          gameName: "WriteTranslationGame",
+        }}
       />
     </Stack.Navigator>
   );

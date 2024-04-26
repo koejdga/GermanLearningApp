@@ -1,10 +1,19 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import WriteTranslationGameRound from "./WriteTranslationGameRound";
-import EndOfGame from "../EndOfGame";
+import EndOfGame from "./EndOfGame";
+import DragDropGameRound from "./drag_drop_game/DragDropGameRound";
+import WriteTranslationGameRound from "./write_translation_game/WriteTranslationGameRound";
 
 const Stack = createNativeStackNavigator();
+const gameRoundsMap = {
+  DragDropGameRound,
+  WriteTranslationGameRound,
+};
 
-const WriteTranslationGame = () => {
+const GameFlow = ({ route }) => {
+  const gameName = route.params?.gameName;
+  const gameRoundName = gameName + "Round";
+  const gameRound = gameRoundsMap[gameRoundName];
+
   const exercises = [
     {
       wordsForTranslation: [
@@ -59,8 +68,8 @@ const WriteTranslationGame = () => {
       }}
     >
       <Stack.Screen
-        name="WriteTranslationGameRound"
-        component={WriteTranslationGameRound}
+        name={gameRoundName}
+        component={gameRound}
         initialParams={{
           currentRound: 0,
           amountOfRounds: exercises.length,
@@ -72,4 +81,4 @@ const WriteTranslationGame = () => {
   );
 };
 
-export default WriteTranslationGame;
+export default GameFlow;
