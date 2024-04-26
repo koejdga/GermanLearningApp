@@ -1,4 +1,9 @@
-import React, { useEffect, useState } from "react";
+import { Roboto_400Regular, Roboto_500Medium } from "@expo-google-fonts/roboto";
+import {
+  RobotoCondensed_300Light_Italic,
+  useFonts,
+} from "@expo-google-fonts/roboto-condensed";
+import { useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -7,18 +12,11 @@ import {
   Text,
   View,
 } from "react-native";
-import { darkColor, whiteColor } from "../../config/Colors";
-import { generalStyles } from "../../config/General";
-
 import FlipCard from "react-native-flip-card";
 import Icon from "react-native-vector-icons/AntDesign";
+import { darkColor, whiteColor } from "../../config/Colors";
+import { generalStyles } from "../../config/General";
 import MyButton from "../../ui_elements/article_game/MyButton";
-
-import { Roboto_400Regular, Roboto_500Medium } from "@expo-google-fonts/roboto";
-import {
-  RobotoCondensed_300Light_Italic,
-  useFonts,
-} from "@expo-google-fonts/roboto-condensed";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 
@@ -48,11 +46,17 @@ interface Props {
   onGameEnd: (score: number) => void;
 }
 
-const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
+// : React.FC<Props>
+const ArticleGameRound = ({ route, navigation }) => {
+  const currentRound = route.params?.currentRound;
+  const amountOfRounds = route.params?.amountOfRounds;
+  const exercises = route.params?.exercises;
+  const currentExercise = exercises[currentRound];
+
   const [state, setState] = useState(GameState.Neutral);
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [boxText, setBoxText] = useState(word.word);
+  const [boxText, setBoxText] = useState(currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
   const [hearts, setHearts] = useState(3);
   const [score, setScore] = useState(0);
@@ -61,9 +65,9 @@ const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
     setState(GameState.Neutral);
     setShowTranslation(false);
     setButtonsDisabled(false);
-    setBoxText(word.word);
+    setBoxText(currentExercise.word);
     setBoxColor(defaultColor);
-  }, [word]);
+  }, [currentExercise]);
 
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -75,7 +79,7 @@ const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
   }
 
   const pressButton = (article: string) => {
-    if (article == word.article) {
+    if (article == currentExercise.article) {
       setState(GameState.Correct);
       setBoxColor(correctGreenForBox);
       setScore(score + 100);
@@ -87,15 +91,24 @@ const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
       }
     }
     setButtonsDisabled(true);
-    setBoxText(word.article + " " + word.word);
+    setBoxText(currentExercise.article + " " + currentExercise.word);
   };
 
-  const newRound = () => {
-    if (hearts == 0) {
-      onGameEnd(score);
+  const loadNextRound = () => {
+    if (currentRound < amountOfRounds - 1 && hearts !== 0) {
+      navigation.push("ArticleGameRound", {
+        currentRound: currentRound + 1,
+        amountOfRounds,
+        exercises,
+      });
     } else {
-      onRoundEnd();
+      navigation.push("EndOfGame");
     }
+    // if (hearts == 0) {
+    //   onGameEnd(score);
+    // } else {
+    //   onRoundEnd();
+    // }
   };
 
   const styles = StyleSheet.create({
@@ -205,7 +218,7 @@ const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
         <Pressable
           style={styles.mainArea}
           onPress={() => {
-            if (state != GameState.Neutral) newRound();
+            if (state != GameState.Neutral) loadNextRound();
           }}
         >
           <View style={{ marginTop: "30%", height: 260 }}>
@@ -229,11 +242,15 @@ const ArticleGameRound: React.FC<Props> = ({ word, onRoundEnd, onGameEnd }) => {
                   <Text style={[styles.word, styles.wordToTranslate]}>
                     {boxText}
                   </Text>
-                  <Text style={styles.robotoRegular}>{word.plural}</Text>
+                  <Text style={styles.robotoRegular}>
+                    {currentExercise.plural}
+                  </Text>
                 </View>
-                <Text style={styles.partOfSpeech}>{word.partOfSpeech}</Text>
+                <Text style={styles.partOfSpeech}>
+                  {currentExercise.partOfSpeech}
+                </Text>
                 <Text style={[styles.robotoRegular, styles.translation]}>
-                  • {word.translation}
+                  • {currentExercise.translation}
                 </Text>
               </>
             </FlipCard>

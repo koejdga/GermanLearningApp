@@ -1,33 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import { Button, StyleSheet, Text, View } from "react-native";
+import { useState } from "react";
+import { Button, Text, View } from "react-native";
 import ArticleGameRound from "./ArticleGameRound";
-import { useEffect, useState } from "react";
 
 const ArticleGame = () => {
   // this will be in database
-  const initialWords = [
-    {
-      word: "Radio",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Haus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Maus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-  ];
+  const initialWords = [];
 
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
