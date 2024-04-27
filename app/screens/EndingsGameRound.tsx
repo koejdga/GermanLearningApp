@@ -20,8 +20,6 @@ import SentenseFromArray from "../ui_elements/drag_drop_game/SentenseFromArray";
 //   GestureHandlerRootView,
 // } from "react-native-gesture-handler";
 
-type Props = {};
-
 const EndingsGameRound = ({ route, navigation }) => {
   // TODO: make this part with route params reading a separate function
   // or maybe make game round an interface because loadNextRound also is

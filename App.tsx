@@ -10,6 +10,8 @@ import { Register } from "./app/screens/login_signup/Register";
 import Dictionary from "./app/screens/dictionary/Dictionary";
 import HomeStack from "./app/screens/home/HomeStack";
 import UserProfile from "./app/screens/UserProfile";
+import EditUserProfile from "./app/screens/user_profile/EditUserProfile";
+import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
 
 enum Screen {
   ArticleGame,
@@ -77,7 +79,7 @@ function MainApp() {
         options={{ headerShown: false }}
       />
       <Tab.Screen name={TabNames.ACHIEVEMENTS} component={Dictionary} />
-      <Tab.Screen name={TabNames.ACCOUNT} component={UserProfile} />
+      <Tab.Screen name={TabNames.ACCOUNT} component={UserProfileStack} />
     </Tab.Navigator>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Fire from "../ui_elements/account_page/Fire";
 
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const UserProfile = () => {
+const UserProfile = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={{ flexDirection: "row", width: "100%" }}>
@@ -76,20 +76,28 @@ const UserProfile = () => {
           <Text style={{ color: SECONDARY_INFO_COLOR }}>27.04.2024</Text>
         </View>
 
-        <View
-          style={[
-            styles.iconAndText,
-            {
-              gap: 5,
-              marginTop: 42,
-            },
-          ]}
-        >
-          <Ionicons name="create-outline" size={ICON_SIZE} color={EDIT_COLOR} />
-          <Text style={{ color: EDIT_COLOR, textDecorationLine: "underline" }}>
-            редагувати профіль
-          </Text>
-        </View>
+        <Pressable onPress={() => navigation.navigate("EditUserProfile")}>
+          <View
+            style={[
+              styles.iconAndText,
+              {
+                gap: 5,
+                marginTop: 42,
+              },
+            ]}
+          >
+            <Ionicons
+              name="create-outline"
+              size={ICON_SIZE}
+              color={EDIT_COLOR}
+            />
+            <Text
+              style={{ color: EDIT_COLOR, textDecorationLine: "underline" }}
+            >
+              редагувати профіль
+            </Text>
+          </View>
+        </Pressable>
       </View>
     </View>
   );

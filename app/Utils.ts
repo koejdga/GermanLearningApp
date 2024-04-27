@@ -111,3 +111,48 @@ export const getDataForGame = (gameName: string) => {
       return endings;
   }
 };
+
+export const validateEmail = async (
+  email: string
+): Promise<{ isValid: boolean; autocorrect?: string | null }> => {
+  try {
+    const apiKey = "0f98b1b14e7e40e98759edb776e805b0";
+    const apiURL =
+      "https://emailvalidation.abstractapi.com/v1/?api_key=" + apiKey;
+    const url = apiURL + "&email=" + email;
+    const response = await fetch(url);
+    const data = await response.json();
+    console.log(data);
+    return {
+      isValid: data.is_valid_format.value,
+      autocorrect: data.autocorrect !== "" ? data.autocorrect : null,
+    };
+  } catch (error) {
+    return { isValid: false };
+  }
+};
+
+export const validateBirthdate = (
+  date: Date
+): {
+  isInFuture: boolean;
+  isStrangeAge?: null | number;
+} => {
+  // TODO: write documentation
+  if (date > new Date()) {
+    return { isInFuture: true };
+  }
+
+  const age = calculateAge(date);
+  return {
+    isInFuture: false,
+    isStrangeAge: age > 100 || age <= 10 ? age : null,
+  };
+};
+
+export const calculateAge = (birthdate: Date): number => {
+  const today = new Date();
+  const diffInMs = today.getTime() - birthdate.getTime();
+  const age = diffInMs / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.floor(age);
+};
