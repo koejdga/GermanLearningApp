@@ -6,7 +6,7 @@ interface Props {
   description: string;
 }
 
-const Achievement: React.FC<Props> = ({ description }) => {
+const AchievementHomePage: React.FC<Props> = ({ description }) => {
   let [fontsLoaded] = useFonts({
     Roboto_400Regular,
   });
@@ -46,4 +46,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Achievement;
+export default AchievementHomePage;

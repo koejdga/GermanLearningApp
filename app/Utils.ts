@@ -156,3 +156,5 @@ export const calculateAge = (birthdate: Date): number => {
   const age = diffInMs / (1000 * 60 * 60 * 24 * 365.25);
   return Math.floor(age);
 };
+
+// LINK TO ANIMATIONS: https://app.lottiefiles.com/?utm_medium=web&utm_source=register-main-nav

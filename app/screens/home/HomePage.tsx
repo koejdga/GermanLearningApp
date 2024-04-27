@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import { generalStyles } from "../../config/General";
-import Achievement from "../../ui_elements/home_page/Achievement";
+import AchievementHomePage from "../../ui_elements/home_page/Achievement";
 import Task from "../../ui_elements/home_page/Task";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -90,8 +90,8 @@ const HomePage = () => {
           <Icon name="dots-three-horizontal" size={28}></Icon>
         </View>
         <View style={{ gap: 22 }}>
-          <Achievement description="30 нових слів"></Achievement>
-          <Achievement description="30 нових слів"></Achievement>
+          <AchievementHomePage description="30 нових слів"></AchievementHomePage>
+          <AchievementHomePage description="30 нових слів"></AchievementHomePage>
         </View>
       </ScrollView>
     </SafeAreaView>

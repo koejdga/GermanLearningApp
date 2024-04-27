@@ -4,14 +4,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { useState } from "react";
 import { StyleSheet } from "react-native";
+import Dictionary from "./app/screens/dictionary/Dictionary";
+import HomeStack from "./app/screens/home/HomeStack";
 import { LoadingScreen } from "./app/screens/login_signup/LoadingScreen";
 import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
-import Dictionary from "./app/screens/dictionary/Dictionary";
-import HomeStack from "./app/screens/home/HomeStack";
-import UserProfile from "./app/screens/UserProfile";
-import EditUserProfile from "./app/screens/user_profile/EditUserProfile";
 import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
+import Achievements from "./app/screens/Achievements";
 
 enum Screen {
   ArticleGame,
@@ -26,7 +25,7 @@ function MainApp() {
   enum TabNames {
     HOME = "HomeStack",
     DICTIONARY = "Dictionary",
-    ACHIEVEMENTS = "Achievements",
+    ACHIEVEMENTS = "Досягнення",
     ACCOUNT = "Account",
   }
 
@@ -78,7 +77,7 @@ function MainApp() {
         component={Dictionary}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name={TabNames.ACHIEVEMENTS} component={Dictionary} />
+      <Tab.Screen name={TabNames.ACHIEVEMENTS} component={Achievements} />
       <Tab.Screen name={TabNames.ACCOUNT} component={UserProfileStack} />
     </Tab.Navigator>
   );

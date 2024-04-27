@@ -1,29 +1,49 @@
-import * as React from "react";
-import { View, Dimensions } from "react-native";
-import Svg, { G, Path } from "react-native-svg";
+import { useState } from "react";
+import { View } from "react-native";
 
-import { CROSS_SIZE } from "./Cross";
+const HEIGHT = 15;
+const BORDER_RADIUS = 10;
 
-const width = Dimensions.get("window").width - 16 * 4 - CROSS_SIZE;
-// TODO: write it in another way, without svg, so that i can change width of green
-const SvgComponent = () => {
+const Progress = ({ currentAmount, totalAmount }) => {
+  const [progressWidth, setProgressWidth] = useState(0);
+
   return (
     <View
       style={{
-        flex: 1,
-        flexDirection: "row",
-        justifyContent: "center",
+        width: "100%",
+        backgroundColor: "#E4E4E4",
+        height: HEIGHT,
+        borderRadius: BORDER_RADIUS,
+      }}
+      onLayout={({
+        nativeEvent: {
+          layout: { width },
+        },
+      }) => {
+        setProgressWidth(width);
       }}
     >
-      <Svg width={width} height={(width * 11) / 111} viewBox="0 0 111 11">
-        <G fill="none" fillRule="evenodd" strokeLinecap="round">
-          <Path d="M5.5 5.5h99.55" stroke="#E4E4E4" strokeWidth={10} />
-          <Path d="M5.5 5.5H25" stroke="#58CC00" strokeWidth={10} />
-          <Path d="M8.5 5.5h13.816" stroke="#7AD633" strokeWidth={5} />
-        </G>
-      </Svg>
+      <View
+        style={{
+          backgroundColor: "#58CC00",
+          width: (progressWidth * currentAmount) / totalAmount,
+          height: HEIGHT,
+          borderRadius: BORDER_RADIUS,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#7AD633",
+            height: HEIGHT / 2.5,
+            borderRadius: BORDER_RADIUS,
+            width: (progressWidth * currentAmount) / totalAmount - 20,
+          }}
+        ></View>
+      </View>
     </View>
   );
 };
 
-export default SvgComponent;
+export default Progress;
