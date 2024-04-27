@@ -20,7 +20,6 @@ export const getDataForGame = (gameName: string) => {
     {
       wordsForTranslation: [
         { word: "Er" },
-        { word: "," },
         { word: "isst" },
         { word: "einen" },
         { word: "Apfel" },
@@ -31,7 +30,7 @@ export const getDataForGame = (gameName: string) => {
         { word: "ist" },
         { word: "Hallo" },
       ],
-      wordsNumberInAnswer: 3,
+      wordsNumberInAnswer: 9,
       sentenseToTranslate: [
         { word: "Він", translation: 1 },
         { word: "їсть", translation: 2 },
