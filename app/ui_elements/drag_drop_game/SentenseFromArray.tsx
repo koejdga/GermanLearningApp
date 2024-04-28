@@ -16,6 +16,15 @@ interface Props {
   style?: ViewStyle;
 }
 
+export const sentenseFromArray = (words: string[]) => {
+  return words.reduce((previousValue, currentValue, currentIndex) => {
+    if (currentIndex < words.length - 1 && words[currentIndex + 1] != ",") {
+      currentValue += " ";
+    }
+    return previousValue + currentValue;
+  }, "");
+};
+
 const SentenseFromArray: React.FC<Props> = ({ words, style }) => {
   return (
     <View style={[styles.sentense, style]}>

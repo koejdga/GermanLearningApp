@@ -84,7 +84,19 @@ const EndingsGameRound = ({ route, navigation }) => {
         </GestureHandlerRootView>
 
         <EndRoundModal
-          currentExercise={round.currentExercise}
+          correctAnswer={round.currentExercise.sentense.flatMap(
+            (words: { word: string }[], index: number) => {
+              let newWords = words.map((obj) => Object.assign({}, obj));
+              if (index != round.currentExercise.sentense.length - 1) {
+                newWords[newWords.length - 1].word +=
+                  round.currentExercise.endings[index];
+              }
+              console.log("we are here");
+              console.log(newWords);
+              console.log(words);
+              return newWords;
+            }
+          )}
           loadNextRound={round.loadNextRound}
           answerIsCorrect={answerIsCorrect}
         />

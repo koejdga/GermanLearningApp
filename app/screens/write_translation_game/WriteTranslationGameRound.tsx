@@ -74,7 +74,7 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
         <ReadyButton onPress={checkUserAnswer} />
 
         <EndRoundModal
-          currentExercise={round.currentExercise}
+          correctAnswer={correctAnswer}
           loadNextRound={round.loadNextRound}
           answerIsCorrect={answerIsCorrect}
         />

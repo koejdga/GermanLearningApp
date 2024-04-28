@@ -1,12 +1,12 @@
-import { View, Text, StyleSheet, useWindowDimensions } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import { RectButton } from "react-native-gesture-handler";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import SentenseFromArray from "../ui_elements/drag_drop_game/SentenseFromArray";
-import { RectButton } from "react-native-gesture-handler";
+import { sentenseFromArray } from "../ui_elements/drag_drop_game/SentenseFromArray";
 
 const styles = StyleSheet.create({
   modal: {
@@ -52,7 +52,19 @@ const styles = StyleSheet.create({
   },
 });
 
-const EndRoundModal = ({ currentExercise, loadNextRound, answerIsCorrect }) => {
+interface Props {
+  correctAnswer: { word: string }[];
+  loadNextRound: () => void;
+  answerIsCorrect: boolean | null;
+}
+
+const EndRoundModal: React.FC<Props> = ({
+  correctAnswer,
+  loadNextRound,
+  answerIsCorrect,
+}) => {
+  console.log("correctAnswer");
+  console.log(correctAnswer);
   const translateY = useSharedValue(300);
   const transformStyle = useAnimatedStyle(() => {
     return {
@@ -83,13 +95,9 @@ const EndRoundModal = ({ currentExercise, loadNextRound, answerIsCorrect }) => {
         {answerIsCorrect ? "Richtig!" : "Falsch!"}
       </Text>
       <View style={{ borderWidth: 1 }}></View>
-      <SentenseFromArray
-        style={{ padding: 35 }}
-        words={currentExercise.wordsForTranslation.slice(
-          0,
-          currentExercise.wordsNumberInAnswer
-        )}
-      />
+      <Text style={{ padding: 35, fontSize: 19 }}>
+        {sentenseFromArray(correctAnswer.map((obj) => obj.word))}
+      </Text>
       <RectButton
         style={[
           styles.button,
