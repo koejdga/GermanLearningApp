@@ -4,7 +4,6 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  StyleSheet,
   Text,
 } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -13,45 +12,16 @@ import Spacer from "../../ui_elements/Spacer";
 import ReadyButton from "../../ui_elements/drag_drop_game/ReadyButton";
 import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 import EndRoundModal from "../EndRoundModal";
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  upperText: {
-    fontSize: 16,
-    paddingTop: 10,
-    paddingHorizontal: 10,
-    paddingBottom: 30,
-  },
-});
+import GameRound from "../GameRound";
+import { sharedGameStyles } from "../SharedGameStyles";
 
 const WriteTranslationGameRound = ({ route, navigation }) => {
-  const currentRound = route.params?.currentRound;
-  const amountOfRounds = route.params?.amountOfRounds;
-  const exercises = route.params?.exercises;
-  const currentExercise = exercises[currentRound];
-
-  const correctAnswer = currentExercise.wordsForTranslation.slice(
+  const round = GameRound({ route, navigation });
+  const correctAnswer = round.currentExercise.wordsForTranslation.slice(
     0,
-    currentExercise.wordsNumberInAnswer
+    round.currentExercise.wordsNumberInAnswer
   );
-
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
-
-  const loadNextRound = () => {
-    if (currentRound < amountOfRounds - 1) {
-      navigation.push("WriteTranslationGameRound", {
-        currentRound: currentRound + 1,
-        amountOfRounds,
-        exercises,
-      });
-    } else {
-      navigation.push("EndOfGame");
-    }
-  };
-
   const [userInput, setUserInput] = useState("");
 
   const checkUserAnswer = () => {
@@ -84,11 +54,11 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
   };
 
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <Pressable style={styles.container} onPress={Keyboard.dismiss}>
-        <Text style={styles.upperText}>Перекладіть це речення</Text>
+    <GestureHandlerRootView style={sharedGameStyles.container}>
+      <Pressable style={sharedGameStyles.container} onPress={Keyboard.dismiss}>
+        <Text style={sharedGameStyles.upperText}>Перекладіть це речення</Text>
         <WordsWithTips
-          words={currentExercise.sentenseToTranslate}
+          words={round.currentExercise.sentenseToTranslate}
           style={{ paddingHorizontal: 30 }}
         />
         <KeyboardAvoidingView
@@ -104,8 +74,8 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
         <ReadyButton onPress={checkUserAnswer} />
 
         <EndRoundModal
-          currentExercise={currentExercise}
-          loadNextRound={loadNextRound}
+          currentExercise={round.currentExercise}
+          loadNextRound={round.loadNextRound}
           answerIsCorrect={answerIsCorrect}
         />
       </Pressable>

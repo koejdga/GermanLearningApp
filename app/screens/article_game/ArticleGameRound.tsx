@@ -167,7 +167,7 @@ const ArticleGameRound = ({ route, navigation }) => {
         exercises,
       });
     } else {
-      navigation.push("EndOfGame");
+      navigation.push("GameEnd");
     }
     // if (hearts == 0) {
     //   onGameEnd(score);

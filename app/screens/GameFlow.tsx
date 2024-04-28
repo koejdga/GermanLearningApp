@@ -18,7 +18,6 @@ const GameFlow = ({ route }) => {
   const gameName = route.params?.gameName;
   const gameRoundName = gameName + "Round";
   const gameRound = gameRoundsMap[gameRoundName];
-
   const dataForGame = getDataForGame(gameName);
 
   return (
@@ -36,9 +35,10 @@ const GameFlow = ({ route }) => {
           currentRound: 0,
           amountOfRounds: dataForGame.length,
           exercises: dataForGame,
+          gameName,
         }}
       />
-      <Stack.Screen name="EndOfGame" component={GameEnd} />
+      <Stack.Screen name="GameEnd" component={GameEnd} />
     </Stack.Navigator>
   );
 };

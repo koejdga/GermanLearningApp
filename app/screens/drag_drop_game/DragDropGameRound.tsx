@@ -7,6 +7,7 @@ import DragDropWords from "../../ui_elements/drag_drop_game/DragDropWords";
 import Word from "../../ui_elements/drag_drop_game/Word";
 import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 import EndRoundModal from "../EndRoundModal";
+import GameRound from "../GameRound";
 
 const styles = StyleSheet.create({
   container: {
@@ -22,25 +23,20 @@ const styles = StyleSheet.create({
 });
 
 const DragDropGameRound = ({ route, navigation }) => {
-  const currentRound = route.params?.currentRound;
-  const amountOfRounds = route.params?.amountOfRounds;
-  const exercises = route.params?.exercises;
-  const currentExercise = exercises[currentRound];
-
-  const correctAnswer = currentExercise.wordsForTranslation.slice(
+  const round = GameRound({ route, navigation });
+  const correctAnswer = round.currentExercise.wordsForTranslation.slice(
     0,
-    currentExercise.wordsNumberInAnswer
+    round.currentExercise.wordsNumberInAnswer
   );
-
   const [shuffledWords, _] = useState(
-    shuffle(currentExercise.wordsForTranslation)
+    shuffle(round.currentExercise.wordsForTranslation)
   );
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
   const checkUserAnswer = (answer: number[]) => {
     if (
       answer.filter((x) => x != -1).length !=
-      currentExercise.wordsNumberInAnswer
+      round.currentExercise.wordsNumberInAnswer
     ) {
       setAnswerIsCorrect(false);
       return;
@@ -55,23 +51,11 @@ const DragDropGameRound = ({ route, navigation }) => {
     setAnswerIsCorrect(true);
   };
 
-  const loadNextRound = () => {
-    if (currentRound < amountOfRounds - 1) {
-      navigation.push("DragDropGameRound", {
-        currentRound: currentRound + 1,
-        amountOfRounds,
-        exercises,
-      });
-    } else {
-      navigation.push("EndOfGame");
-    }
-  };
-
   return (
     <GestureHandlerRootView style={styles.container}>
       <Text style={styles.upperText}>Перекладіть це речення</Text>
       <WordsWithTips
-        words={currentExercise.sentenseToTranslate}
+        words={round.currentExercise.sentenseToTranslate}
         style={{ paddingHorizontal: 30 }}
       />
       <Spacer />
@@ -82,8 +66,8 @@ const DragDropGameRound = ({ route, navigation }) => {
       </DragDropWords>
 
       <EndRoundModal
-        currentExercise={currentExercise}
-        loadNextRound={loadNextRound}
+        currentExercise={round.currentExercise}
+        loadNextRound={round.loadNextRound}
         answerIsCorrect={answerIsCorrect}
       />
     </GestureHandlerRootView>
