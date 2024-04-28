@@ -26,34 +26,98 @@ let wrongRedForBox = "rgba(237, 67, 55, 0.1)";
 let correctGreenColor = "#60D394";
 let wrongRedColor = "rgba(237, 67, 55, 0.9)";
 
-enum GameState {
-  Neutral,
-  Correct,
-  Wrong,
-}
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  row: {
+    flexDirection: "row",
+    marginTop: 28,
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  hearts: {
+    height: "auto",
+    flexDirection: "row",
+    gap: 10,
+    marginLeft: 20,
+  },
+  mainArea: {
+    flex: 1,
+    alignItems: "center",
+  },
+  boxWithWord: {
+    width: 350,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "#0E1428",
+    paddingHorizontal: 15,
+  },
+  word: {
+    fontSize: 34,
+    fontFamily: "Roboto_500Medium",
+    alignSelf: "center",
+    marginTop: "auto",
+    marginBottom: "auto",
+  },
+  wordToTranslate: {
+    alignSelf: "flex-start",
+  },
+  buttons: {
+    marginBottom: 60,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "90%",
+    marginHorizontal: 19,
+  },
+  placeForBanner: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+  },
+  banner: {
+    width: "56%",
+    height: 55,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 30,
+  },
+  correct: {
+    backgroundColor: correctGreenColor,
+  },
+  wrong: {
+    backgroundColor: wrongRedColor,
+  },
+  bannerText: {
+    fontFamily: "Roboto_500Medium",
+    fontSize: 24,
+    color: "#FFFFFF",
+  },
+  robotoRegular: {
+    fontFamily: "Roboto_400Regular",
+    fontSize: 28,
+  },
+  partOfSpeech: {
+    fontFamily: "RobotoCondensed_300Light_Italic",
+    fontSize: 26,
+  },
+  translation: {
+    marginTop: 30,
+  },
+  wordAndPluralRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 17,
+  },
+});
 
-interface WordObject {
-  word: string;
-  article: string;
-  plural: string;
-  partOfSpeech: string;
-  translation: string;
-}
-
-interface Props {
-  word: WordObject;
-  onRoundEnd: () => void;
-  onGameEnd: (score: number) => void;
-}
-
-// : React.FC<Props>
 const ArticleGameRound = ({ route, navigation }) => {
   const currentRound = route.params?.currentRound;
   const amountOfRounds = route.params?.amountOfRounds;
   const exercises = route.params?.exercises;
   const currentExercise = exercises[currentRound];
 
-  const [state, setState] = useState(GameState.Neutral);
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [boxText, setBoxText] = useState(currentExercise.word);
@@ -61,8 +125,9 @@ const ArticleGameRound = ({ route, navigation }) => {
   const [hearts, setHearts] = useState(3);
   const [score, setScore] = useState(0);
 
+  const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
+
   useEffect(() => {
-    setState(GameState.Neutral);
     setShowTranslation(false);
     setButtonsDisabled(false);
     setBoxText(currentExercise.word);
@@ -80,11 +145,11 @@ const ArticleGameRound = ({ route, navigation }) => {
 
   const pressButton = (article: string) => {
     if (article == currentExercise.article) {
-      setState(GameState.Correct);
+      setAnswerIsCorrect(true);
       setBoxColor(correctGreenForBox);
       setScore(score + 100);
     } else {
-      setState(GameState.Wrong);
+      setAnswerIsCorrect(false);
       setBoxColor(wrongRedForBox);
       if (hearts > 0) {
         setHearts(hearts - 1);
@@ -111,102 +176,9 @@ const ArticleGameRound = ({ route, navigation }) => {
     // }
   };
 
-  const styles = StyleSheet.create({
-    parentContainer: {
-      flex: 1,
-    },
-    row: {
-      flexDirection: "row",
-      marginTop: 28,
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    hearts: {
-      height: "auto",
-      flexDirection: "row",
-      gap: 10,
-      marginLeft: 20,
-    },
-    // score: {
-    //   marginRight: 20,
-    //   fontSize: 24,
-    //   fontFamily: "Roboto_500Medium",
-    // },
-    mainArea: {
-      flex: 1,
-      alignItems: "center",
-    },
-    boxWithWord: {
-      backgroundColor: boxColor,
-      width: 350,
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: "#0E1428",
-      paddingHorizontal: 15,
-    },
-    word: {
-      fontSize: 34,
-      fontFamily: "Roboto_500Medium",
-      alignSelf: "center",
-      marginTop: "auto",
-      marginBottom: "auto",
-    },
-    wordToTranslate: {
-      alignSelf: "flex-start",
-    },
-    buttons: {
-      marginBottom: 60,
-      flexDirection: "row",
-      justifyContent: "space-between",
-      width: "90%",
-      marginHorizontal: 19,
-    },
-
-    placeForBanner: {
-      flex: 1,
-      width: "100%",
-      alignItems: "center",
-    },
-    banner: {
-      width: "56%",
-      height: 55,
-      borderRadius: 20,
-      justifyContent: "center",
-      alignItems: "center",
-      marginTop: 30,
-    },
-    correct: {
-      backgroundColor: correctGreenColor,
-    },
-    wrong: {
-      backgroundColor: wrongRedColor,
-    },
-    bannerText: {
-      fontFamily: "Roboto_500Medium",
-      fontSize: 24,
-      color: "#FFFFFF",
-    },
-    robotoRegular: {
-      fontFamily: "Roboto_400Regular",
-      fontSize: 28,
-    },
-    partOfSpeech: {
-      fontFamily: "RobotoCondensed_300Light_Italic",
-      fontSize: 26,
-    },
-    translation: {
-      marginTop: 30,
-    },
-    wordAndPluralRow: {
-      flexDirection: "row",
-      justifyContent: "space-between",
-      marginTop: 17,
-    },
-  });
-
   return (
-    <ImageBackground source={bgImage} style={styles.parentContainer}>
-      <SafeAreaView style={styles.parentContainer}>
+    <ImageBackground source={bgImage} style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <View style={styles.row}>
           <View style={styles.hearts}>
             {[...Array(hearts)].map((_, index) => (
@@ -218,12 +190,12 @@ const ArticleGameRound = ({ route, navigation }) => {
         <Pressable
           style={styles.mainArea}
           onPress={() => {
-            if (state != GameState.Neutral) loadNextRound();
+            if (answerIsCorrect != null) loadNextRound();
           }}
         >
           <View style={{ marginTop: "30%", height: 260 }}>
             <FlipCard
-              style={styles.boxWithWord}
+              style={[styles.boxWithWord, { backgroundColor: boxColor }]}
               flipHorizontal={true}
               flipVertical={false}
               onFlipEnd={() => {
@@ -256,13 +228,13 @@ const ArticleGameRound = ({ route, navigation }) => {
             </FlipCard>
           </View>
           <View style={styles.placeForBanner}>
-            {state == GameState.Correct && (
+            {answerIsCorrect && (
               <View style={[styles.banner, styles.correct]}>
                 <Text style={styles.bannerText}>Correct!</Text>
               </View>
             )}
 
-            {state == GameState.Wrong && (
+            {answerIsCorrect === false && (
               <View style={[styles.banner, styles.wrong]}>
                 <Text style={styles.bannerText}>Wrong!</Text>
               </View>

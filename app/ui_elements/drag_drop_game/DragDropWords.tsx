@@ -7,6 +7,7 @@ import ReadyButton from "./ReadyButton";
 import SortableWord from "./SortableWord";
 import Lines from "./Lines";
 import { MARGIN_LEFT } from "./Layout";
+import { sharedStyles } from "../../screens/SharedStyles";
 
 const containerWidth = Dimensions.get("window").width - MARGIN_LEFT * 2;
 const styles = StyleSheet.create({

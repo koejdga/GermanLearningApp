@@ -1,7 +1,4 @@
-import { View, Text, ScrollView } from "react-native";
-import React from "react";
-import { Ionicons } from "@expo/vector-icons";
-import Progress from "../ui_elements/drag_drop_game/Progress";
+import { ScrollView } from "react-native";
 import Achievement from "./Achievement";
 
 const Achievements = () => {
