@@ -11,16 +11,25 @@ const EndingsGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
 
   const emptyInputColor = "lightgrey";
-  const disabledInputColor = "red";
-  const filledInputColor = "";
-  const correctInputColor = "";
-  const wrongInputColor = "";
+  const filledInputColor = "gold";
+  const correctInputColor = "lightgreen";
+  const wrongInputColor = "lightcoral";
+
+  const [inputColors, setInputColors] = useState(
+    round.currentExercise.endings.map(() => emptyInputColor)
+  );
 
   const checkUserInput = () => {
-    const allEqual = userInputs.every(
-      (input, index) =>
-        input.toLowerCase() === round.currentExercise.endings[index]
-    );
+    let allEqual = true;
+    for (let i = 0; i < userInputs.length; i++) {
+      if (userInputs[i].toLowerCase() !== round.currentExercise.endings[i]) {
+        allEqual = false;
+        inputColors[i] = wrongInputColor;
+      } else {
+        inputColors[i] = correctInputColor;
+      }
+    }
+    setInputColors(inputColors);
     setAnswerIsCorrect(allEqual);
   };
 
@@ -59,12 +68,18 @@ const EndingsGameRound = ({ route, navigation }) => {
                     {!lastPart && (
                       <TextInput
                         style={{
-                          backgroundColor: "lightgrey",
+                          backgroundColor: inputColors[index],
                           marginRight: 10,
                           marginLeft: 5,
                           width: 50,
                         }}
                         onChangeText={(input) => {
+                          if (input != "") {
+                            inputColors[index] = filledInputColor;
+                          } else {
+                            inputColors[index] = emptyInputColor;
+                          }
+                          setInputColors(inputColors);
                           const updatedInputs = [...userInputs];
                           updatedInputs[index] = input;
                           setUserInputs(updatedInputs);
@@ -91,9 +106,6 @@ const EndingsGameRound = ({ route, navigation }) => {
                 newWords[newWords.length - 1].word +=
                   round.currentExercise.endings[index];
               }
-              console.log("we are here");
-              console.log(newWords);
-              console.log(words);
               return newWords;
             }
           )}
