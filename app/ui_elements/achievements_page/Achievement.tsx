@@ -5,12 +5,50 @@ import Progress from "./Progress";
 
 const ICON_SIZE = 29;
 
-const Achievement = ({ title, totalAmount, currentAmount }) => {
+interface Props {
+  title: string;
+  totalAmount?: number;
+  currentAmount?: number;
+  completed?: boolean;
+}
+
+const Achievement: React.FC<Props> = ({
+  title,
+  totalAmount,
+  currentAmount,
+  completed,
+}) => {
   const [iconCoords, setIconCoords] = useState({ x: 0, y: 0 });
+
+  const defaultValue = 10;
+
+  const validateCurrentAmount = () => {
+    if (!currentAmount) {
+      return defaultValue;
+    }
+
+    if (currentAmount > (totalAmount || defaultValue)) {
+      console.log(
+        "ERROR: current amount is greater than total amount in Achievement component"
+      );
+      return totalAmount;
+    }
+
+    return completed ? defaultValue : currentAmount || 0;
+  };
+
+  const validateTotalAmount = () => {
+    if (!totalAmount) {
+      return defaultValue;
+    }
+
+    return completed ? defaultValue : totalAmount || defaultValue;
+  };
+
   return (
     <View
       style={{
-        backgroundColor: "white",
+        backgroundColor: completed ? "#D8FFF2" : "white",
         marginHorizontal: 16,
         marginTop: 16,
         padding: 10,
@@ -46,7 +84,10 @@ const Achievement = ({ title, totalAmount, currentAmount }) => {
       ></View>
       <View style={{ gap: 10, flex: 1 }}>
         <Text style={{ fontSize: 18 }}>{title}</Text>
-        <Progress currentAmount={currentAmount} totalAmount={totalAmount} />
+        <Progress
+          currentAmount={validateCurrentAmount()}
+          totalAmount={validateTotalAmount()}
+        />
       </View>
     </View>
   );
