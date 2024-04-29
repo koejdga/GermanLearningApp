@@ -36,6 +36,7 @@ const GameFlow = ({ route }) => {
           amountOfRounds: dataForGame.length,
           exercises: dataForGame,
           gameName,
+          amountOfHearts: 3,
         }}
       />
       <Stack.Screen name="GameEnd" component={GameEnd} />

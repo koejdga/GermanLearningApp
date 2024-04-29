@@ -75,7 +75,7 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
 
         <EndRoundModal
           correctAnswer={correctAnswer}
-          loadNextRound={round.loadNextRound}
+          loadNextRound={() => round.loadNextRound(answerIsCorrect)}
           answerIsCorrect={answerIsCorrect}
         />
       </Pressable>

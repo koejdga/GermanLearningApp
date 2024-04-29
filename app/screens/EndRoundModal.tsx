@@ -63,8 +63,6 @@ const EndRoundModal: React.FC<Props> = ({
   loadNextRound,
   answerIsCorrect,
 }) => {
-  console.log("correctAnswer");
-  console.log(correctAnswer);
   const translateY = useSharedValue(300);
   const transformStyle = useAnimatedStyle(() => {
     return {

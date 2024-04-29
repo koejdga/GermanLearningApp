@@ -67,7 +67,7 @@ const DragDropGameRound = ({ route, navigation }) => {
 
       <EndRoundModal
         correctAnswer={correctAnswer}
-        loadNextRound={round.loadNextRound}
+        loadNextRound={() => round.loadNextRound(answerIsCorrect)}
         answerIsCorrect={answerIsCorrect}
       />
     </GestureHandlerRootView>

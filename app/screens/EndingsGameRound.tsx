@@ -109,7 +109,7 @@ const EndingsGameRound = ({ route, navigation }) => {
               return newWords;
             }
           )}
-          loadNextRound={round.loadNextRound}
+          loadNextRound={() => round.loadNextRound(answerIsCorrect)}
           answerIsCorrect={answerIsCorrect}
         />
       </View>

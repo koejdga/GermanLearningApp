@@ -7,7 +7,7 @@ const HomeStack = () => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Home"
+        name="HomePage"
         component={HomePage}
         options={{
           headerShown: false,

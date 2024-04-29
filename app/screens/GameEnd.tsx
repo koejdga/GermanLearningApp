@@ -5,7 +5,7 @@ import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
 
-const GameEnd = () => {
+const GameEnd = ({ navigation }) => {
   let [fontsLoaded] = useFonts({
     Aclonica_400Regular,
   });
@@ -42,7 +42,12 @@ const GameEnd = () => {
       <View style={{ flex: 1 }}></View>
 
       <GestureHandlerRootView style={{ marginBottom: 30 }}>
-        <ReadyButton></ReadyButton>
+        <ReadyButton
+          onPress={() => {
+            // use replace if want to go to the right, not to the left
+            navigation.navigate("HomePage");
+          }}
+        ></ReadyButton>
       </GestureHandlerRootView>
     </View>
   );

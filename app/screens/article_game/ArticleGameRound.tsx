@@ -17,6 +17,7 @@ import Icon from "react-native-vector-icons/AntDesign";
 import { darkColor, whiteColor } from "../../config/Colors";
 import { generalStyles } from "../../config/General";
 import MyButton from "../../ui_elements/article_game/MyButton";
+import GameRound from "../GameRound";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 
@@ -113,14 +114,15 @@ const styles = StyleSheet.create({
 });
 
 const ArticleGameRound = ({ route, navigation }) => {
-  const currentRound = route.params?.currentRound;
-  const amountOfRounds = route.params?.amountOfRounds;
-  const exercises = route.params?.exercises;
-  const currentExercise = exercises[currentRound];
+  const round = GameRound({ route, navigation });
+  // const currentRound = route.params?.currentRound;
+  // const amountOfRounds = route.params?.amountOfRounds;
+  // const exercises = route.params?.exercises;
+  // const currentExercise = exercises[currentRound];
 
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-  const [boxText, setBoxText] = useState(currentExercise.word);
+  const [boxText, setBoxText] = useState(round.currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
   const [hearts, setHearts] = useState(3);
   const [score, setScore] = useState(0);
@@ -130,9 +132,9 @@ const ArticleGameRound = ({ route, navigation }) => {
   useEffect(() => {
     setShowTranslation(false);
     setButtonsDisabled(false);
-    setBoxText(currentExercise.word);
+    setBoxText(round.currentExercise.word);
     setBoxColor(defaultColor);
-  }, [currentExercise]);
+  }, [round.currentExercise]);
 
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -144,37 +146,39 @@ const ArticleGameRound = ({ route, navigation }) => {
   }
 
   const pressButton = (article: string) => {
-    if (article == currentExercise.article) {
+    if (article == round.currentExercise.article) {
       setAnswerIsCorrect(true);
       setBoxColor(correctGreenForBox);
       setScore(score + 100);
     } else {
       setAnswerIsCorrect(false);
       setBoxColor(wrongRedForBox);
-      if (hearts > 0) {
-        setHearts(hearts - 1);
-      }
+      // if (hearts > 0) {
+      //   setHearts(hearts - 1);
+      // }
     }
     setButtonsDisabled(true);
-    setBoxText(currentExercise.article + " " + currentExercise.word);
+    setBoxText(
+      round.currentExercise.article + " " + round.currentExercise.word
+    );
   };
 
-  const loadNextRound = () => {
-    if (currentRound < amountOfRounds - 1 && hearts !== 0) {
-      navigation.push("ArticleGameRound", {
-        currentRound: currentRound + 1,
-        amountOfRounds,
-        exercises,
-      });
-    } else {
-      navigation.push("GameEnd");
-    }
-    // if (hearts == 0) {
-    //   onGameEnd(score);
-    // } else {
-    //   onRoundEnd();
-    // }
-  };
+  // const loadNextRound = () => {
+  //   if (round.currentRound < amountOfRounds - 1 && hearts !== 0) {
+  //     navigation.push("ArticleGameRound", {
+  //       currentRound: currentRound + 1,
+  //       amountOfRounds,
+  //       exercises,
+  //     });
+  //   } else {
+  //     navigation.push("GameEnd");
+  //   }
+  //   // if (hearts == 0) {
+  //   //   onGameEnd(score);
+  //   // } else {
+  //   //   onRoundEnd();
+  //   // }
+  // };
 
   return (
     <ImageBackground source={bgImage} style={styles.container}>
@@ -190,7 +194,7 @@ const ArticleGameRound = ({ route, navigation }) => {
         <Pressable
           style={styles.mainArea}
           onPress={() => {
-            if (answerIsCorrect != null) loadNextRound();
+            if (answerIsCorrect != null) round.loadNextRound(answerIsCorrect);
           }}
         >
           <View style={{ marginTop: "30%", height: 260 }}>
@@ -215,14 +219,14 @@ const ArticleGameRound = ({ route, navigation }) => {
                     {boxText}
                   </Text>
                   <Text style={styles.robotoRegular}>
-                    {currentExercise.plural}
+                    {round.currentExercise.plural}
                   </Text>
                 </View>
                 <Text style={styles.partOfSpeech}>
-                  {currentExercise.partOfSpeech}
+                  {round.currentExercise.partOfSpeech}
                 </Text>
                 <Text style={[styles.robotoRegular, styles.translation]}>
-                  • {currentExercise.translation}
+                  • {round.currentExercise.translation}
                 </Text>
               </>
             </FlipCard>
