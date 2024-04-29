@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
@@ -6,6 +6,7 @@ import WordsWithTips from "../ui_elements/drag_drop_game/WordsWithTips";
 import EndRoundModal from "./EndRoundModal";
 import GameRound from "./GameRound";
 import { sharedGameStyles } from "./SharedGameStyles";
+import GameHeader from "../ui_elements/GameHeader";
 
 const EndingsGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
@@ -18,6 +19,21 @@ const EndingsGameRound = ({ route, navigation }) => {
   const [inputColors, setInputColors] = useState(
     round.currentExercise.endings.map(() => emptyInputColor)
   );
+
+  const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
+
+  const [userInputs, setUserInputs] = useState(
+    Array(round.currentExercise.endings.length).fill("")
+  );
+
+  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (answerIsCorrect === false) {
+      setAmountOfHearts(amountOfHearts - 1);
+    }
+  }, [answerIsCorrect]);
 
   const checkUserInput = () => {
     let allEqual = true;
@@ -33,14 +49,9 @@ const EndingsGameRound = ({ route, navigation }) => {
     setAnswerIsCorrect(allEqual);
   };
 
-  const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
-
-  const [userInputs, setUserInputs] = useState(
-    Array(round.currentExercise.endings.length).fill("")
-  );
-
   return (
     <GestureHandlerRootView style={sharedGameStyles.container}>
+      <GameHeader amountOfHearts={amountOfHearts} score={score} />
       <View style={sharedGameStyles.container}>
         <View style={sharedGameStyles.container}>
           <Text style={sharedGameStyles.upperText}>

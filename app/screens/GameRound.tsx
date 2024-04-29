@@ -34,6 +34,7 @@ const GameRound = ({ route, navigation }) => {
     exercises,
     currentExercise,
     loadNextRound,
+    amountOfHearts,
   };
 };
 

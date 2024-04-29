@@ -13,9 +13,8 @@ import {
   View,
 } from "react-native";
 import FlipCard from "react-native-flip-card";
-import Icon from "react-native-vector-icons/AntDesign";
 import { darkColor, whiteColor } from "../../config/Colors";
-import { generalStyles } from "../../config/General";
+import GameHeader from "../../ui_elements/GameHeader";
 import MyButton from "../../ui_elements/article_game/MyButton";
 import GameRound from "../GameRound";
 
@@ -115,16 +114,13 @@ const styles = StyleSheet.create({
 
 const ArticleGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
-  // const currentRound = route.params?.currentRound;
-  // const amountOfRounds = route.params?.amountOfRounds;
-  // const exercises = route.params?.exercises;
-  // const currentExercise = exercises[currentRound];
+
+  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
 
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [boxText, setBoxText] = useState(round.currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
-  const [hearts, setHearts] = useState(3);
   const [score, setScore] = useState(0);
 
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
@@ -135,6 +131,12 @@ const ArticleGameRound = ({ route, navigation }) => {
     setBoxText(round.currentExercise.word);
     setBoxColor(defaultColor);
   }, [round.currentExercise]);
+
+  useEffect(() => {
+    if (answerIsCorrect === false) {
+      setAmountOfHearts(amountOfHearts - 1);
+    }
+  }, [answerIsCorrect]);
 
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -153,9 +155,6 @@ const ArticleGameRound = ({ route, navigation }) => {
     } else {
       setAnswerIsCorrect(false);
       setBoxColor(wrongRedForBox);
-      // if (hearts > 0) {
-      //   setHearts(hearts - 1);
-      // }
     }
     setButtonsDisabled(true);
     setBoxText(
@@ -163,34 +162,10 @@ const ArticleGameRound = ({ route, navigation }) => {
     );
   };
 
-  // const loadNextRound = () => {
-  //   if (round.currentRound < amountOfRounds - 1 && hearts !== 0) {
-  //     navigation.push("ArticleGameRound", {
-  //       currentRound: currentRound + 1,
-  //       amountOfRounds,
-  //       exercises,
-  //     });
-  //   } else {
-  //     navigation.push("GameEnd");
-  //   }
-  //   // if (hearts == 0) {
-  //   //   onGameEnd(score);
-  //   // } else {
-  //   //   onRoundEnd();
-  //   // }
-  // };
-
   return (
     <ImageBackground source={bgImage} style={styles.container}>
       <SafeAreaView style={styles.container}>
-        <View style={styles.row}>
-          <View style={styles.hearts}>
-            {[...Array(hearts)].map((_, index) => (
-              <Icon key={index} name="heart" size={24} color="#CD2424" />
-            ))}
-          </View>
-          <Text style={generalStyles.score}>{score}</Text>
-        </View>
+        <GameHeader amountOfHearts={amountOfHearts} score={score} />
         <Pressable
           style={styles.mainArea}
           onPress={() => {

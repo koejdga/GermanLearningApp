@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { shuffle } from "../../Utils";
@@ -8,6 +8,7 @@ import Word from "../../ui_elements/drag_drop_game/Word";
 import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 import EndRoundModal from "../EndRoundModal";
 import GameRound from "../GameRound";
+import GameHeader from "../../ui_elements/GameHeader";
 
 const styles = StyleSheet.create({
   container: {
@@ -33,6 +34,15 @@ const DragDropGameRound = ({ route, navigation }) => {
   );
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
+  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (answerIsCorrect === false) {
+      setAmountOfHearts(amountOfHearts - 1);
+    }
+  }, [answerIsCorrect]);
+
   const checkUserAnswer = (answer: number[]) => {
     if (
       answer.filter((x) => x != -1).length !=
@@ -53,6 +63,7 @@ const DragDropGameRound = ({ route, navigation }) => {
 
   return (
     <GestureHandlerRootView style={styles.container}>
+      <GameHeader amountOfHearts={amountOfHearts} score={score} />
       <Text style={styles.upperText}>Перекладіть це речення</Text>
       <WordsWithTips
         words={round.currentExercise.sentenseToTranslate}

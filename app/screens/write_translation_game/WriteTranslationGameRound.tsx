@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -14,6 +14,7 @@ import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
 import EndRoundModal from "../EndRoundModal";
 import GameRound from "../GameRound";
 import { sharedGameStyles } from "../SharedGameStyles";
+import GameHeader from "../../ui_elements/GameHeader";
 
 const WriteTranslationGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
@@ -23,6 +24,15 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
   );
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
   const [userInput, setUserInput] = useState("");
+
+  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
+  const [score, setScore] = useState(0);
+
+  useEffect(() => {
+    if (answerIsCorrect === false) {
+      setAmountOfHearts(amountOfHearts - 1);
+    }
+  }, [answerIsCorrect]);
 
   const checkUserAnswer = () => {
     if (userInput === "") {
@@ -55,6 +65,7 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
 
   return (
     <GestureHandlerRootView style={sharedGameStyles.container}>
+      <GameHeader amountOfHearts={amountOfHearts} score={score} />
       <Pressable style={sharedGameStyles.container} onPress={Keyboard.dismiss}>
         <Text style={sharedGameStyles.upperText}>Перекладіть це речення</Text>
         <WordsWithTips
