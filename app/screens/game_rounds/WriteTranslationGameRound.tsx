@@ -9,12 +9,12 @@ import {
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { TextInput } from "react-native-paper";
 import Spacer from "../../ui_elements/Spacer";
-import ReadyButton from "../../ui_elements/drag_drop_game/ReadyButton";
-import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
-import EndRoundModal from "../EndRoundModal";
-import GameRound from "../GameRound";
-import { sharedGameStyles } from "../SharedGameStyles";
-import GameHeader from "../../ui_elements/GameHeader";
+import ReadyButton from "../../ui_elements/game/ReadyButton";
+import WordsWithTips from "../../ui_elements/game/WordsWithTips";
+import EndRoundModal from "../../ui_elements/game/EndRoundModal";
+import GameRound from "../game_related/GameRound";
+import { sharedGameStyles } from "../../SharedGameStyles";
+import GameHeader from "../../ui_elements/game/GameHeader";
 
 const WriteTranslationGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });

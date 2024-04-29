@@ -14,9 +14,9 @@ import {
 } from "react-native";
 import FlipCard from "react-native-flip-card";
 import { darkColor, whiteColor } from "../../config/Colors";
-import GameHeader from "../../ui_elements/GameHeader";
+import GameHeader from "../../ui_elements/game/GameHeader";
 import MyButton from "../../ui_elements/article_game/MyButton";
-import GameRound from "../GameRound";
+import GameRound from "../game_related/GameRound";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 

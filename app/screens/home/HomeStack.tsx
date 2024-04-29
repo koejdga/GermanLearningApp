@@ -1,5 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import GameFlow from "../GameFlow";
+import GameFlow from "../game_related/GameFlow";
 import HomePage from "./HomePage";
 const Stack = createNativeStackNavigator();
 

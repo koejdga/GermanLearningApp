@@ -3,9 +3,7 @@ import { NUMBER_OF_LINES, WORD_HEIGHT } from "./Layout";
 
 const Lines = () => {
   return (
-    <View
-    // style={StyleSheet.absoluteFill}
-    >
+    <View>
       {new Array(NUMBER_OF_LINES).fill(0).map((_, index) => (
         <View
           key={index * WORD_HEIGHT}

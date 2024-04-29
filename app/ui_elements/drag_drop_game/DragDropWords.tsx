@@ -2,7 +2,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { View, StyleSheet, Dimensions, Button } from "react-native";
 import { useSharedValue, runOnUI, runOnJS } from "react-native-reanimated";
-import ReadyButton from "./ReadyButton";
+import ReadyButton from "../game/ReadyButton";
 
 import SortableWord from "./SortableWord";
 import Lines from "./Lines";

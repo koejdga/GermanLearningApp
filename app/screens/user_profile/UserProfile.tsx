@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Fire from "../ui_elements/account_page/Fire";
+import Fire from "../../ui_elements/account_page/Fire";
 
 const USER_IMAGE_SIZE = 158;
 const ICON_SIZE = 35;

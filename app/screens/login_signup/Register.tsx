@@ -10,7 +10,7 @@ import {
   Keyboard,
   Alert,
 } from "react-native";
-import { CTAButton } from "../../ui_elements/CTAButton";
+import { CTAButton } from "../../ui_elements/login_signup/CTAButton";
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import db from "@react-native-firebase/database";

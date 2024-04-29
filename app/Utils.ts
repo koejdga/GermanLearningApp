@@ -1,3 +1,5 @@
+import { SharedValue } from "react-native-reanimated";
+
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
   for (let i = outputArray.length - 1; i > 0; i--) {
@@ -158,3 +160,17 @@ export const calculateAge = (birthdate: Date): number => {
 };
 
 // LINK TO ANIMATIONS: https://app.lottiefiles.com/?utm_medium=web&utm_source=register-main-nav
+
+export type SharedValues<T extends Record<string, string | number | boolean>> =
+  {
+    [K in keyof T]: SharedValue<T[K]>;
+  };
+
+export const sentenseFromArray = (words: string[]) => {
+  return words.reduce((previousValue, currentValue, currentIndex) => {
+    if (currentIndex < words.length - 1 && words[currentIndex + 1] != ",") {
+      currentValue += " ";
+    }
+    return previousValue + currentValue;
+  }, "");
+};

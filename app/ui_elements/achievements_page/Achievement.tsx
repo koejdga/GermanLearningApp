@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useState } from "react";
 import { Text, View } from "react-native";
-import Progress from "../ui_elements/drag_drop_game/Progress";
+import Progress from "./Progress";
 
 const ICON_SIZE = 29;
 

@@ -5,10 +5,10 @@ import { shuffle } from "../../Utils";
 import Spacer from "../../ui_elements/Spacer";
 import DragDropWords from "../../ui_elements/drag_drop_game/DragDropWords";
 import Word from "../../ui_elements/drag_drop_game/Word";
-import WordsWithTips from "../../ui_elements/drag_drop_game/WordsWithTips";
-import EndRoundModal from "../EndRoundModal";
-import GameRound from "../GameRound";
-import GameHeader from "../../ui_elements/GameHeader";
+import WordsWithTips from "../../ui_elements/game/WordsWithTips";
+import EndRoundModal from "../../ui_elements/game/EndRoundModal";
+import GameRound from "../game_related/GameRound";
+import GameHeader from "../../ui_elements/game/GameHeader";
 
 const styles = StyleSheet.create({
   container: {

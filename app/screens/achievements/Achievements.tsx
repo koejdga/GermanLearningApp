@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import Achievement from "./Achievement";
+import Achievement from "../../ui_elements/achievements_page/Achievement";
 
 const Achievements = () => {
   return (

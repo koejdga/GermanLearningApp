@@ -3,7 +3,7 @@ import { useFonts } from "@expo-google-fonts/roboto-condensed";
 import LottieView from "lottie-react-native";
 import { Text, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import ReadyButton from "../ui_elements/drag_drop_game/ReadyButton";
+import ReadyButton from "../../ui_elements/game/ReadyButton";
 
 const GameEnd = ({ navigation }) => {
   let [fontsLoaded] = useFonts({
@@ -23,7 +23,7 @@ const GameEnd = ({ navigation }) => {
         }}
       >
         <LottieView
-          source={require("../assets/animations/spinning-shine.json")}
+          source={require("../../assets/animations/spinning-shine.json")}
           style={{ width: "100%", height: "100%", position: "absolute" }}
           autoPlay
           loop

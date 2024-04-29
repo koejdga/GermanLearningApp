@@ -10,7 +10,7 @@ import { LoadingScreen } from "./app/screens/login_signup/LoadingScreen";
 import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
 import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
-import Achievements from "./app/screens/Achievements";
+import Achievements from "./app/screens/achievements/Achievements";
 
 enum Screen {
   ArticleGame,

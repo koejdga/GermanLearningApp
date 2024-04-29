@@ -6,7 +6,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { sentenseFromArray } from "../ui_elements/drag_drop_game/SentenseFromArray";
+import { sentenseFromArray } from "../../Utils";
 
 const styles = StyleSheet.create({
   modal: {

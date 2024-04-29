@@ -7,7 +7,7 @@ export const sharedGameStyles = StyleSheet.create({
   },
   upperText: {
     fontSize: 16,
-    paddingTop: 10,
+    paddingTop: 0,
     paddingHorizontal: 10,
     paddingBottom: 30,
   },

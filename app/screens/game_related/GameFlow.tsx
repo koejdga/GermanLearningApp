@@ -1,10 +1,10 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import GameEnd from "./GameEnd";
-import DragDropGameRound from "./drag_drop_game/DragDropGameRound";
-import WriteTranslationGameRound from "./write_translation_game/WriteTranslationGameRound";
-import ArticleGameRound from "./article_game/ArticleGameRound";
-import EndingsGameRound from "./EndingsGameRound";
-import { getDataForGame } from "../Utils";
+import DragDropGameRound from "../game_rounds/DragDropGameRound";
+import WriteTranslationGameRound from "../game_rounds/WriteTranslationGameRound";
+import ArticleGameRound from "../game_rounds/ArticleGameRound";
+import EndingsGameRound from "../game_rounds/EndingsGameRound";
+import { getDataForGame } from "../../Utils";
 
 const Stack = createNativeStackNavigator();
 const gameRoundsMap = {

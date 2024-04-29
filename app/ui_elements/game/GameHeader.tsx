@@ -4,7 +4,7 @@ import Heart from "./Heart";
 const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
-    marginTop: 28,
+    marginVertical: 20,
     justifyContent: "space-between",
     alignItems: "center",
   },
