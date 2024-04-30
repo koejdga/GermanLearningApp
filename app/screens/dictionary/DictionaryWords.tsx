@@ -1,5 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import {
+  AppState,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,19 +9,65 @@ import {
   View,
 } from "react-native";
 import WordCellInList from "../../ui_elements/dictionary/WordCellInList";
-import { DictContext } from "../../DictContext";
+import {
+  DictContext,
+  getRecentlySearchedWords,
+  storeRecentlySearchedWords,
+} from "../../DictContext";
 
 function DictionaryWords({ navigation }) {
   const { wholeDict } = useContext(DictContext);
   const [recentlySearchedWords, setRecentlySearchedWords] = useState([]);
-
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentDisplayedWords, setCurrentDisplayedWords] = useState({});
+  const [currentDisplayedWords, setCurrentDisplayedWords] = useState([]);
+  const appState = useRef(AppState.currentState);
+
+  useEffect(function loadRecentWords() {
+    const loadData = async () => {
+      const res = await getRecentlySearchedWords();
+      setRecentlySearchedWords(res);
+      setCurrentDisplayedWords(res);
+    };
+    loadData();
+  }, []);
+
+  useEffect(
+    function saveRecentWordsOnExit() {
+      const subscription = AppState.addEventListener(
+        "change",
+        async (nextAppState) => {
+          if (nextAppState.match(/inactive|background/)) {
+            await storeRecentlySearchedWords(recentlySearchedWords);
+          }
+
+          appState.current = nextAppState;
+        }
+      );
+
+      return () => {
+        subscription.remove();
+      };
+    },
+    [recentlySearchedWords]
+  );
+
+  // limitRecentWordsSize
+  useEffect(
+    function limitRecentWordsSize() {
+      const amountOfLastWords = 20;
+      if (recentlySearchedWords.length > amountOfLastWords) {
+        setRecentlySearchedWords(
+          recentlySearchedWords.slice(0, amountOfLastWords)
+        );
+      }
+    },
+    [recentlySearchedWords]
+  );
 
   const filterWordsBySearch = (search: string) => {
     setSearchQuery(search);
     if (search === "") {
-      setCurrentDisplayedWords(wholeDict);
+      setCurrentDisplayedWords([...recentlySearchedWords]);
       return;
     }
 
@@ -31,7 +78,12 @@ function DictionaryWords({ navigation }) {
       return acc;
     }, {});
 
-    setCurrentDisplayedWords(filteredWords);
+    setCurrentDisplayedWords(
+      Object.entries(filteredWords).map(([key, value]) => ({
+        key,
+        value,
+      }))
+    );
   };
 
   return (
@@ -43,37 +95,44 @@ function DictionaryWords({ navigation }) {
         defaultValue={searchQuery}
       />
       <ScrollView style={styles.wordsList}>
-        <Text
-          style={{
-            borderWidth: 1,
-            borderColor: "lightgray",
-            paddingVertical: 10,
-            fontSize: 15,
-            paddingLeft: 7,
-            backgroundColor: "lightgray",
-          }}
-        >
-          Останні запити
-        </Text>
-
-        {Object.entries(currentDisplayedWords).map(
-          ([word, translations], index) => {
-            return (
-              <Pressable
-                key={word}
-                onPress={() => {
-                  // add to recently searched words
-                  navigation.navigate("WordTranslation", { word: word });
-                }}
-              >
-                <WordCellInList
-                  word={word}
-                  translations={translations[0].translation}
-                />
-              </Pressable>
-            );
-          }
+        {!searchQuery && (
+          <Text
+            style={{
+              borderWidth: 1,
+              borderColor: "lightgray",
+              paddingVertical: 10,
+              fontSize: 15,
+              paddingLeft: 7,
+              backgroundColor: "lightgray",
+            }}
+          >
+            Останні запити
+          </Text>
         )}
+        {currentDisplayedWords.map(({ key, value }) => {
+          const word = key;
+          const translations = value;
+          return (
+            <Pressable
+              key={word}
+              onPress={() => {
+                setRecentlySearchedWords([
+                  {
+                    key: word,
+                    value: wholeDict[word],
+                  },
+                  ...recentlySearchedWords,
+                ]);
+                navigation.navigate("WordTranslation", { word: word });
+              }}
+            >
+              <WordCellInList
+                word={word}
+                translations={translations[0].translation}
+              />
+            </Pressable>
+          );
+        })}
       </ScrollView>
     </View>
   );
