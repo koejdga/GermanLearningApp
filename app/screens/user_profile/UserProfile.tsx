@@ -1,5 +1,16 @@
-import { View, Text, StyleSheet, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { useContext, useEffect } from "react";
+import {
+  Alert,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { UserContext } from "../../UserContext";
 import Fire from "../../ui_elements/account_page/Fire";
 
 const USER_IMAGE_SIZE = 158;
@@ -25,81 +36,118 @@ const styles = StyleSheet.create({
   },
 });
 
+export const handleLogout = async () => {
+  Alert.alert("Ви дійсно хочете вийти?", "", [
+    {
+      text: "Так, вийти з акаунта",
+      onPress: async () => {
+        console.log("signing out");
+        await auth().signOut();
+      },
+    },
+    {
+      text: "Ні, залишитиcя в акаунті",
+      style: "cancel",
+    },
+  ]);
+};
+
 const UserProfile = ({ navigation }) => {
+  const { user, setUser } = useContext(UserContext);
+
+  function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
+    if (!user) {
+      setUser(null);
+      navigation.replace("Login");
+    }
+  }
+
+  useEffect(() => {
+    const sub = auth().onAuthStateChanged(onAuthStateChanged);
+    return sub;
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <View style={{ flexDirection: "row", width: "100%" }}>
-        <Ionicons
-          name="person-circle-outline"
-          size={USER_IMAGE_SIZE}
-          color={"#C7C7C7"}
-        />
-        <View style={styles.userNameAndScore}>
-          <Text style={styles.userName}>Mariia</Text>
-          <View style={[styles.iconAndText, { gap: 3 }]}>
-            <Fire />
-            <Text style={styles.score}>100</Text>
-          </View>
-        </View>
-      </View>
-      <View style={{ paddingHorizontal: 24, marginBottom: 40 }}>
-        <View
-          style={[
-            styles.iconAndText,
-            {
-              gap: 18,
-            },
-          ]}
-        >
-          <Ionicons
-            name="mail-outline"
-            size={ICON_SIZE}
-            color={SECONDARY_INFO_COLOR}
-          />
-          <Text style={{ color: SECONDARY_INFO_COLOR }}>test4@gmail.com</Text>
-        </View>
-
-        <View
-          style={[
-            styles.iconAndText,
-            {
-              gap: 18,
-              marginTop: 12,
-            },
-          ]}
-        >
-          <Ionicons
-            name="calendar-outline"
-            size={ICON_SIZE}
-            color={SECONDARY_INFO_COLOR}
-          />
-          <Text style={{ color: SECONDARY_INFO_COLOR }}>27.04.2024</Text>
-        </View>
-
-        <Pressable onPress={() => navigation.navigate("EditUserProfile")}>
-          <View
-            style={[
-              styles.iconAndText,
-              {
-                gap: 5,
-                marginTop: 42,
-              },
-            ]}
-          >
+    <>
+      {!user && <Text>no user :(</Text>}
+      {user && (
+        <SafeAreaView style={styles.container}>
+          <View style={{ flexDirection: "row", width: "100%" }}>
             <Ionicons
-              name="create-outline"
-              size={ICON_SIZE}
-              color={EDIT_COLOR}
+              name="person-circle-outline"
+              size={USER_IMAGE_SIZE}
+              color={"#C7C7C7"}
             />
-            <Text
-              style={{ color: EDIT_COLOR, textDecorationLine: "underline" }}
-            >
-              редагувати профіль
-            </Text>
+            <View style={styles.userNameAndScore}>
+              <Text style={styles.userName}>{user.username}</Text>
+              <View style={[styles.iconAndText, { gap: 3 }]}>
+                <Fire />
+                <Text style={styles.score}>100</Text>
+              </View>
+            </View>
           </View>
-        </Pressable>
-      </View>
-    </View>
+          <View style={{ paddingHorizontal: 24, marginBottom: 40 }}>
+            <View
+              style={[
+                styles.iconAndText,
+                {
+                  gap: 18,
+                },
+              ]}
+            >
+              <Ionicons
+                name="mail-outline"
+                size={ICON_SIZE}
+                color={SECONDARY_INFO_COLOR}
+              />
+              <Text style={{ color: SECONDARY_INFO_COLOR }}>{user.email}</Text>
+            </View>
+
+            <View
+              style={[
+                styles.iconAndText,
+                {
+                  gap: 18,
+                  marginTop: 12,
+                },
+              ]}
+            >
+              <Ionicons
+                name="calendar-outline"
+                size={ICON_SIZE}
+                color={SECONDARY_INFO_COLOR}
+              />
+              <Text style={{ color: SECONDARY_INFO_COLOR }}>
+                {user.birthdate.toLocaleDateString("uk-UA")}
+              </Text>
+            </View>
+
+            <Pressable onPress={() => navigation.navigate("EditUserProfile")}>
+              <View
+                style={[
+                  styles.iconAndText,
+                  {
+                    gap: 5,
+                    marginTop: 42,
+                  },
+                ]}
+              >
+                <Ionicons
+                  name="create-outline"
+                  size={ICON_SIZE}
+                  color={EDIT_COLOR}
+                />
+                <Text
+                  style={{ color: EDIT_COLOR, textDecorationLine: "underline" }}
+                >
+                  редагувати профіль
+                </Text>
+              </View>
+            </Pressable>
+          </View>
+        </SafeAreaView>
+      )}
+    </>
   );
 };
 

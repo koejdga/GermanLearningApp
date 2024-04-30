@@ -1,6 +1,6 @@
 import auth from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
+import { useContext, useState } from "react";
 import {
   Alert,
   Keyboard,
@@ -14,10 +14,13 @@ import {
 import { CTAButton } from "../../ui_elements/login_signup/CTAButton";
 
 import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { UserContext } from "../../UserContext";
+import { loggedInUserToUserInfo } from "../../DatabaseQueries";
 
 export const Login = () => {
   const [email, setEmail] = useState<string | undefined>();
   const [password, setPassword] = useState<string | undefined>();
+  const { setUser } = useContext(UserContext);
 
   const nav = useNavigation<NativeStackNavigationProp<any>>();
 
@@ -34,7 +37,9 @@ export const Login = () => {
         );
 
         if (response.user) {
-          nav.replace("Main");
+          const user = await loggedInUserToUserInfo(response.user);
+          setUser(user);
+          nav.replace("MainApp");
         }
       } catch (e) {
         // TODO: add something here

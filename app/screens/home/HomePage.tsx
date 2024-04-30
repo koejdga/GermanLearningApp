@@ -13,6 +13,8 @@ import AchievementHomePage from "../../ui_elements/home_page/Achievement";
 import Task from "../../ui_elements/home_page/Task";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useContext, useEffect } from "react";
+import { UserContext } from "../../UserContext";
 
 const HomePage = () => {
   const nav = useNavigation<NativeStackNavigationProp<any>>();

@@ -1,16 +1,23 @@
 import { Ionicons } from "@expo/vector-icons";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useState } from "react";
-import { StyleSheet } from "react-native";
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import {
+  NativeStackNavigationProp,
+  createNativeStackNavigator,
+} from "@react-navigation/native-stack";
+import { Alert, StyleSheet, TouchableOpacity } from "react-native";
+import { UserContext, UserProvider } from "./app/UserContext";
+import Achievements from "./app/screens/achievements/Achievements";
 import Dictionary from "./app/screens/dictionary/Dictionary";
 import HomeStack from "./app/screens/home/HomeStack";
 import { LoadingScreen } from "./app/screens/login_signup/LoadingScreen";
 import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
 import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
-import Achievements from "./app/screens/achievements/Achievements";
+import { loggedInUserToUserInfo } from "./app/DatabaseQueries";
+import { useContext, useEffect } from "react";
+import { handleLogout } from "./app/screens/user_profile/UserProfile";
 
 enum Screen {
   ArticleGame,
@@ -25,7 +32,7 @@ function MainApp() {
   enum TabNames {
     HOME = "HomeStack",
     DICTIONARY = "Dictionary",
-    ACHIEVEMENTS = "Досягнення",
+    ACHIEVEMENTS = "Achievements",
     ACCOUNT = "Account",
   }
 
@@ -77,59 +84,100 @@ function MainApp() {
         component={Dictionary}
         options={{ headerShown: false }}
       />
-      <Tab.Screen name={TabNames.ACHIEVEMENTS} component={Achievements} />
-      <Tab.Screen name={TabNames.ACCOUNT} component={UserProfileStack} />
+      <Tab.Screen
+        name={TabNames.ACHIEVEMENTS}
+        component={Achievements}
+        options={{ headerTitle: "Досягнення" }}
+      />
+      <Tab.Screen
+        name={TabNames.ACCOUNT}
+        component={UserProfileStack}
+        options={{
+          headerTitle: "Акаунт",
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={handleLogout}
+              style={{ backgroundColor: "#fff", padding: 10 }}
+            >
+              <Ionicons name="enter-outline" size={24} color="#000" />
+            </TouchableOpacity>
+          ),
+        }}
+        // options={{
+        //   headerTitle: "Акаунт",
+        //   headerRight: () => (
+        //     <TouchableOpacity
+        //       onPress={() =>
+        //         Alert.alert("Ви дійсно хочете вийти?", "", [
+        //           {
+        //             text: "Так, вийти з акаунта",
+        //             onPress: async () => {
+        //               console.log("signing out");
+        //               await auth().signOut();
+        //             },
+        //           },
+        //           {
+        //             text: "Ні, залишитиcя в акаунті",
+        //             style: "cancel",
+        //           },
+        //         ])
+        //       }
+        //       style={{ backgroundColor: "#fff", padding: 10 }}
+        //     >
+        //       <Ionicons name="enter-outline" size={24} color="#000" />
+        //     </TouchableOpacity>
+        //   ),
+        // }}
+      />
     </Tab.Navigator>
   );
 }
 
 export default function App() {
-  const [screen, setScreen] = useState(Screen.HomePage);
-
-  const backgrounds = {
-    [Screen.HomePage]: "#FEFCFF",
-    [Screen.ArticleGame]: "#fff8f5",
-    [Screen.Dictionary]: "lightblue",
-    // [Screen.ArticleGame]: "#fdd8d6",
-  };
-
   return (
-    // <GestureHandlerRootView>
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="LoadingScreen"
-          component={LoadingScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={Register}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Main"
-          component={MainApp}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-    // </GestureHandlerRootView>
+    <UserProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="LoadingScreen"
+            component={LoadingScreen}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Register"
+            component={Register}
+            options={{
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="MainApp"
+            component={MainApp}
+            options={{
+              headerShown: false,
+            }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </UserProvider>
   );
 }
+
+const backgrounds = {
+  [Screen.HomePage]: "#FEFCFF",
+  [Screen.ArticleGame]: "#fff8f5",
+  [Screen.Dictionary]: "lightblue",
+  // [Screen.ArticleGame]: "#fdd8d6",
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -1,14 +1,23 @@
-import { View, Text, StyleSheet, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import Fire from "../../ui_elements/account_page/Fire";
 import { TextInput } from "react-native-paper";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import DatePicker from "react-native-date-picker";
 import {
   GestureHandlerRootView,
   RectButton,
 } from "react-native-gesture-handler";
 import { validateBirthdate, validateEmail } from "../../Utils";
+import { UserContext } from "../../UserContext";
+import { getUser, updateUser } from "../../DatabaseQueries";
 
 // TODO: add this link to literature materials
 // https://www.abstractapi.com/guides/react-native-email-validation
@@ -54,11 +63,11 @@ const styles = StyleSheet.create({
   },
 });
 
-// TODO: move it somewhere maybe, don't know where exactly
-
 const EditUserProfile = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [date, setDate] = useState(new Date());
+  const { user, setUser } = useContext(UserContext);
+
+  const [userToEdit, setUserToEdit] = useState(user);
+
   const [openDatepicker, setOpenDatepicker] = useState(false);
 
   const [emailMessage, setEmailMessage] = useState({ message: "" });
@@ -73,82 +82,91 @@ const EditUserProfile = ({ navigation }) => {
 
     let allValidationsPassed = true;
 
-    const emailValidation = await validateEmail(email);
-    if (
-      emailValidation.isValid &&
-      emailValidation.autocorrect &&
-      !emailModalWasShown
-    ) {
-      Alert.alert(
-        `Можливо, ви мали на увазі ${emailValidation.autocorrect}?`,
-        "",
-        [
-          {
-            text: `Так, змінити на ${emailValidation.autocorrect}`,
-            onPress: () => setEmail(emailValidation.autocorrect),
-          },
-          {
-            text: `Ні, залишити ${email}`,
-            style: "cancel",
-          },
-        ]
-      );
-      setEmailModalWasShown(true);
-      allValidationsPassed = false;
-    }
-    if (!emailValidation.isValid && !emailValidation.autocorrect) {
-      if (!emailValidation.autocorrect) {
-        setEmailMessage({
-          message: "Введіть правильну поштову адресу",
-        });
-      } else {
-        setEmailMessage({
-          message: `Не правильна поштова адреса. Можливо, ви мали на увазі ${emailValidation.autocorrect}?`,
-        });
+    if (user.email != userToEdit.email) {
+      const emailValidation = await validateEmail(userToEdit.email);
+      if (
+        emailValidation.isValid &&
+        emailValidation.autocorrect &&
+        !emailModalWasShown
+      ) {
+        Alert.alert(
+          `Можливо, ви мали на увазі ${emailValidation.autocorrect}?`,
+          "",
+          [
+            {
+              text: `Так, змінити на ${emailValidation.autocorrect}`,
+              onPress: () =>
+                setUserToEdit({
+                  ...userToEdit,
+                  email: emailValidation.autocorrect,
+                }),
+            },
+            {
+              text: `Ні, залишити ${userToEdit.email}`,
+              style: "cancel",
+            },
+          ]
+        );
+        setEmailModalWasShown(true);
+        allValidationsPassed = false;
       }
-      allValidationsPassed = false;
+      if (!emailValidation.isValid && !emailValidation.autocorrect) {
+        if (!emailValidation.autocorrect) {
+          setEmailMessage({
+            message: "Введіть правильну поштову адресу",
+          });
+        } else {
+          setEmailMessage({
+            message: `Не правильна поштова адреса. Можливо, ви мали на увазі ${emailValidation.autocorrect}?`,
+          });
+        }
+        allValidationsPassed = false;
+      }
     }
 
-    const birthdateValidation = validateBirthdate(date);
-    if (birthdateValidation.isInFuture) {
-      setDateMessage({
-        message: "Дата народження не може бути в майбутньому",
-      });
-      allValidationsPassed = false;
-    }
-    if (birthdateValidation.isStrangeAge && !dateModalWasShown) {
-      const yearWord =
-        birthdateValidation.isStrangeAge % 10 === 1
-          ? "рік"
-          : [2, 3, 4].includes(birthdateValidation.isStrangeAge % 10)
-          ? "роки"
-          : "років";
-      Alert.alert(
-        `Вам дійсно ${birthdateValidation.isStrangeAge} ${yearWord}?`,
-        "",
-        [
-          {
-            text: `Так, мені ${birthdateValidation.isStrangeAge}`,
-          },
-          {
-            text: "Ні, я хочу змінити свій вік",
-            onPress: () => (allValidationsPassed = false),
-            style: "cancel",
-          },
-        ]
-      );
-      setDateModalWasShown(true);
+    if (user.birthdate != userToEdit.birthdate) {
+      const birthdateValidation = validateBirthdate(userToEdit.birthdate);
+
+      if (birthdateValidation.isInFuture) {
+        setDateMessage({
+          message: "Дата народження не може бути в майбутньому",
+        });
+        allValidationsPassed = false;
+      }
+      if (birthdateValidation.isStrangeAge && !dateModalWasShown) {
+        const yearWord =
+          birthdateValidation.isStrangeAge % 10 === 1
+            ? "рік"
+            : [2, 3, 4].includes(birthdateValidation.isStrangeAge % 10)
+            ? "роки"
+            : "років";
+        Alert.alert(
+          `Вам дійсно ${birthdateValidation.isStrangeAge} ${yearWord}?`,
+          "",
+          [
+            {
+              text: `Так, мені ${birthdateValidation.isStrangeAge}`,
+            },
+            {
+              text: "Ні, я хочу змінити свій вік",
+              onPress: () => (allValidationsPassed = false),
+              style: "cancel",
+            },
+          ]
+        );
+        setDateModalWasShown(true);
+      }
     }
 
     if (allValidationsPassed) {
-      // TODO: edit entry in database (firebase)
-      console.log("edit entry in database (firebase)");
+      await updateUser(userToEdit);
+      setUser(userToEdit);
       navigation.navigate("UserProfile");
     }
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <View style={{ flexDirection: "row", width: "100%" }}>
         <Ionicons
           name="person-circle-outline"
@@ -156,7 +174,7 @@ const EditUserProfile = ({ navigation }) => {
           color={"#C7C7C7"}
         />
         <View style={styles.userNameAndScore}>
-          <Text style={styles.userName}>Mariia</Text>
+          <Text style={styles.userName}>{user.username}</Text>
           <View style={[styles.iconAndText, { gap: 3 }]}>
             <Fire />
             <Text style={styles.score}>100</Text>
@@ -168,8 +186,10 @@ const EditUserProfile = ({ navigation }) => {
           <TextInput
             placeholder="test@gmail.com"
             label="Пошта"
-            value={email}
-            onChangeText={(text) => setEmail(text)}
+            value={userToEdit.email}
+            onChangeText={(text) =>
+              setUserToEdit({ ...userToEdit, email: text })
+            }
             mode="outlined"
             error={emailMessage.message !== ""}
             left={
@@ -194,7 +214,7 @@ const EditUserProfile = ({ navigation }) => {
         <View>
           <TextInput
             mode="outlined"
-            value={date.toLocaleDateString("uk-UA")}
+            value={userToEdit.birthdate.toLocaleDateString("uk-UA")}
             error={dateMessage.message !== ""}
             onPressIn={() => setOpenDatepicker(true)}
             left={
@@ -221,11 +241,11 @@ const EditUserProfile = ({ navigation }) => {
         <DatePicker
           modal
           open={openDatepicker}
-          date={date}
+          date={userToEdit.birthdate}
           mode="date"
           onConfirm={(date) => {
             setOpenDatepicker(false);
-            setDate(date);
+            setUserToEdit({ ...userToEdit, birthdate: date });
           }}
           onCancel={() => {
             setOpenDatepicker(false);
@@ -254,7 +274,7 @@ const EditUserProfile = ({ navigation }) => {
           </RectButton>
         </GestureHandlerRootView>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 

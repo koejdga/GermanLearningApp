@@ -1,19 +1,23 @@
-import React, { useEffect, useState } from "react";
-
-import { View, Text, StyleSheet } from "react-native";
-
+import { useContext, useEffect } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
+import { UserContext } from "../../UserContext";
+import { loggedInUserToUserInfo } from "../../DatabaseQueries";
 
 export const LoadingScreen = () => {
   const nav = useNavigation<NativeStackNavigationProp<any>>();
+  const { setUser } = useContext(UserContext);
 
   function onAuthStateChanged(user: FirebaseAuthTypes.User | null) {
-    setTimeout(() => {
+    setTimeout(async () => {
       if (user) {
-        nav.replace("Main");
+        const userInfo = await loggedInUserToUserInfo(user);
+        setUser(userInfo);
+        nav.replace("MainApp");
       } else {
+        setUser(null);
         nav.replace("Login");
       }
     }, 100);

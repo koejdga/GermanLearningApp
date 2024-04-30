@@ -1,31 +1,35 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useState } from "react";
-import {
-  SafeAreaView,
-  View,
-  Text,
-  StyleSheet,
-  TextInput,
-  Pressable,
-  Keyboard,
-  Alert,
-} from "react-native";
-import { CTAButton } from "../../ui_elements/login_signup/CTAButton";
-import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
-import db from "@react-native-firebase/database";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useContext, useState } from "react";
+import {
+  Alert,
+  Keyboard,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
+import { createUser } from "../../DatabaseQueries";
+import { UserContext } from "../../UserContext";
+import { CTAButton } from "../../ui_elements/login_signup/CTAButton";
+import DatePicker from "react-native-date-picker";
+import { TextInput as PaperTextInput } from "react-native-paper";
+import { Ionicons } from "@expo/vector-icons";
 
 export const Register = () => {
+  const { setUser } = useContext(UserContext);
   const [name, setName] = useState<string | undefined>();
   const [email, setEmail] = useState<string | undefined>();
+  const [birthdate, setBirthdate] = useState<Date | undefined>(new Date());
   const [password, setPassword] = useState<string | undefined>();
 
-  const nav = useNavigation<NativeStackNavigationProp<any>>();
+  const [openDatepicker, setOpenDatepicker] = useState(false);
+  const SECONDARY_INFO_COLOR = "#575757";
 
-  const createProfile = async (response: FirebaseAuthTypes.UserCredential) => {
-    db().ref(`/users/${response.user.uid}`).set({ name });
-    // TODO: maybe add some more default things to profile in the same way
-  };
+  const nav = useNavigation<NativeStackNavigationProp<any>>();
 
   const registerAndGoToMainFlow = async () => {
     if (email && password) {
@@ -36,8 +40,14 @@ export const Register = () => {
         );
 
         if (response.user) {
-          await createProfile(response);
-          nav.replace("Main");
+          const user = await createUser(
+            response.user.uid,
+            name,
+            email,
+            birthdate
+          );
+          setUser(user);
+          nav.replace("MainApp");
         }
       } catch (e) {
         // TODO: Read firebase docs on errors
@@ -68,6 +78,23 @@ export const Register = () => {
               inputMode="email"
               autoCapitalize="none"
             />
+            <PaperTextInput
+              mode="outlined"
+              value={birthdate.toLocaleDateString("uk-UA")}
+              onPressIn={() => setOpenDatepicker(true)}
+              left={
+                <PaperTextInput.Icon
+                  icon={() => (
+                    <Ionicons
+                      name="calendar-outline"
+                      size={30}
+                      color={SECONDARY_INFO_COLOR}
+                    />
+                  )}
+                  onPress={() => setOpenDatepicker(true)}
+                />
+              }
+            />
             <TextInput
               style={styles.loginTextField}
               placeholder="Password"
@@ -83,6 +110,19 @@ export const Register = () => {
           />
           <CTAButton title="Go Back" onPress={nav.goBack} variant="secondary" />
         </View>
+        <DatePicker
+          modal
+          open={openDatepicker}
+          date={birthdate}
+          mode="date"
+          onConfirm={(date) => {
+            setOpenDatepicker(false);
+            setBirthdate(date);
+          }}
+          onCancel={() => {
+            setOpenDatepicker(false);
+          }}
+        />
       </SafeAreaView>
     </Pressable>
   );

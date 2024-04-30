@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
-  View,
+  Pressable,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
-  StyleSheet,
-  ScrollView,
-  Pressable,
+  View,
 } from "react-native";
 import WordCellInList from "../../ui_elements/dictionary/WordCellInList";
 
