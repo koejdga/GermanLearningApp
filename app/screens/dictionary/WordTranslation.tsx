@@ -1,32 +1,32 @@
-import { RouteProp } from "@react-navigation/native";
-import { View, Text, StyleSheet } from "react-native";
-
-interface Props {
-  route: RouteProp<{ params: { word: string } }, "params">;
-}
+import { useContext } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { DictContext } from "../../DictContext";
 
 const WordTranslation = ({ route }) => {
+  const { wholeDict } = useContext(DictContext);
   const { word } = route.params;
+  const translations = wholeDict[word];
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <Text style={styles.word}>{word}</Text>
-      <Text style={styles.transcription}>[eteni]</Text>
-      <Text style={styles.characteristics}>ім., юр.</Text>
+      <Text style={styles.characteristics}>іменник</Text>
 
       <View style={styles.translations}>
-        <Text style={styles.translation}>1) довірена особа</Text>
-        <Text style={styles.sentence}>
-          He has some bottles of beer stashed away where his wife won't dicover
-          them. — У нього є кілька пляшок пива, схованих там, де дружина їх не
-          знайде.
-        </Text>
-        <Text>- distinct attorney</Text>
-        <Text>Syn:</Text>
-        <Text>lawyer</Text>
-        <Text style={styles.translation}>2) адвокат</Text>
+        {translations.map((translation, index) => {
+          return (
+            <View style={{ marginBottom: 10 }} key={"wordInDict" + index}>
+              <Text style={styles.translation}>
+                {index + 1}) {translation.translation}
+              </Text>
+              <Text>Syn:</Text>
+              <Text>{translation.synonyms}</Text>
+            </View>
+          );
+        })}
       </View>
-    </View>
+      <View style={{ height: 15 }}></View>
+    </ScrollView>
   );
 };
 
@@ -38,17 +38,17 @@ const styles = StyleSheet.create({
   },
   word: {
     fontSize: 18,
-    marginTop: 10,
+    marginVertical: 10,
     color: "#1860e0",
   },
   transcription: {
-    marginVertical: 10,
+    marginBottom: 10,
     color: "#742122",
   },
   characteristics: {
     color: "#448a3b",
     fontStyle: "italic",
-    marginBottom: 3,
+    marginBottom: 8,
   },
   translations: {
     paddingLeft: 15,
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
   },
   translation: {
     fontSize: 15,
+    marginBottom: 5,
   },
   sentence: {
     color: "gray",

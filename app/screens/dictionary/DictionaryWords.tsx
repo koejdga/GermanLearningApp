@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Pressable,
   ScrollView,
@@ -8,32 +8,30 @@ import {
   View,
 } from "react-native";
 import WordCellInList from "../../ui_elements/dictionary/WordCellInList";
+import { DictContext } from "../../DictContext";
 
 function DictionaryWords({ navigation }) {
-  const generateNumbers = (start, end) => {
-    const numbers = [];
-    for (let i = start; i <= end; i++) {
-      numbers.push({ word: "vend " + i, translations: "translations" });
-    }
-    return numbers;
-  };
-
-  let arr = generateNumbers(0, 90);
+  const { wholeDict } = useContext(DictContext);
+  const [recentlySearchedWords, setRecentlySearchedWords] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [currentArr, setCurrentArr] = useState(arr);
+  const [currentDisplayedWords, setCurrentDisplayedWords] = useState({});
 
   const filterWordsBySearch = (search: string) => {
     setSearchQuery(search);
     if (search === "") {
-      setCurrentArr(arr);
+      setCurrentDisplayedWords(wholeDict);
       return;
     }
 
-    const filteredWords = arr.filter((obj) => {
-      return obj.word.startsWith(search.toLowerCase());
-    });
-    setCurrentArr(filteredWords);
+    const filteredWords = Object.keys(wholeDict).reduce((acc, key) => {
+      if (key.startsWith(search.toLowerCase())) {
+        acc[key] = wholeDict[key];
+      }
+      return acc;
+    }, {});
+
+    setCurrentDisplayedWords(filteredWords);
   };
 
   return (
@@ -58,16 +56,24 @@ function DictionaryWords({ navigation }) {
           Останні запити
         </Text>
 
-        {currentArr.map((obj, index) => (
-          <Pressable
-            key={obj.word}
-            onPress={() =>
-              navigation.navigate("WordTranslation", { word: obj.word })
-            }
-          >
-            <WordCellInList word={obj.word} translations={obj.translations} />
-          </Pressable>
-        ))}
+        {Object.entries(currentDisplayedWords).map(
+          ([word, translations], index) => {
+            return (
+              <Pressable
+                key={word}
+                onPress={() => {
+                  // add to recently searched words
+                  navigation.navigate("WordTranslation", { word: word });
+                }}
+              >
+                <WordCellInList
+                  word={word}
+                  translations={translations[0].translation}
+                />
+              </Pressable>
+            );
+          }
+        )}
       </ScrollView>
     </View>
   );

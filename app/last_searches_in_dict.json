@@ -1,0 +1,18 @@
+[
+  {
+    "key": "Australien",
+    "value": [
+      { "translation": "Австра́лія", "synonyms": "Australien", "id": 0 },
+      {
+        "translation": "австралі́єць",
+        "synonyms": "Aborigine, Ureinwohner von Australien; Australier (generell)",
+        "id": 1
+      },
+      {
+        "translation": "австралі́йка",
+        "synonyms": "Aborigine, Ureinwohnerin von Australien; Australierin (generell)",
+        "id": 2
+      }
+    ]
+  }
+]

@@ -1,23 +1,17 @@
 import { Ionicons } from "@expo/vector-icons";
-import auth, { FirebaseAuthTypes } from "@react-native-firebase/auth";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
-import {
-  NativeStackNavigationProp,
-  createNativeStackNavigator,
-} from "@react-navigation/native-stack";
-import { Alert, StyleSheet, TouchableOpacity } from "react-native";
-import { UserContext, UserProvider } from "./app/UserContext";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { StyleSheet, TouchableOpacity } from "react-native";
+import { UserProvider } from "./app/UserContext";
 import Achievements from "./app/screens/achievements/Achievements";
-import Dictionary from "./app/screens/dictionary/Dictionary";
+import DictionaryStack from "./app/screens/dictionary/DictionaryStack";
 import HomeStack from "./app/screens/home/HomeStack";
 import { LoadingScreen } from "./app/screens/login_signup/LoadingScreen";
 import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
-import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
-import { loggedInUserToUserInfo } from "./app/DatabaseQueries";
-import { useContext, useEffect } from "react";
 import { handleLogout } from "./app/screens/user_profile/UserProfile";
+import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
 
 enum Screen {
   ArticleGame,
@@ -81,7 +75,7 @@ function MainApp() {
       />
       <Tab.Screen
         name={TabNames.DICTIONARY}
-        component={Dictionary}
+        component={DictionaryStack}
         options={{ headerShown: false }}
       />
       <Tab.Screen
