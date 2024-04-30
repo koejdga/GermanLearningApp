@@ -11,7 +11,7 @@ export const createUser = async (
     await firestore()
       .collection("users")
       .doc(uid)
-      .set({ username, email, birthdate });
+      .set({ username, email, birthdate, article_games_played: 0 });
   } catch (e) {
     console.log("ERROR: unable to add new user to database");
     console.log(e);
@@ -49,6 +49,7 @@ export const dbUserToUserInfo = (dbUser) => {
     username: dbUser.data().username,
     email: dbUser.data().email,
     birthdate: new Date(dbUser.data().birthdate.seconds * 1000),
+    article_games_played: dbUser.data().article_games_played,
   };
 };
 
@@ -67,4 +68,24 @@ export const loggedInUserToUserInfo = async (loggedInUser: {
     return null;
   }
   return dbUserToUserInfo(res.docs[0]);
+};
+
+export const getWordsForArticleGame = async (offset: number) => {
+  const lastDocument = await firestore()
+    .collection("article_game_nouns")
+    .doc(`${offset * 3}`)
+    .get();
+
+  if (lastDocument.exists) {
+    const nounsForGame = await firestore()
+      .collection("article_game_nouns")
+      .startAt(lastDocument)
+      .limit(3)
+      .get();
+
+    const reformatted = nounsForGame.docs.map((noun) => noun.data());
+    return reformatted;
+  }
+
+  return null;
 };

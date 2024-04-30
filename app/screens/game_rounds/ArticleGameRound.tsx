@@ -3,7 +3,7 @@ import {
   RobotoCondensed_300Light_Italic,
   useFonts,
 } from "@expo-google-fonts/roboto-condensed";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   ImageBackground,
   Pressable,
@@ -17,6 +17,9 @@ import { darkColor, whiteColor } from "../../config/Colors";
 import GameHeader from "../../ui_elements/game/GameHeader";
 import MyButton from "../../ui_elements/article_game/MyButton";
 import GameRound from "../game_related/GameRound";
+import { UserContext } from "../../UserContext";
+import { getWordsForArticleGame } from "../../DatabaseQueries";
+import { DictContext } from "../../DictContext";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 
@@ -114,23 +117,51 @@ const styles = StyleSheet.create({
 
 const ArticleGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
-
+  const { user } = useContext(UserContext);
+  const { wholeDict } = useContext(DictContext);
   const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
-
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [boxText, setBoxText] = useState(round.currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
   const [score, setScore] = useState(0);
-
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
+  const [wordInfo, setWordInfo] = useState({});
 
   useEffect(() => {
-    setShowTranslation(false);
-    setButtonsDisabled(false);
-    setBoxText(round.currentExercise.word);
-    setBoxColor(defaultColor);
-  }, [round.currentExercise]);
+    let article = null;
+    switch (wholeDict[round.currentExercise.word].part_of_speech) {
+      case "m":
+        article = "der";
+        break;
+      case "f":
+        article = "die";
+        break;
+      case "n":
+        article = "das";
+        break;
+
+      default:
+        console.log(
+          `ERROR: unable to recognise article, word: ${
+            round.currentExercise.word
+          }, part_of_speech: ${
+            wholeDict[round.currentExercise.word].part_of_speech
+          }`
+        );
+        break;
+    }
+    setWordInfo({
+      article,
+      translation:
+        wholeDict[round.currentExercise.word].translations[0].translation,
+    });
+  }, []);
+
+  useEffect(() => {
+    console.log("wordInfo");
+    console.log(wordInfo);
+  }, [wordInfo]);
 
   useEffect(() => {
     if (answerIsCorrect === false) {
@@ -148,7 +179,7 @@ const ArticleGameRound = ({ route, navigation }) => {
   }
 
   const pressButton = (article: string) => {
-    if (article == round.currentExercise.article) {
+    if (article.toLowerCase() == wordInfo["article"]) {
       setAnswerIsCorrect(true);
       setBoxColor(correctGreenForBox);
       setScore(score + 100);
@@ -157,9 +188,7 @@ const ArticleGameRound = ({ route, navigation }) => {
       setBoxColor(wrongRedForBox);
     }
     setButtonsDisabled(true);
-    setBoxText(
-      round.currentExercise.article + " " + round.currentExercise.word
-    );
+    setBoxText(wordInfo["article"] + " " + round.currentExercise.word);
   };
 
   return (
@@ -197,11 +226,9 @@ const ArticleGameRound = ({ route, navigation }) => {
                     {round.currentExercise.plural}
                   </Text>
                 </View>
-                <Text style={styles.partOfSpeech}>
-                  {round.currentExercise.partOfSpeech}
-                </Text>
+                <Text style={styles.partOfSpeech}>ім.</Text>
                 <Text style={[styles.robotoRegular, styles.translation]}>
-                  • {round.currentExercise.translation}
+                  • {wordInfo["translation"]}
                 </Text>
               </>
             </FlipCard>

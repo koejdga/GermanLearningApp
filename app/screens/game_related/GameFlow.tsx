@@ -5,6 +5,7 @@ import WriteTranslationGameRound from "../game_rounds/WriteTranslationGameRound"
 import ArticleGameRound from "../game_rounds/ArticleGameRound";
 import EndingsGameRound from "../game_rounds/EndingsGameRound";
 import { getDataForGame } from "../../Utils";
+import { useEffect, useState } from "react";
 
 const Stack = createNativeStackNavigator();
 const gameRoundsMap = {
@@ -15,10 +16,27 @@ const gameRoundsMap = {
 };
 
 const GameFlow = ({ route }) => {
+  const [dataForGame, setDataForGame] = useState(null);
   const gameName = route.params?.gameName;
   const gameRoundName = gameName + "Round";
   const gameRound = gameRoundsMap[gameRoundName];
-  const dataForGame = getDataForGame(gameName);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getDataForGame(gameName);
+        setDataForGame(data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, [gameName]);
+
+  if (!dataForGame) {
+    return null;
+  }
 
   return (
     <Stack.Navigator

@@ -31,6 +31,7 @@ function DictionaryWords({ navigation }) {
     loadData();
   }, []);
 
+  // saveRecentWordsOnExit
   useEffect(
     function saveRecentWordsOnExit() {
       const subscription = AppState.addEventListener(
@@ -64,6 +65,12 @@ function DictionaryWords({ navigation }) {
     [recentlySearchedWords]
   );
 
+  useEffect(() => {
+    if (searchQuery === "") {
+      setCurrentDisplayedWords(recentlySearchedWords);
+    }
+  }, [recentlySearchedWords]);
+
   const filterWordsBySearch = (search: string) => {
     setSearchQuery(search);
     if (search === "") {
@@ -72,7 +79,7 @@ function DictionaryWords({ navigation }) {
     }
 
     const filteredWords = Object.keys(wholeDict).reduce((acc, key) => {
-      if (key.startsWith(search.toLowerCase())) {
+      if (key.toLowerCase().startsWith(search.toLowerCase())) {
         acc[key] = wholeDict[key];
       }
       return acc;
@@ -111,7 +118,7 @@ function DictionaryWords({ navigation }) {
         )}
         {currentDisplayedWords.map(({ key, value }) => {
           const word = key;
-          const translations = value;
+          const translations = value.translations;
           return (
             <Pressable
               key={word}
@@ -121,7 +128,7 @@ function DictionaryWords({ navigation }) {
                     key: word,
                     value: wholeDict[word],
                   },
-                  ...recentlySearchedWords,
+                  ...recentlySearchedWords.filter((w) => w.key !== word),
                 ]);
                 navigation.navigate("WordTranslation", { word: word });
               }}

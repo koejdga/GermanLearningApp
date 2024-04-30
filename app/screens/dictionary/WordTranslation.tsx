@@ -5,12 +5,34 @@ import { DictContext } from "../../DictContext";
 const WordTranslation = ({ route }) => {
   const { wholeDict } = useContext(DictContext);
   const { word } = route.params;
-  const translations = wholeDict[word];
+  const translations = wholeDict[word]["translations"];
+
+  const getCharacteristics = () => {
+    const partOfSpeech = wholeDict[word]["part_of_speech"];
+    switch (partOfSpeech) {
+      case "m":
+        return "іменник, чол.";
+      case "f":
+        return "іменник, жін.";
+      case "n":
+        return "іменник, сер.";
+      case "v":
+        return "дієслово";
+      case "adj":
+        return "прикметник";
+      case "pron":
+        return "займенник";
+      default:
+        return null;
+    }
+  };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.word}>{word}</Text>
-      <Text style={styles.characteristics}>іменник</Text>
+      {getCharacteristics() && (
+        <Text style={styles.characteristics}>{getCharacteristics()}</Text>
+      )}
 
       <View style={styles.translations}>
         {translations.map((translation, index) => {

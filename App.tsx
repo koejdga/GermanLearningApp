@@ -12,6 +12,7 @@ import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
 import { handleLogout } from "./app/screens/user_profile/UserProfile";
 import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
+import { DictProvider } from "./app/DictContext";
 
 enum Screen {
   ArticleGame,
@@ -31,99 +32,80 @@ function MainApp() {
   }
 
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          switch (route.name) {
-            case TabNames.HOME:
-              return focused ? (
-                <Ionicons name="home" size={size} color={color} />
-              ) : (
-                <Ionicons name="home-outline" size={size} color={color} />
-              );
-            case TabNames.DICTIONARY:
-              return focused ? (
-                <Ionicons name="bookmarks" size={size} color={color} />
-              ) : (
-                <Ionicons name="bookmarks-outline" size={size} color={color} />
-              );
-            case TabNames.ACHIEVEMENTS:
-              return focused ? (
-                <Ionicons name="trophy" size={size} color={color} />
-              ) : (
-                <Ionicons name="trophy-outline" size={size} color={color} />
-              );
-            case TabNames.ACCOUNT:
-              return focused ? (
-                <Ionicons name="person" size={size} color={color} />
-              ) : (
-                <Ionicons name="person-outline" size={size} color={color} />
-              );
-          }
-        },
-        tabBarActiveTintColor: "black",
-        tabBarInactiveTintColor: "black",
-        tabBarShowLabel: false,
-      })}
-    >
-      <Tab.Screen
-        name={TabNames.HOME}
-        component={HomeStack}
-        options={{
-          headerShown: false,
-        }}
-      />
-      <Tab.Screen
-        name={TabNames.DICTIONARY}
-        component={DictionaryStack}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
-        name={TabNames.ACHIEVEMENTS}
-        component={Achievements}
-        options={{ headerTitle: "Досягнення" }}
-      />
-      <Tab.Screen
-        name={TabNames.ACCOUNT}
-        component={UserProfileStack}
-        options={{
-          headerTitle: "Акаунт",
-          headerRight: () => (
-            <TouchableOpacity
-              onPress={handleLogout}
-              style={{ backgroundColor: "#fff", padding: 10 }}
-            >
-              <Ionicons name="enter-outline" size={24} color="#000" />
-            </TouchableOpacity>
-          ),
-        }}
-        // options={{
-        //   headerTitle: "Акаунт",
-        //   headerRight: () => (
-        //     <TouchableOpacity
-        //       onPress={() =>
-        //         Alert.alert("Ви дійсно хочете вийти?", "", [
-        //           {
-        //             text: "Так, вийти з акаунта",
-        //             onPress: async () => {
-        //               console.log("signing out");
-        //               await auth().signOut();
-        //             },
-        //           },
-        //           {
-        //             text: "Ні, залишитиcя в акаунті",
-        //             style: "cancel",
-        //           },
-        //         ])
-        //       }
-        //       style={{ backgroundColor: "#fff", padding: 10 }}
-        //     >
-        //       <Ionicons name="enter-outline" size={24} color="#000" />
-        //     </TouchableOpacity>
-        //   ),
-        // }}
-      />
-    </Tab.Navigator>
+    <DictProvider>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            switch (route.name) {
+              case TabNames.HOME:
+                return focused ? (
+                  <Ionicons name="home" size={size} color={color} />
+                ) : (
+                  <Ionicons name="home-outline" size={size} color={color} />
+                );
+              case TabNames.DICTIONARY:
+                return focused ? (
+                  <Ionicons name="bookmarks" size={size} color={color} />
+                ) : (
+                  <Ionicons
+                    name="bookmarks-outline"
+                    size={size}
+                    color={color}
+                  />
+                );
+              case TabNames.ACHIEVEMENTS:
+                return focused ? (
+                  <Ionicons name="trophy" size={size} color={color} />
+                ) : (
+                  <Ionicons name="trophy-outline" size={size} color={color} />
+                );
+              case TabNames.ACCOUNT:
+                return focused ? (
+                  <Ionicons name="person" size={size} color={color} />
+                ) : (
+                  <Ionicons name="person-outline" size={size} color={color} />
+                );
+            }
+          },
+          tabBarActiveTintColor: "black",
+          tabBarInactiveTintColor: "black",
+          tabBarShowLabel: false,
+        })}
+      >
+        <Tab.Screen
+          name={TabNames.HOME}
+          component={HomeStack}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Tab.Screen
+          name={TabNames.DICTIONARY}
+          component={DictionaryStack}
+          options={{ headerShown: false }}
+        />
+        <Tab.Screen
+          name={TabNames.ACHIEVEMENTS}
+          component={Achievements}
+          options={{ headerTitle: "Досягнення" }}
+        />
+        <Tab.Screen
+          name={TabNames.ACCOUNT}
+          component={UserProfileStack}
+          options={{
+            headerTitle: "Акаунт",
+            headerRight: () => (
+              <TouchableOpacity
+                onPress={handleLogout}
+                style={{ backgroundColor: "#fff", padding: 10 }}
+              >
+                <Ionicons name="enter-outline" size={24} color="#000" />
+              </TouchableOpacity>
+            ),
+          }}
+        />
+      </Tab.Navigator>
+    </DictProvider>
   );
 }
 

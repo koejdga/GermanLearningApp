@@ -1,4 +1,5 @@
 import { SharedValue } from "react-native-reanimated";
+import { getWordsForArticleGame } from "./DatabaseQueries";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
@@ -16,7 +17,7 @@ export enum Game {
   ENDINGS = "EndingsGame",
 }
 
-export const getDataForGame = (gameName: string) => {
+export const getDataForGame = async (gameName: string) => {
   // mocking data for now
   const exercises = [
     {
@@ -104,7 +105,7 @@ export const getDataForGame = (gameName: string) => {
 
   switch (gameName) {
     case Game.ARTICLE:
-      return initialWords;
+      return await getWordsForArticleGame(0);
     case Game.DRAP_DROP:
       return exercises;
     case Game.WRITE_TRANSLATION:

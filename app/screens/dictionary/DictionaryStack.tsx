@@ -11,36 +11,34 @@ const Stack = createNativeStackNavigator();
 
 const DictionaryStack = () => {
   return (
-    <DictProvider>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="DictionaryWords"
-          component={DictionaryWords}
-          options={{
-            headerStyle: {
-              backgroundColor: "lightblue",
-            },
-            headerShadowVisible: false,
-          }}
-        />
-        <Stack.Screen
-          name="WordTranslation"
-          component={WordTranslation}
-          options={{
-            headerTitle: "",
-            headerRight: () => (
-              <Button
-                onPress={() => alert("This is a button!")}
-                title="Форми слова"
-              />
-            ),
-            headerStyle: {
-              backgroundColor: "lightblue",
-            },
-          }}
-        />
-      </Stack.Navigator>
-    </DictProvider>
+    <Stack.Navigator>
+      <Stack.Screen
+        name="DictionaryWords"
+        component={DictionaryWords}
+        options={{
+          headerStyle: {
+            backgroundColor: "lightblue",
+          },
+          headerShadowVisible: false,
+        }}
+      />
+      <Stack.Screen
+        name="WordTranslation"
+        component={WordTranslation}
+        options={{
+          headerTitle: "",
+          headerRight: () => (
+            <Button
+              onPress={() => alert("This is a button!")}
+              title="Форми слова"
+            />
+          ),
+          headerStyle: {
+            backgroundColor: "lightblue",
+          },
+        }}
+      />
+    </Stack.Navigator>
   );
 };
 
