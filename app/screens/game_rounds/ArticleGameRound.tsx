@@ -13,13 +13,12 @@ import {
   View,
 } from "react-native";
 import FlipCard from "react-native-flip-card";
-import { darkColor, whiteColor } from "../../config/Colors";
-import GameHeader from "../../ui_elements/game/GameHeader";
-import MyButton from "../../ui_elements/article_game/MyButton";
-import GameRound from "../game_related/GameRound";
-import { UserContext } from "../../UserContext";
-import { getWordsForArticleGame } from "../../DatabaseQueries";
 import { DictContext } from "../../DictContext";
+import { UserContext } from "../../UserContext";
+import { darkColor, whiteColor } from "../../config/Colors";
+import MyButton from "../../ui_elements/article_game/MyButton";
+import GameHeader from "../../ui_elements/game/GameHeader";
+import GameRound from "../game_related/GameRound";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 
@@ -124,9 +123,9 @@ const ArticleGameRound = ({ route, navigation }) => {
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [boxText, setBoxText] = useState(round.currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
-  const [score, setScore] = useState(0);
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
   const [wordInfo, setWordInfo] = useState({});
+  const [score, setScore] = useState(round.score);
 
   useEffect(() => {
     let article = null;
@@ -159,13 +158,16 @@ const ArticleGameRound = ({ route, navigation }) => {
   }, []);
 
   useEffect(() => {
-    console.log("wordInfo");
-    console.log(wordInfo);
-  }, [wordInfo]);
-
-  useEffect(() => {
     if (answerIsCorrect === false) {
       setAmountOfHearts(amountOfHearts - 1);
+    }
+    if (answerIsCorrect !== null) {
+      setBoxColor(answerIsCorrect ? correctGreenForBox : wrongRedForBox);
+      setButtonsDisabled(true);
+      setBoxText(wordInfo["article"] + " " + round.currentExercise.word);
+    }
+    if (answerIsCorrect) {
+      setScore(score + 10);
     }
   }, [answerIsCorrect]);
 
@@ -178,17 +180,10 @@ const ArticleGameRound = ({ route, navigation }) => {
     return null;
   }
 
-  const pressButton = (article: string) => {
-    if (article.toLowerCase() == wordInfo["article"]) {
-      setAnswerIsCorrect(true);
-      setBoxColor(correctGreenForBox);
-      setScore(score + 100);
-    } else {
-      setAnswerIsCorrect(false);
-      setBoxColor(wrongRedForBox);
-    }
-    setButtonsDisabled(true);
-    setBoxText(wordInfo["article"] + " " + round.currentExercise.word);
+  const checkUserAnswer = (article: string) => {
+    setAnswerIsCorrect(
+      article.toLowerCase() === wordInfo["article"].toLowerCase()
+    );
   };
 
   return (
@@ -198,7 +193,8 @@ const ArticleGameRound = ({ route, navigation }) => {
         <Pressable
           style={styles.mainArea}
           onPress={() => {
-            if (answerIsCorrect != null) round.loadNextRound(answerIsCorrect);
+            if (answerIsCorrect != null)
+              round.loadNextRound(answerIsCorrect, score);
           }}
         >
           <View style={{ marginTop: "30%", height: 260 }}>
@@ -206,13 +202,7 @@ const ArticleGameRound = ({ route, navigation }) => {
               style={[styles.boxWithWord, { backgroundColor: boxColor }]}
               flipHorizontal={true}
               flipVertical={false}
-              onFlipEnd={() => {
-                if (showTranslation == false) {
-                  setShowTranslation(true);
-                } else {
-                  setShowTranslation(false);
-                }
-              }}
+              onFlipEnd={() => setShowTranslation(!showTranslation)}
             >
               {/* Face Side */}
               <Text style={styles.word}>{boxText}</Text>
@@ -251,7 +241,7 @@ const ArticleGameRound = ({ route, navigation }) => {
               color={whiteColor}
               text="Der"
               backgroundColor="#7D7ABC"
-              onPress={() => pressButton("Der")}
+              onPress={() => checkUserAnswer("Der")}
               disabled={buttonsDisabled}
               disabledBgColor="#ADACC7"
             />
@@ -259,7 +249,7 @@ const ArticleGameRound = ({ route, navigation }) => {
               color={whiteColor}
               text="Die"
               backgroundColor="#EA526F"
-              onPress={() => pressButton("Die")}
+              onPress={() => checkUserAnswer("Die")}
               disabled={buttonsDisabled}
               disabledBgColor="#E792A2"
             />
@@ -267,7 +257,7 @@ const ArticleGameRound = ({ route, navigation }) => {
               color={darkColor}
               text="Das"
               backgroundColor="#F7D002"
-              onPress={() => pressButton("Das")}
+              onPress={() => checkUserAnswer("Das")}
               disabled={buttonsDisabled}
               disabledBgColor="#F3E38F"
             />

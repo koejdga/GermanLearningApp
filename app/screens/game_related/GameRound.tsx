@@ -5,14 +5,12 @@ const GameRound = ({ route, navigation }) => {
   const exercises = route.params?.exercises;
   const currentExercise = exercises[currentRound];
   const amountOfHearts = route.params?.amountOfHearts;
+  const score = route.params?.score;
 
-  const loadNextRound = (answerIsCorrect: boolean) => {
-    console.log("amount of hearts: ", amountOfHearts);
+  const loadNextRound = (answerIsCorrect: boolean, score: number) => {
     const newAmountOfHearts = !answerIsCorrect
       ? amountOfHearts - 1
       : amountOfHearts;
-
-    console.log("newAmountOfHearts: ", newAmountOfHearts);
 
     if (currentRound < amountOfRounds - 1 && newAmountOfHearts > 0) {
       navigation.push(gameName + "Round", {
@@ -21,9 +19,10 @@ const GameRound = ({ route, navigation }) => {
         amountOfRounds,
         exercises,
         amountOfHearts: newAmountOfHearts,
+        score,
       });
     } else {
-      navigation.push("GameEnd");
+      navigation.push("GameEnd", { score, maxScore: exercises.length * 10 });
     }
   };
 
@@ -35,6 +34,7 @@ const GameRound = ({ route, navigation }) => {
     currentExercise,
     loadNextRound,
     amountOfHearts,
+    score,
   };
 };
 
