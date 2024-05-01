@@ -1,5 +1,7 @@
 import { SharedValue } from "react-native-reanimated";
 import { getWordsForArticleGame } from "./DatabaseQueries";
+import firestore from "@react-native-firebase/firestore";
+import { UserInfo } from "./UserContext";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
@@ -17,7 +19,122 @@ export enum Game {
   ENDINGS = "EndingsGame",
 }
 
-export const getDataForGame = async (gameName: string) => {
+// try {
+//   await firestore()
+//     .collection("users")
+//     .doc(user.uid)
+//     .collection("learnt_words_article_game")
+//     .add({ id: 0, times_met: 1 });
+// } catch (e) {
+//   console.log("ERROR: unable to add new user to database");
+//   console.log(e);
+//   return;
+// }
+
+// timesMet is 1, 2 or 3
+// limit is positive number
+const getLearnedWords = async (
+  uid: string,
+  timesMet: number,
+  limit: number
+) => {
+  try {
+    const queryRespose = await firestore()
+      .collection("users")
+      .doc(uid)
+      .collection("learnt_words_article_game")
+      .where("times_met", "==", timesMet)
+      .limit(limit)
+      .get();
+
+    return queryRespose.docs;
+  } catch (e) {
+    console.log("ERROR");
+    console.log(e);
+  }
+};
+
+const formLearnedWordsSet = async (uid: string) => {
+  try {
+    const oneTimeMet = await getLearnedWords(uid, 1, 4);
+    const twoTimesMet = await getLearnedWords(uid, 2, 5 - oneTimeMet.length);
+    const moreTimesMet =
+      5 > oneTimeMet.length + twoTimesMet.length
+        ? await getLearnedWords(
+            uid,
+            3,
+            5 - oneTimeMet.length - twoTimesMet.length
+          )
+        : [];
+
+    const totalWordset = oneTimeMet
+      .concat(twoTimesMet, moreTimesMet)
+      .map((obj) => obj.data());
+
+    const ids = totalWordset.map((obj) => obj.id);
+    const wordsSnapshot = await firestore()
+      .collection("article_game_nouns")
+      .where("id", "in", ids)
+      .get();
+
+    const idToDocumentMap = {};
+    wordsSnapshot.docs.forEach((doc) => {
+      idToDocumentMap[doc.data().id] = doc.data().word;
+    });
+
+    return totalWordset.map((obj) => ({
+      ...obj,
+      word: idToDocumentMap[obj.id],
+    }));
+  } catch (e) {
+    console.log("ERROR");
+    console.log(e);
+  }
+};
+
+const getNewWordForArticleGame = async (
+  article_game_offset: number,
+  totalWordsInGame: number,
+  learnedWordsLength: number
+) => {
+  try {
+    const queryResponse = await firestore()
+      .collection("article_game_nouns")
+      .orderBy("id")
+      .startAt(article_game_offset)
+      .limit(totalWordsInGame - learnedWordsLength)
+      .get();
+
+    return queryResponse.docs.map((x) => {
+      const data = x.data();
+      return { times_met: 0, ...data };
+    });
+  } catch (e) {
+    console.log("ERROR");
+    console.log(e);
+  }
+};
+
+export const formWordsetForArticleGame = async (user: UserInfo) => {
+  const totalWordsInGame = 10;
+  const learnedWords = await formLearnedWordsSet(user.uid);
+  const newWords = await getNewWordForArticleGame(
+    user.article_game_offset,
+    totalWordsInGame,
+    learnedWords.length
+  );
+  const full = [...learnedWords, ...newWords].map((obj) => ({
+    ...obj,
+    wrongAnsweredTimes: 0,
+    answeredCorrectly: false,
+  }));
+  // for (let i = 0; i < shuffled.length; i++) {
+  //   console.log(shuffled[i]);
+  // }
+  return shuffle(full);
+};
+
+export const getDataForGame = async (gameName: string, user: UserInfo) => {
   // mocking data for now
   const exercises = [
     {
@@ -62,29 +179,6 @@ export const getDataForGame = async (gameName: string) => {
       ],
     },
   ];
-  const initialWords = [
-    {
-      word: "Radio",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Haus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-    {
-      word: "Maus",
-      article: "Das",
-      plural: "die Radios",
-      partOfSpeech: "ім.",
-      translation: "радіо",
-    },
-  ];
   const endings = [
     {
       sentense: [
@@ -105,7 +199,7 @@ export const getDataForGame = async (gameName: string) => {
 
   switch (gameName) {
     case Game.ARTICLE:
-      return await getWordsForArticleGame(0);
+      return await formWordsetForArticleGame(user);
     case Game.DRAP_DROP:
       return exercises;
     case Game.WRITE_TRANSLATION:

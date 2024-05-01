@@ -1,19 +1,20 @@
 import { Roboto_500Medium, useFonts } from "@expo-google-fonts/roboto";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import {
   Image,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
 import { generalStyles } from "../../config/General";
 import AchievementHomePage from "../../ui_elements/home_page/Achievement";
 import Task from "../../ui_elements/home_page/Task";
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useContext, useEffect } from "react";
+import { formWordsetForArticleGame } from "../../Utils";
 import { UserContext } from "../../UserContext";
 
 const HomePage = () => {

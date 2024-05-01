@@ -17,7 +17,7 @@ import {
 } from "react-native-gesture-handler";
 import { validateBirthdate, validateEmail } from "../../Utils";
 import { UserContext } from "../../UserContext";
-import { getUser, updateUser } from "../../DatabaseQueries";
+import { getArticleGameOffset, updateUser } from "../../DatabaseQueries";
 
 // TODO: add this link to literature materials
 // https://www.abstractapi.com/guides/react-native-email-validation

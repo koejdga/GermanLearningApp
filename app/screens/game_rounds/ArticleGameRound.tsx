@@ -116,7 +116,6 @@ const styles = StyleSheet.create({
 
 const ArticleGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
-  const { user } = useContext(UserContext);
   const { wholeDict } = useContext(DictContext);
   const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
   const [showTranslation, setShowTranslation] = useState(false);
@@ -127,7 +126,7 @@ const ArticleGameRound = ({ route, navigation }) => {
   const [wordInfo, setWordInfo] = useState({});
   const [score, setScore] = useState(round.score);
 
-  useEffect(() => {
+  useEffect(function addArticles() {
     let article = null;
     switch (wholeDict[round.currentExercise.word].part_of_speech) {
       case "m":
@@ -212,9 +211,9 @@ const ArticleGameRound = ({ route, navigation }) => {
                   <Text style={[styles.word, styles.wordToTranslate]}>
                     {boxText}
                   </Text>
-                  <Text style={styles.robotoRegular}>
+                  {/* <Text style={styles.robotoRegular}>
                     {round.currentExercise.plural}
-                  </Text>
+                  </Text> */}
                 </View>
                 <Text style={styles.partOfSpeech}>ім.</Text>
                 <Text style={[styles.robotoRegular, styles.translation]}>

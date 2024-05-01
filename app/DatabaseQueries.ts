@@ -50,6 +50,7 @@ export const dbUserToUserInfo = (dbUser) => {
     email: dbUser.data().email,
     birthdate: new Date(dbUser.data().birthdate.seconds * 1000),
     article_games_played: dbUser.data().article_games_played,
+    article_game_offset: dbUser.data().article_game_offset,
   };
 };
 
@@ -71,20 +72,23 @@ export const loggedInUserToUserInfo = async (loggedInUser: {
 };
 
 export const getWordsForArticleGame = async (offset: number) => {
-  const lastDocument = await firestore()
-    .collection("article_game_nouns")
-    .doc(`${offset * 3}`)
-    .get();
-
-  if (lastDocument.exists) {
+  const amountOfNewWords = 5;
+  try {
     const nounsForGame = await firestore()
       .collection("article_game_nouns")
-      .startAt(lastDocument)
-      .limit(3)
+      .orderBy("id")
+      .startAt(offset * amountOfNewWords)
+      .limit(amountOfNewWords)
       .get();
 
+    console.log(nounsForGame);
+
     const reformatted = nounsForGame.docs.map((noun) => noun.data());
+    console.log(reformatted);
     return reformatted;
+  } catch (e) {
+    console.log("ERROR: error in getWordsForArticleGame");
+    console.log(e);
   }
 
   return null;

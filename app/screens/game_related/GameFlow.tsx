@@ -5,7 +5,8 @@ import WriteTranslationGameRound from "../game_rounds/WriteTranslationGameRound"
 import ArticleGameRound from "../game_rounds/ArticleGameRound";
 import EndingsGameRound from "../game_rounds/EndingsGameRound";
 import { getDataForGame } from "../../Utils";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../UserContext";
 
 const Stack = createNativeStackNavigator();
 const gameRoundsMap = {
@@ -21,10 +22,12 @@ const GameFlow = ({ route }) => {
   const gameRoundName = gameName + "Round";
   const gameRound = gameRoundsMap[gameRoundName];
 
+  const { user } = useContext(UserContext);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getDataForGame(gameName);
+        const data = await getDataForGame(gameName, user);
         setDataForGame(data);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -50,9 +53,8 @@ const GameFlow = ({ route }) => {
         name={gameRoundName}
         component={gameRound}
         initialParams={{
-          currentRound: 0,
-          amountOfRounds: dataForGame.length,
           exercises: dataForGame,
+          playedExercises: [],
           gameName,
           amountOfHearts: 3,
           score: 0,

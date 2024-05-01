@@ -1,9 +1,8 @@
 const GameRound = ({ route, navigation }) => {
   const gameName = route.params?.gameName;
-  const currentRound = route.params?.currentRound;
-  const amountOfRounds = route.params?.amountOfRounds;
   const exercises = route.params?.exercises;
-  const currentExercise = exercises[currentRound];
+  const playedExercises = route.params?.playedExercises;
+  const currentExercise = exercises[0];
   const amountOfHearts = route.params?.amountOfHearts;
   const score = route.params?.score;
 
@@ -12,24 +11,33 @@ const GameRound = ({ route, navigation }) => {
       ? amountOfHearts - 1
       : amountOfHearts;
 
-    if (currentRound < amountOfRounds - 1 && newAmountOfHearts > 0) {
+    const newExercises = exercises.slice(1, exercises.length);
+    if (answerIsCorrect) {
+      currentExercise.answeredCorrectly = true;
+      playedExercises.push(currentExercise);
+    } else {
+      currentExercise.wrongAnsweredTimes += 1;
+      newExercises.push(currentExercise);
+    }
+
+    if (newExercises.length > 0 && newAmountOfHearts > 0) {
       navigation.push(gameName + "Round", {
         gameName,
-        currentRound: currentRound + 1,
-        amountOfRounds,
-        exercises,
+        exercises: newExercises,
+        playedExercises,
         amountOfHearts: newAmountOfHearts,
         score,
       });
     } else {
-      navigation.push("GameEnd", { score, maxScore: exercises.length * 10 });
+      navigation.push("GameEnd", {
+        score,
+        maxScore: (newExercises.length + playedExercises.length) * 10,
+      });
     }
   };
 
   return {
     gameName,
-    currentRound,
-    amountOfRounds,
     exercises,
     currentExercise,
     loadNextRound,

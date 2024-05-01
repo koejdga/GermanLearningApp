@@ -6,6 +6,7 @@ export interface UserInfo {
   email: string;
   birthdate: Date;
   article_games_played: number;
+  article_game_offset: number;
 }
 
 export const UserContext = createContext(null);

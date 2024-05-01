@@ -10,6 +10,8 @@ import NumberCounter from "../../ui_elements/game/NumberCounter";
 const GameEnd = ({ navigation, route }) => {
   const score = route.params?.score;
   const maxScore = route.params?.maxScore;
+  const amountOfHearts = route.params?.amountOfHearts;
+
   const textForGameEnd =
     score === maxScore
       ? "Бездоганно!"
@@ -17,7 +19,10 @@ const GameEnd = ({ navigation, route }) => {
       ? "Чудово!"
       : score / maxScore >= 0.5
       ? "Добре!"
-      : "Ви впоралися!";
+      : amountOfHearts > 0
+      ? "Ви впоралися!"
+      : "Не хвилюйтеся,\nви все ще вчитеся!";
+  // Не хвилюйтеся, згодом ви все освоїте!
 
   const [triggerAnimation, setTriggerAnimation] = useState(false);
 
@@ -58,6 +63,8 @@ const GameEnd = ({ navigation, route }) => {
             fontSize: 30,
             fontFamily: "Aclonica_400Regular",
             color: "blue",
+            textAlign: "center",
+            paddingHorizontal: 20,
           }}
         >
           {textForGameEnd}
