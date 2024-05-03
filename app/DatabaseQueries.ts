@@ -1,6 +1,6 @@
 import firestore from "@react-native-firebase/firestore";
 import { UserInfo } from "./UserContext";
-import { Game } from "./Utils";
+import { Game } from "./Game";
 
 export const createUser = async (
   uid: string,
@@ -163,12 +163,14 @@ export const getLearnedWords = async (
   }
 };
 
-export const formLearnedWordsSet = async (uid: string, gameName: Game) => {
+export const formLearnedWordsSet = async (user: UserInfo, gameName: Game) => {
   try {
     const collectionName = getLearnedExercisesCollectionName(gameName);
-    const oneTimeMet = await getLearnedWords(uid, collectionName, 1, 4);
+    console.log("collection name in formLearnedWordsSet");
+    console.log(collectionName);
+    const oneTimeMet = await getLearnedWords(user.uid, collectionName, 1, 4);
     const twoTimesMet = await getLearnedWords(
-      uid,
+      user.uid,
       collectionName,
       2,
       5 - oneTimeMet.length
@@ -176,7 +178,7 @@ export const formLearnedWordsSet = async (uid: string, gameName: Game) => {
     const moreTimesMet =
       5 > oneTimeMet.length + twoTimesMet.length
         ? await getLearnedWords(
-            uid,
+            user.uid,
             collectionName,
             3,
             5 - oneTimeMet.length - twoTimesMet.length
@@ -193,33 +195,46 @@ export const formLearnedWordsSet = async (uid: string, gameName: Game) => {
 
     // get actual data instead of just ids
 
+    const { exercisesCollectionName } = getExercisesCollectionName(
+      gameName,
+      user
+    );
+
     const ids = learnedExersices.map((obj) => obj.id);
     const wordsSnapshot = await firestore()
-      .collection("article_game_nouns")
+      .collection(exercisesCollectionName)
       .where("id", "in", ids)
       .get();
 
     const idToDocumentMap = {};
     wordsSnapshot.docs.forEach((doc) => {
-      idToDocumentMap[doc.data().id] = doc.data().word;
+      idToDocumentMap[doc.data().id] = doc.data();
     });
 
-    return learnedExersices.map((obj) => ({
-      ...obj,
-      word: idToDocumentMap[obj.id],
-    }));
+    switch (gameName) {
+      case Game.ARTICLE:
+        return learnedExersices.map((obj) => ({
+          ...obj,
+          word: idToDocumentMap[obj.id].word,
+        }));
+      case Game.ENDINGS:
+        return learnedExersices.map((obj) => ({
+          ...obj,
+          endings: idToDocumentMap[obj.id].endings,
+          sentense: idToDocumentMap[obj.id].sentense,
+        }));
+
+      default:
+        console.log("I have to put here the same for other games");
+        return;
+    }
   } catch (e) {
     console.log("ERROR in formLearnedWordsSet");
     console.log(e);
   }
 };
 
-export const getNewWordsForGame = async (
-  user: UserInfo,
-  gameName: string,
-  totalWordsInGame: number,
-  learnedWordsLength: number
-) => {
+const getExercisesCollectionName = (gameName: Game, user: UserInfo) => {
   const { gameOffset, exercisesCollectionName } = (() => {
     switch (gameName) {
       case Game.ARTICLE:
@@ -247,6 +262,19 @@ export const getNewWordsForGame = async (
     }
   })();
 
+  return { gameOffset, exercisesCollectionName };
+};
+
+export const getNewWordsForGame = async (
+  user: UserInfo,
+  gameName: Game,
+  totalWordsInGame: number,
+  learnedWordsLength: number
+) => {
+  const { gameOffset, exercisesCollectionName } = getExercisesCollectionName(
+    gameName,
+    user
+  );
   if (gameOffset === null || exercisesCollectionName === null) {
     return;
   }

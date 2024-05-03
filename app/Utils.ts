@@ -1,6 +1,7 @@
 import { SharedValue } from "react-native-reanimated";
 import { formLearnedWordsSet, getNewWordsForGame } from "./DatabaseQueries";
 import { UserInfo } from "./UserContext";
+import { Game } from "./Game";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
@@ -11,110 +12,60 @@ export const shuffle = <T>(inputArray: T[]): T[] => {
   return outputArray;
 };
 
-export enum Game {
-  DRAP_DROP = "DragDropGame",
-  WRITE_TRANSLATION = "WriteTranslationGame",
-  ARTICLE = "ArticleGame",
-  ENDINGS = "EndingsGame",
-}
-
-export const formWordsetForArticleGame = async (user: UserInfo) => {
-  // const totalWordsInGame = 10;
-  // const learnedWords = await formLearnedWordsSet(user.uid);
-  // const newWords = await getNewWordsForGame(
-  //   user.article_game_offset,
-  //   totalWordsInGame,
-  //   learnedWords.length
-  // );
-  // const full = [
-  //   ...learnedWords.map((word) => ({ ...word, isNew: false })),
-  //   ...newWords.map((word) => ({ ...word, isNew: true })),
-  // ].map((obj) => ({
-  //   ...obj,
-  //   wrongAnsweredTimes: 0,
-  //   answeredCorrectly: false,
-  // }));
-  // return shuffle(full);
-  // const full = [
-  //   ...learnedWords.map((word) => ({ ...word, isNew: false })),
-  //   ...newWords.map((word) => ({ ...word, isNew: true })),
-  // ];
-  // return full;
-};
-
 export const getDataForGame = async (gameName: Game, user: UserInfo) => {
   // mocking data for now
-  const exercises = [
-    {
-      wordsForTranslation: [
-        { word: "Er" },
-        { word: "isst" },
-        { word: "einen" },
-        { word: "Apfel" },
-        { word: "," },
-        { word: "weil" },
-        { word: "er" },
-        { word: "hungrig" },
-        { word: "ist" },
-        { word: "Hallo" },
-      ],
-      wordsNumberInAnswer: 9,
-      sentenseToTranslate: [
-        { word: "Він", translation: 1 },
-        { word: "їсть", translation: 2 },
-        { word: "яблуко", translation: 3 },
-        { word: ",", translation: -1 },
-        { word: "тому що", translation: 4 },
-        { word: "він", translation: 1 },
-        { word: "голодний", translation: 5 },
-      ],
-    },
-    {
-      wordsForTranslation: [
-        { word: "Ich" },
-        { word: "habe" },
-        { word: "etwas" },
-        { word: "Apfel" },
-        { word: "weil" },
-        { word: "er" },
-        { word: "Hallo" },
-      ],
-      wordsNumberInAnswer: 3,
-      sentenseToTranslate: [
-        { word: "У мене", translation: 1 },
-        { word: "є", translation: 2 },
-        { word: "щось", translation: 3 },
-      ],
-    },
-  ];
-  const endings = [
-    {
-      id: 0,
-      sentense: ["Ich", "liebe", "mein", "Mutter"],
-      endings: { 2: "e" },
-    },
-    {
-      id: 1,
-      sentense: ["Ich", "liebe", "mein", "Mutter", "und", "mein", "Vatter"],
-      //   [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
-      //   [{ word: "Mutter" }, { word: "und" }, { word: "mein" }],
-      //   [{ word: "Vatter" }],
-      // ],
-      endings: { 2: "e", 5: "en" },
-    },
-  ];
+  // const exercises = [
+  //   {
+  //     wordsForTranslation: [
+  //       { word: "Er" },
+  //       { word: "isst" },
+  //       { word: "einen" },
+  //       { word: "Apfel" },
+  //       { word: "," },
+  //       { word: "weil" },
+  //       { word: "er" },
+  //       { word: "hungrig" },
+  //       { word: "ist" },
+  //       { word: "Hallo" },
+  //     ],
+  //     wordsNumberInAnswer: 9,
+  //     sentenseToTranslate: [
+  //       { word: "Він", translation: 1 },
+  //       { word: "їсть", translation: 2 },
+  //       { word: "яблуко", translation: 3 },
+  //       { word: ",", translation: -1 },
+  //       { word: "тому що", translation: 4 },
+  //       { word: "він", translation: 1 },
+  //       { word: "голодний", translation: 5 },
+  //     ],
+  //   },
+  //   {
+  //     wordsForTranslation: [
+  //       { word: "Ich" },
+  //       { word: "habe" },
+  //       { word: "etwas" },
+  //       { word: "Apfel" },
+  //       { word: "weil" },
+  //       { word: "er" },
+  //       { word: "Hallo" },
+  //     ],
+  //     wordsNumberInAnswer: 3,
+  //     sentenseToTranslate: [
+  //       { word: "У мене", translation: 1 },
+  //       { word: "є", translation: 2 },
+  //       { word: "щось", translation: 3 },
+  //     ],
+  //   },
+  // ];
 
   const totalWordsInGame = 10;
-  // const learnedWords = await formLearnedWordsSet(user.uid, gameName);
-  // const newWords = await getNewWordsForGame(
-  //   user,
-  //   gameName,
-  //   totalWordsInGame,
-  //   learnedWords.length
-  // );
-
-  const learnedWords = [];
-  const newWords = endings;
+  const learnedWords = await formLearnedWordsSet(user, gameName);
+  const newWords = await getNewWordsForGame(
+    user,
+    gameName,
+    totalWordsInGame,
+    learnedWords.length
+  );
 
   const full = [
     ...learnedWords.map((word) => ({ ...word, isNew: false })),

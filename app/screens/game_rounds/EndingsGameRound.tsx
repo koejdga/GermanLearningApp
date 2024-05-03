@@ -25,8 +25,6 @@ const EndingsGameRound = ({ route, navigation }) => {
     }, {})
   );
 
-  console.log(inputColors);
-
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
   const [userInputs, setUserInputs] = useState(
