@@ -1,6 +1,7 @@
 import { Roboto_500Medium, useFonts } from "@expo-google-fonts/roboto";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useContext } from "react";
 import {
   Image,
   SafeAreaView,
@@ -10,11 +11,11 @@ import {
   View,
 } from "react-native";
 import Icon from "react-native-vector-icons/Entypo";
+import { Game } from "../../Game";
+import { UserContext } from "../../UserContext";
 import { generalStyles } from "../../config/General";
 import AchievementHomePage from "../../ui_elements/home_page/Achievement";
 import Task from "../../ui_elements/home_page/Task";
-import { useContext } from "react";
-import { UserContext } from "../../UserContext";
 
 const HomePage = () => {
   const { user } = useContext(UserContext);
@@ -52,13 +53,13 @@ const HomePage = () => {
             <Task
               title="Закінчення"
               background={require("../../assets/tasks_backgrounds/pastel-gradient-bg.jpg")}
-              onPress={() => nav.navigate("EndingsGame")}
+              onPress={() => nav.navigate(Game.ENDINGS)}
             ></Task>
             <Task
               title="Артиклі"
               contrastForTitle={true}
               background={require("../../assets/tasks_backgrounds/flowers7.jpeg")}
-              onPress={() => nav.navigate("ArticleGame")}
+              onPress={() => nav.navigate(Game.ARTICLE)}
             ></Task>
           </View>
           <View style={styles.tasksRow}>
@@ -66,12 +67,12 @@ const HomePage = () => {
               title="Нові слова"
               contrastForTitle={true}
               background={require("../../assets/tasks_backgrounds/pink-flowers.png")}
-              onPress={() => nav.navigate("DragDropGame")}
+              onPress={() => nav.navigate(Game.DRAP_DROP)}
             ></Task>
             <Task
               title="Письмо"
               background={require("../../assets/tasks_backgrounds/yellow-bg.jpeg")}
-              onPress={() => nav.navigate("WriteTranslationGame")}
+              onPress={() => nav.navigate(Game.WRITE_TRANSLATION)}
             ></Task>
           </View>
         </View>

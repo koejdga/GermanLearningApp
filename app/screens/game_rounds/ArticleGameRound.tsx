@@ -124,37 +124,41 @@ const ArticleGameRound = ({ route, navigation }) => {
   const [boxText, setBoxText] = useState(round.currentExercise.word);
   const [boxColor, setBoxColor] = useState(defaultColor);
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
-  const [wordInfo, setWordInfo] = useState({});
+  const [wordInfo, setWordInfo] = useState({ article: "", translation: "" });
   const [score, setScore] = useState(round.score);
 
   useEffect(function addArticles() {
     let article = null;
-    switch (wholeDict[round.currentExercise.word].part_of_speech) {
-      case "m":
-        article = "der";
-        break;
-      case "f":
-        article = "die";
-        break;
-      case "n":
-        article = "das";
-        break;
+    if (wholeDict[round.currentExercise.word]) {
+      switch (wholeDict[round.currentExercise.word].part_of_speech) {
+        case "m":
+          article = "der";
+          break;
+        case "f":
+          article = "die";
+          break;
+        case "n":
+          article = "das";
+          break;
 
-      default:
-        console.log(
-          `ERROR: unable to recognise article, word: ${
-            round.currentExercise.word
-          }, part_of_speech: ${
-            wholeDict[round.currentExercise.word].part_of_speech
-          }`
-        );
-        break;
+        default:
+          console.log(
+            `ERROR: unable to recognise article, word: ${
+              round.currentExercise.word
+            }, part_of_speech: ${
+              wholeDict[round.currentExercise.word].part_of_speech
+            }`
+          );
+          break;
+      }
+      setWordInfo({
+        article,
+        translation:
+          wholeDict[round.currentExercise.word].translations[0].translation,
+      });
+    } else {
+      console.log("This word is absent in dict: ", round.currentExercise.word);
     }
-    setWordInfo({
-      article,
-      translation:
-        wholeDict[round.currentExercise.word].translations[0].translation,
-    });
   }, []);
 
   useEffect(() => {

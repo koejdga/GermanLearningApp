@@ -1,7 +1,10 @@
 import { SharedValue } from "react-native-reanimated";
-import { formLearnedWordsSet, getNewWordsForGame } from "./DatabaseQueries";
+import {
+  formDoneExercisesSet as formDoneExercisesSet,
+  getNewExercisesForGame as getNewExercisesForGame,
+} from "./DatabaseQueries";
 import { UserInfo } from "./UserContext";
-import { Game } from "./Game";
+import { Game, gameToDbMapping } from "./Game";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
@@ -11,6 +14,10 @@ export const shuffle = <T>(inputArray: T[]): T[] => {
   }
   return outputArray;
 };
+
+// TODO: add this as resource for endings game exercises
+// https://mein-deutschbuch.de/grammatikuebungen-adjektivdeklination-1.html
+// https://deutschlernerblog.de/uebungen-zur-adjektivdeklination-deutsch-a1-a2/
 
 export const getDataForGame = async (gameName: Game, user: UserInfo) => {
   // mocking data for now
@@ -58,18 +65,22 @@ export const getDataForGame = async (gameName: Game, user: UserInfo) => {
   //   },
   // ];
 
-  const totalWordsInGame = 10;
-  const learnedWords = await formLearnedWordsSet(user, gameName);
-  const newWords = await getNewWordsForGame(
+  const totalWordsInGame = gameName === Game.ARTICLE ? 10 : 5;
+  const doneExercises = await formDoneExercisesSet(
     user,
-    gameName,
+    gameToDbMapping[gameName],
+    Math.floor(totalWordsInGame / 2)
+  );
+  const newExercises = await getNewExercisesForGame(
+    user,
+    gameToDbMapping[gameName],
     totalWordsInGame,
-    learnedWords.length
+    doneExercises.length
   );
 
   const full = [
-    ...learnedWords.map((word) => ({ ...word, isNew: false })),
-    ...newWords.map((word) => ({ ...word, isNew: true })),
+    ...doneExercises.map((exercise) => ({ ...exercise, isNew: false })),
+    ...newExercises.map((exercise) => ({ ...exercise, isNew: true })),
   ];
 
   const gameData = full.map((obj) => ({

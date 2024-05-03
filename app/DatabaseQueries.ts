@@ -1,6 +1,7 @@
+import { whiteColor } from "./config/Colors";
 import firestore from "@react-native-firebase/firestore";
+import { GameInDb } from "./Game";
 import { UserInfo } from "./UserContext";
-import { Game } from "./Game";
 
 export const createUser = async (
   uid: string,
@@ -13,7 +14,6 @@ export const createUser = async (
       username,
       email,
       birthdate,
-      article_game_offset: 0,
       total_score: 0,
     });
   } catch (e) {
@@ -49,10 +49,6 @@ export const dbUserToUserInfo = (dbUser) => {
     username: dbUser.data().username,
     email: dbUser.data().email,
     birthdate: new Date(dbUser.data().birthdate.seconds * 1000),
-    article_game_offset: dbUser.data().article_game_offset || 0,
-    drag_drop_game_offset: dbUser.data().drag_drop_game_offset || 0,
-    write_tr_game_offset: dbUser.data().write_tr_game_offset || 0,
-    endings_game_offset: dbUser.data().endings_game_offset || 0,
     total_score: dbUser.data().total_score || 0,
   };
 };
@@ -65,8 +61,6 @@ export const loggedInUserToUserInfo = async (loggedInUser: {
     .where("email", "==", loggedInUser.email)
     .get();
 
-  console.log(res.docs);
-
   if (res.docs.length > 1) {
     return null;
   }
@@ -76,61 +70,18 @@ export const loggedInUserToUserInfo = async (loggedInUser: {
   return dbUserToUserInfo(res.docs[0]);
 };
 
-export const getWordsForArticleGame = async (offset: number) => {
-  const amountOfNewWords = 5;
-  try {
-    const nounsForGame = await firestore()
-      .collection("article_game_nouns")
-      .orderBy("id")
-      .startAt(offset * amountOfNewWords)
-      .limit(amountOfNewWords)
-      .get();
-
-    console.log(nounsForGame);
-
-    const reformatted = nounsForGame.docs.map((noun) => noun.data());
-    console.log(reformatted);
-    return reformatted;
-  } catch (e) {
-    console.log("ERROR: error in getWordsForArticleGame");
-    console.log(e);
-  }
-
-  return null;
-};
-
 export const addScoreToGameHistory = async (
   user: UserInfo,
-  gameName: Game,
+  gameName: GameInDb,
   relative_score: number
 ) => {
-  const collectionName = (() => {
-    switch (gameName) {
-      case Game.ARTICLE:
-        return "article_game_score_history";
-      case Game.DRAP_DROP:
-        return "drag_drop_game_score_history";
-      case Game.ENDINGS:
-        return "endings_game_score_history";
-      case Game.WRITE_TRANSLATION:
-        return "write_tr_game_score_history";
-      default:
-        return null;
-    }
-  })();
-
-  if (collectionName === null) {
-    console.log(
-      "ERROR: no game with such game name was found in addScoreToGameHistory"
-    );
-    return;
-  }
-
   try {
     await firestore()
       .collection("users")
       .doc(user.uid)
-      .collection(collectionName)
+      .collection("score_histories")
+      .doc(gameName)
+      .collection("score_history")
       .add({ relative_score, datetime: new Date() });
     console.log("INFO: score added to game score history");
   } catch (e) {
@@ -141,9 +92,9 @@ export const addScoreToGameHistory = async (
 
 // timesMet is 1, 2 or 3
 // limit is positive number
-export const getLearnedWords = async (
+export const getDoneExercises = async (
   uid: string,
-  learnedExercisesCollectionName: string,
+  gameName: GameInDb,
   timesMet: number,
   limit: number
 ) => {
@@ -151,7 +102,9 @@ export const getLearnedWords = async (
     const queryRespose = await firestore()
       .collection("users")
       .doc(uid)
-      .collection(learnedExercisesCollectionName)
+      .collection("done_exercises")
+      .doc(gameName)
+      .collection("done_exercises")
       .where("times_met", "==", timesMet)
       .limit(limit)
       .get();
@@ -163,46 +116,49 @@ export const getLearnedWords = async (
   }
 };
 
-export const formLearnedWordsSet = async (user: UserInfo, gameName: Game) => {
+export const formDoneExercisesSet = async (
+  user: UserInfo,
+  gameName: GameInDb,
+  desiredAmount: number
+) => {
   try {
-    const collectionName = getLearnedExercisesCollectionName(gameName);
-    console.log("collection name in formLearnedWordsSet");
-    console.log(collectionName);
-    const oneTimeMet = await getLearnedWords(user.uid, collectionName, 1, 4);
-    const twoTimesMet = await getLearnedWords(
+    const oneTimeMet = await getDoneExercises(
       user.uid,
-      collectionName,
+      gameName,
+      1,
+      desiredAmount - 1
+    );
+    const twoTimesMet = await getDoneExercises(
+      user.uid,
+      gameName,
       2,
-      5 - oneTimeMet.length
+      desiredAmount - oneTimeMet.length
     );
     const moreTimesMet =
-      5 > oneTimeMet.length + twoTimesMet.length
-        ? await getLearnedWords(
+      desiredAmount > oneTimeMet.length + twoTimesMet.length
+        ? await getDoneExercises(
             user.uid,
-            collectionName,
+            gameName,
             3,
-            5 - oneTimeMet.length - twoTimesMet.length
+            desiredAmount - oneTimeMet.length - twoTimesMet.length
           )
         : [];
 
-    const learnedExersices = oneTimeMet
+    const doneExersices = oneTimeMet
       .concat(twoTimesMet, moreTimesMet)
       .map((obj) => obj.data());
 
-    if (learnedExersices.length === 0) {
-      return learnedExersices;
+    if (doneExersices.length === 0) {
+      return doneExersices;
     }
 
     // get actual data instead of just ids
 
-    const { exercisesCollectionName } = getExercisesCollectionName(
-      gameName,
-      user
-    );
-
-    const ids = learnedExersices.map((obj) => obj.id);
+    const ids = doneExersices.map((obj) => obj.id);
     const wordsSnapshot = await firestore()
-      .collection(exercisesCollectionName)
+      .collection("exercises")
+      .doc(gameName)
+      .collection("exercises")
       .where("id", "in", ids)
       .get();
 
@@ -212,13 +168,13 @@ export const formLearnedWordsSet = async (user: UserInfo, gameName: Game) => {
     });
 
     switch (gameName) {
-      case Game.ARTICLE:
-        return learnedExersices.map((obj) => ({
+      case GameInDb.ARTICLE:
+        return doneExersices.map((obj) => ({
           ...obj,
           word: idToDocumentMap[obj.id].word,
         }));
-      case Game.ENDINGS:
-        return learnedExersices.map((obj) => ({
+      case GameInDb.ENDINGS:
+        return doneExersices.map((obj) => ({
           ...obj,
           endings: idToDocumentMap[obj.id].endings,
           sentense: idToDocumentMap[obj.id].sentense,
@@ -234,54 +190,34 @@ export const formLearnedWordsSet = async (user: UserInfo, gameName: Game) => {
   }
 };
 
-const getExercisesCollectionName = (gameName: Game, user: UserInfo) => {
-  const { gameOffset, exercisesCollectionName } = (() => {
-    switch (gameName) {
-      case Game.ARTICLE:
-        return {
-          gameOffset: user.article_game_offset,
-          exercisesCollectionName: "article_game_nouns",
-        };
-      case Game.DRAP_DROP:
-        return {
-          gameOffset: user.drag_drop_game_offset,
-          exercisesCollectionName: "drag_drop_game_exercises",
-        };
-      case Game.ENDINGS:
-        return {
-          gameOffset: user.endings_game_offset,
-          exercisesCollectionName: "endings_game_exercises",
-        };
-      case Game.WRITE_TRANSLATION:
-        return {
-          gameOffset: user.write_tr_game_offset,
-          exercisesCollectionName: "write_tr_game_exercises",
-        };
-      default:
-        return { gameOffset: null, exercisesCollectionName: null };
-    }
-  })();
+const getGameOffset = async (user: UserInfo, gameName: GameInDb) => {
+  try {
+    const queryResponse = await firestore()
+      .collection("users")
+      .doc(user.uid)
+      .collection("game_offsets")
+      .doc(gameName)
+      .get();
 
-  return { gameOffset, exercisesCollectionName };
+    return queryResponse.data().offset;
+  } catch (e) {
+    console.log("ERROR in getGameOffset");
+    console.log(e);
+  }
 };
 
-export const getNewWordsForGame = async (
+export const getNewExercisesForGame = async (
   user: UserInfo,
-  gameName: Game,
+  gameName: GameInDb,
   totalWordsInGame: number,
   learnedWordsLength: number
 ) => {
-  const { gameOffset, exercisesCollectionName } = getExercisesCollectionName(
-    gameName,
-    user
-  );
-  if (gameOffset === null || exercisesCollectionName === null) {
-    return;
-  }
-
   try {
+    const gameOffset = await getGameOffset(user, gameName);
     const queryResponse = await firestore()
-      .collection(exercisesCollectionName)
+      .collection("exercises")
+      .doc(gameName)
+      .collection("exercises")
       .orderBy("id")
       .startAt(gameOffset)
       .limit(totalWordsInGame - learnedWordsLength)
@@ -297,40 +233,13 @@ export const getNewWordsForGame = async (
   }
 };
 
-const getLearnedExercisesCollectionName = (gameName: Game) => {
-  const collectionName = (() => {
-    switch (gameName) {
-      case Game.ARTICLE:
-        return "learnt_words_article_game";
-      case Game.DRAP_DROP:
-        return "learnt_words_drag_drop_game";
-      case Game.ENDINGS:
-        return "learnt_words_endings_game";
-      case Game.WRITE_TRANSLATION:
-        return "learnt_words_write_tr_game";
-      default:
-        return null;
-    }
-  })();
-  return collectionName;
-};
-
 export const updateLearnedExercisesMetTimes = async (
   user: UserInfo,
-  gameName: Game,
+  gameName: GameInDb,
   exercises
 ) => {
   if (exercises.length === 0) {
     console.log("ERROR: words length is 0 in updateLearnedWordsMetTimes");
-    return;
-  }
-
-  const collectionName = getLearnedExercisesCollectionName(gameName);
-
-  if (collectionName === null) {
-    console.log(
-      "ERROR: no game with such game name was found in updateLearnedWordsMetTimes"
-    );
     return;
   }
 
@@ -339,7 +248,9 @@ export const updateLearnedExercisesMetTimes = async (
     const learnedWordsSnapshot = await firestore()
       .collection("users")
       .doc(user.uid)
-      .collection(collectionName)
+      .collection("done_exercises")
+      .doc(gameName)
+      .collection("done_exercises")
       .where("id", "in", allIds)
       .get();
 
@@ -352,7 +263,9 @@ export const updateLearnedExercisesMetTimes = async (
       await firestore()
         .collection("users")
         .doc(user.uid)
-        .collection(collectionName)
+        .collection("done_exercises")
+        .doc(gameName)
+        .collection("done_exercises")
         .doc(doc.id)
         .set(updatedObj);
     });
@@ -372,9 +285,9 @@ export const needToMakeChanges = async (newWords) => {
   }
 };
 
-export const addNewLearnedWords = async (
+export const addNewDoneExercises = async (
   user: UserInfo,
-  gameName: Game,
+  gameName: GameInDb,
   newExercises
 ) => {
   const reformattedExercises = newExercises.map((exercise) => ({
@@ -382,73 +295,43 @@ export const addNewLearnedWords = async (
     times_met: exercise.times_met,
   }));
 
-  const collectionName = getLearnedExercisesCollectionName(gameName);
-
-  if (collectionName === null) {
-    console.log(
-      "ERROR: no game with such game name was found in updateLearnedWordsMetTimes"
-    );
-    return;
-  }
-
   try {
     reformattedExercises.forEach(async (newExercise) => {
       await firestore()
         .collection("users")
         .doc(user.uid)
-        .collection(collectionName)
+        .collection("done_exercises")
+        .doc(gameName)
+        .collection("done_exercises")
         .add({
           ...newExercise,
           times_met: increaseTimesMet(newExercise.times_met),
         });
     });
   } catch (e) {
-    console.log("ERROR in addNewLearnedWords");
+    console.log("ERROR in addNewDoneExercises");
     console.log(e);
   }
 };
 
 export const changeGameOffset = async (
   user: UserInfo,
-  setUser,
-  gameName: Game,
-  newWords
+  gameName: GameInDb,
+  newExercises
 ) => {
-  switch (gameName) {
-    case Game.ARTICLE:
-      user = {
-        ...user,
-        article_game_offset: user.article_game_offset + newWords.length,
-      };
-      break;
-
-    case Game.DRAP_DROP:
-      user = {
-        ...user,
-        drag_drop_game_offset: user.drag_drop_game_offset + newWords.length,
-      };
-      break;
-    case Game.WRITE_TRANSLATION:
-      user = {
-        ...user,
-        write_tr_game_offset: user.write_tr_game_offset + newWords.length,
-      };
-      break;
-    case Game.ENDINGS:
-      user = {
-        ...user,
-        endings_game_offset: user.endings_game_offset + newWords.length,
-      };
-      break;
-    default:
-      console.log(
-        "ERROR: no game with such name was found in changeGameOffset, game offset is not updated"
-      );
-      return;
+  try {
+    const oldOffset = await getGameOffset(user, gameName);
+    await firestore()
+      .collection("users")
+      .doc(user.uid)
+      .collection("game_offsets")
+      .doc(gameName)
+      .update({ offset: oldOffset + newExercises.length });
+    console.log("INFO: game offset updated");
+  } catch (e) {
+    console.log("ERROR in changeGameOffset");
+    console.log(e);
   }
-
-  setUser(user);
-  await updateUser(user);
 };
 
 export const increaseTimesMet = (currentValue: number) => {

@@ -18,14 +18,26 @@ const EndingsGameRound = ({ route, navigation }) => {
   const correctInputColor = "lightgreen";
   const wrongInputColor = "lightcoral";
 
+  const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
+
+  useEffect(() => {
+    if (answerIsCorrect === false) {
+      setAmountOfHearts(amountOfHearts - 1);
+    } else if (answerIsCorrect === true) {
+      setScore(score + 10);
+    }
+  }, [answerIsCorrect]);
+
+  if (!round.currentExercise) {
+    return <Text>Sorry, no exercises were found</Text>;
+  }
+
   const [inputColors, setInputColors] = useState(
     Object.keys(round.currentExercise.endings).reduce((acc, key) => {
       acc[key] = emptyInputColor;
       return acc;
     }, {})
   );
-
-  const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
 
   const [userInputs, setUserInputs] = useState(
     Object.keys(round.currentExercise.endings).reduce((acc, key) => {
@@ -36,14 +48,6 @@ const EndingsGameRound = ({ route, navigation }) => {
 
   const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
   const [score, setScore] = useState(round.score);
-
-  useEffect(() => {
-    if (answerIsCorrect === false) {
-      setAmountOfHearts(amountOfHearts - 1);
-    } else if (answerIsCorrect === true) {
-      setScore(score + 10);
-    }
-  }, [answerIsCorrect]);
 
   const checkUserInput = () => {
     let allEqual = true;
@@ -84,13 +88,17 @@ const EndingsGameRound = ({ route, navigation }) => {
                 const addTextInput = Object.keys(userInputs).includes(
                   index.toString()
                 );
+
+                const isLastWord =
+                  index === round.currentExercise.sentense.length - 1;
+                const addBlankspace = !addTextInput && !isLastWord;
                 return (
                   <View
                     style={{ flexDirection: "row" }}
                     key={"endingGameRound" + index}
                   >
                     <WordsWithTips words={[{ word }]} style={{}} />
-                    {!addTextInput && <Text> </Text>}
+                    {addBlankspace && <Text> </Text>}
                     {addTextInput && (
                       <TextInput
                         style={{

@@ -2,19 +2,20 @@ import {
   needToMakeChanges,
   addScoreToGameHistory,
   updateUser,
-  addNewLearnedWords as addNewLearnedExercises,
+  addNewDoneExercises,
   changeGameOffset,
   updateLearnedExercisesMetTimes,
 } from "../../DatabaseQueries";
+import { Game, gameToDbMapping } from "../../Game";
 import { UserInfo } from "../../UserContext";
 
 const GameRound = ({ route, navigation }) => {
-  const gameName = route.params?.gameName;
+  const gameName = route.params?.gameName as Game;
   const exercises = route.params?.exercises;
   const playedExercises = route.params?.playedExercises;
   const currentExercise = exercises[0];
-  const amountOfHearts = route.params?.amountOfHearts;
-  const score = route.params?.score;
+  const amountOfHearts = route.params?.amountOfHearts as number;
+  const score = route.params?.score as number;
 
   const loadNextRound = async (
     answerIsCorrect: boolean,
@@ -50,17 +51,29 @@ const GameRound = ({ route, navigation }) => {
 
       const maxScore =
         (nextRoundExercises.length + playedExercises.length) * 10;
-      await addScoreToGameHistory(user, gameName, score / maxScore);
+      await addScoreToGameHistory(
+        user,
+        gameToDbMapping[gameName],
+        score / maxScore
+      );
 
       const allExercises = nextRoundExercises.concat(playedExercises);
 
-      await updateLearnedExercisesMetTimes(user, gameName, allExercises);
+      await updateLearnedExercisesMetTimes(
+        user,
+        gameToDbMapping[gameName],
+        allExercises
+      );
 
       const newExercises = allExercises.filter((exercise) => exercise.isNew);
       const makeChanges = await needToMakeChanges(newExercises);
       if (makeChanges) {
-        await addNewLearnedExercises(user, gameName, newExercises);
-        await changeGameOffset(user, setUser, gameName, newExercises);
+        await addNewDoneExercises(
+          user,
+          gameToDbMapping[gameName],
+          newExercises
+        );
+        await changeGameOffset(user, gameToDbMapping[gameName], newExercises);
       }
 
       navigation.push("GameEnd", {
