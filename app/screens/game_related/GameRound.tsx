@@ -1,10 +1,10 @@
 import {
   needToMakeChanges,
-  addScoreToHistoryArticleGame,
+  addScoreToGameHistory,
   updateUser,
-  addNewLearnedWords,
-  changeArticleGameOffset,
-  updateLearnedWordsMetTimes,
+  addNewLearnedWords as addNewLearnedExercises,
+  changeGameOffset,
+  updateLearnedExercisesMetTimes,
 } from "../../DatabaseQueries";
 import { UserInfo } from "../../UserContext";
 
@@ -26,19 +26,19 @@ const GameRound = ({ route, navigation }) => {
       ? amountOfHearts - 1
       : amountOfHearts;
 
-    const newExercises = exercises.slice(1, exercises.length);
+    const nextRoundExercises = exercises.slice(1, exercises.length);
     if (answerIsCorrect) {
       currentExercise.answeredCorrectly = true;
       playedExercises.push(currentExercise);
     } else {
       currentExercise.wrongAnsweredTimes += 1;
-      newExercises.push(currentExercise);
+      nextRoundExercises.push(currentExercise);
     }
 
-    if (newExercises.length > 0 && newAmountOfHearts > 0) {
+    if (nextRoundExercises.length > 0 && newAmountOfHearts > 0) {
       navigation.push(gameName + "Round", {
         gameName,
-        exercises: newExercises,
+        exercises: nextRoundExercises,
         playedExercises,
         amountOfHearts: newAmountOfHearts,
         score,
@@ -48,18 +48,19 @@ const GameRound = ({ route, navigation }) => {
       setUser(user);
       await updateUser(user);
 
-      const maxScore = (newExercises.length + playedExercises.length) * 10;
-      await addScoreToHistoryArticleGame(user, score / maxScore);
+      const maxScore =
+        (nextRoundExercises.length + playedExercises.length) * 10;
+      await addScoreToGameHistory(user, gameName, score / maxScore);
 
-      const allWords = newExercises.concat(playedExercises);
+      const allExercises = nextRoundExercises.concat(playedExercises);
 
-      await updateLearnedWordsMetTimes(user, allWords);
+      await updateLearnedExercisesMetTimes(user, gameName, allExercises);
 
-      const newWords = allWords.filter((word) => word.isNew);
-      const makeChanges = await needToMakeChanges(newWords);
+      const newExercises = allExercises.filter((exercise) => exercise.isNew);
+      const makeChanges = await needToMakeChanges(newExercises);
       if (makeChanges) {
-        await addNewLearnedWords(user, newWords);
-        await changeArticleGameOffset(user, setUser, newWords);
+        await addNewLearnedExercises(user, gameName, newExercises);
+        await changeGameOffset(user, setUser, gameName, newExercises);
       }
 
       navigation.push("GameEnd", {

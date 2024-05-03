@@ -1,8 +1,5 @@
 import { SharedValue } from "react-native-reanimated";
-import {
-  formLearnedWordsSet,
-  getNewWordsForArticleGame,
-} from "./DatabaseQueries";
+import { formLearnedWordsSet, getNewWordsForGame } from "./DatabaseQueries";
 import { UserInfo } from "./UserContext";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
@@ -22,27 +19,30 @@ export enum Game {
 }
 
 export const formWordsetForArticleGame = async (user: UserInfo) => {
-  const totalWordsInGame = 10;
-  const learnedWords = await formLearnedWordsSet(user.uid);
-  const newWords = await getNewWordsForArticleGame(
-    user.article_game_offset,
-    totalWordsInGame,
-    learnedWords.length
-  );
-
-  const full = [
-    ...learnedWords.map((word) => ({ ...word, isNew: false })),
-    ...newWords.map((word) => ({ ...word, isNew: true })),
-  ].map((obj) => ({
-    ...obj,
-    wrongAnsweredTimes: 0,
-    answeredCorrectly: false,
-  }));
-
-  return shuffle(full);
+  // const totalWordsInGame = 10;
+  // const learnedWords = await formLearnedWordsSet(user.uid);
+  // const newWords = await getNewWordsForGame(
+  //   user.article_game_offset,
+  //   totalWordsInGame,
+  //   learnedWords.length
+  // );
+  // const full = [
+  //   ...learnedWords.map((word) => ({ ...word, isNew: false })),
+  //   ...newWords.map((word) => ({ ...word, isNew: true })),
+  // ].map((obj) => ({
+  //   ...obj,
+  //   wrongAnsweredTimes: 0,
+  //   answeredCorrectly: false,
+  // }));
+  // return shuffle(full);
+  // const full = [
+  //   ...learnedWords.map((word) => ({ ...word, isNew: false })),
+  //   ...newWords.map((word) => ({ ...word, isNew: true })),
+  // ];
+  // return full;
 };
 
-export const getDataForGame = async (gameName: string, user: UserInfo) => {
+export const getDataForGame = async (gameName: Game, user: UserInfo) => {
   // mocking data for now
   const exercises = [
     {
@@ -89,32 +89,45 @@ export const getDataForGame = async (gameName: string, user: UserInfo) => {
   ];
   const endings = [
     {
-      sentense: [
-        [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
-        [{ word: "Mutter" }],
-      ],
-      endings: ["e"],
+      id: 0,
+      sentense: ["Ich", "liebe", "mein", "Mutter"],
+      endings: { 2: "e" },
     },
     {
-      sentense: [
-        [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
-        [{ word: "Mutter" }, { word: "und" }, { word: "mein" }],
-        [{ word: "Vatter" }],
-      ],
-      endings: ["e", "en"],
+      id: 1,
+      sentense: ["Ich", "liebe", "mein", "Mutter", "und", "mein", "Vatter"],
+      //   [{ word: "Ich" }, { word: "liebe" }, { word: "mein" }],
+      //   [{ word: "Mutter" }, { word: "und" }, { word: "mein" }],
+      //   [{ word: "Vatter" }],
+      // ],
+      endings: { 2: "e", 5: "en" },
     },
   ];
 
-  switch (gameName) {
-    case Game.ARTICLE:
-      return await formWordsetForArticleGame(user);
-    case Game.DRAP_DROP:
-      return exercises;
-    case Game.WRITE_TRANSLATION:
-      return exercises;
-    case Game.ENDINGS:
-      return endings;
-  }
+  const totalWordsInGame = 10;
+  // const learnedWords = await formLearnedWordsSet(user.uid, gameName);
+  // const newWords = await getNewWordsForGame(
+  //   user,
+  //   gameName,
+  //   totalWordsInGame,
+  //   learnedWords.length
+  // );
+
+  const learnedWords = [];
+  const newWords = endings;
+
+  const full = [
+    ...learnedWords.map((word) => ({ ...word, isNew: false })),
+    ...newWords.map((word) => ({ ...word, isNew: true })),
+  ];
+
+  const gameData = full.map((obj) => ({
+    ...obj,
+    wrongAnsweredTimes: 0,
+    answeredCorrectly: false,
+  }));
+
+  return shuffle(gameData);
 };
 
 export const validateEmail = async (
