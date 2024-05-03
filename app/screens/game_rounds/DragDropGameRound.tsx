@@ -29,6 +29,8 @@ const DragDropGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
   const { user, setUser } = useContext(UserContext);
   const [answerIsCorrect, setAnswerIsCorrect] = useState(null);
+  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
+  const [score, setScore] = useState(round.score);
 
   useEffect(() => {
     if (answerIsCorrect === false) {
@@ -49,9 +51,6 @@ const DragDropGameRound = ({ route, navigation }) => {
   const [shuffledWords, _] = useState(
     shuffle(round.currentExercise.wordsForTranslation)
   );
-
-  const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
-  const [score, setScore] = useState(0);
 
   const checkUserAnswer = (answer: number[]) => {
     if (
@@ -76,8 +75,8 @@ const DragDropGameRound = ({ route, navigation }) => {
       <GameHeader amountOfHearts={amountOfHearts} score={score} />
       <Text style={styles.upperText}>Перекладіть це речення</Text>
       <WordsWithTips
-        words={round.currentExercise.sentenseToTranslate}
-        style={{ paddingHorizontal: 30 }}
+        words={round.currentExercise.sentenceToTranslate}
+        style={{ marginHorizontal: 30 }}
       />
       <Spacer />
       <DragDropWords checkUserAnswer={checkUserAnswer}>

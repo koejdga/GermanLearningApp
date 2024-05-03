@@ -1,4 +1,3 @@
-import { whiteColor } from "./config/Colors";
 import firestore from "@react-native-firebase/firestore";
 import { GameInDb } from "./Game";
 import { UserInfo } from "./UserContext";
@@ -181,7 +180,7 @@ export const formDoneExercisesSet = async (
       case GameInDb.DRAP_DROP:
         return doneExersices.map((obj) => ({
           ...obj,
-          sentenseToTranslate: idToDocumentMap[obj.id].sentenseToTranslate,
+          sentenceToTranslate: idToDocumentMap[obj.id].sentenceToTranslate,
           wordsForTranslation: idToDocumentMap[obj.id].wordsForTranslation,
           wordsNumberInAnswer: idToDocumentMap[obj.id].wordsNumberInAnswer,
         }));
@@ -189,9 +188,8 @@ export const formDoneExercisesSet = async (
       case GameInDb.WRITE_TRANSLATION:
         return doneExersices.map((obj) => ({
           ...obj,
-          sentenseToTranslate: idToDocumentMap[obj.id].sentenseToTranslate,
-          wordsForTranslation: idToDocumentMap[obj.id].wordsForTranslation,
-          wordsNumberInAnswer: idToDocumentMap[obj.id].wordsNumberInAnswer,
+          sentenceToTranslate: idToDocumentMap[obj.id].sentenceToTranslate,
+          correctAnswer: idToDocumentMap[obj.id].correctAnswer,
         }));
 
       default:
@@ -259,9 +257,6 @@ export const getNewExercisesForGame = async (
       .startAt(gameOffset)
       .limit(totalWordsInGame - learnedWordsLength)
       .get();
-
-    console.log("query response");
-    console.log(queryResponse.docs);
 
     return queryResponse.docs.map((x) => {
       const data = x.data();

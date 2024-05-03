@@ -20,51 +20,6 @@ export const shuffle = <T>(inputArray: T[]): T[] => {
 // https://deutschlernerblog.de/uebungen-zur-adjektivdeklination-deutsch-a1-a2/
 
 export const getDataForGame = async (gameName: Game, user: UserInfo) => {
-  // mocking data for now
-  // const exercises = [
-  //   {
-  //     wordsForTranslation: [
-  //       { word: "Er" },
-  //       { word: "isst" },
-  //       { word: "einen" },
-  //       { word: "Apfel" },
-  //       { word: "," },
-  //       { word: "weil" },
-  //       { word: "er" },
-  //       { word: "hungrig" },
-  //       { word: "ist" },
-  //       { word: "deshalb" },
-  //     ],
-  //     wordsNumberInAnswer: 9,
-  //     sentenseToTranslate: [
-  //       { word: "Він", translation: 1 },
-  //       { word: "їсть", translation: 2 },
-  //       { word: "яблуко", translation: 3 },
-  //       { word: ",", translation: -1 },
-  //       { word: "тому що", translation: 4 },
-  //       { word: "він", translation: 1 },
-  //       { word: "голодний", translation: 5 },
-  //     ],
-  //   },
-  //   {
-  //     wordsForTranslation: [
-  //       { word: "Ich" },
-  //       { word: "habe" },
-  //       { word: "etwas" },
-  //       { word: "Apfel" },
-  //       { word: "weil" },
-  //       { word: "er" },
-  //       { word: "Hallo" },
-  //     ],
-  //     wordsNumberInAnswer: 3,
-  //     sentenseToTranslate: [
-  //       { word: "У мене", translation: 1 },
-  //       { word: "є", translation: 2 },
-  //       { word: "щось", translation: 3 },
-  //     ],
-  //   },
-  // ];
-
   const totalWordsInGame = gameName === Game.ARTICLE ? 10 : 5;
   const doneExercises = await formDoneExercisesSet(
     user,

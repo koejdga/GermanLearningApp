@@ -32,18 +32,17 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
     }
   }, [answerIsCorrect]);
 
-  // TODO: move this to component
   if (!round.currentExercise) {
     return <NoExercisesScreen />;
   }
-  const correctAnswer = round.currentExercise.wordsForTranslation.slice(
+  const correctAnswer = round.currentExercise.correctAnswer.slice(
     0,
     round.currentExercise.wordsNumberInAnswer
   );
   const [userInput, setUserInput] = useState("");
 
   const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(round.score);
 
   const checkUserAnswer = () => {
     if (userInput === "") {
@@ -74,10 +73,13 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
   return (
     <GestureHandlerRootView style={sharedGameStyles.container}>
       <GameHeader amountOfHearts={amountOfHearts} score={score} />
-      <Pressable style={sharedGameStyles.container} onPress={Keyboard.dismiss}>
+      <Pressable
+        style={[sharedGameStyles.container, { position: "relative" }]}
+        onPress={Keyboard.dismiss}
+      >
         <Text style={sharedGameStyles.upperText}>Перекладіть це речення</Text>
         <WordsWithTips
-          words={round.currentExercise.sentenseToTranslate}
+          words={round.currentExercise.sentenceToTranslate}
           style={{ paddingHorizontal: 30 }}
         />
         <KeyboardAvoidingView
@@ -90,6 +92,7 @@ const WriteTranslationGameRound = ({ route, navigation }) => {
           ></TextInput>
         </KeyboardAvoidingView>
         <Spacer />
+
         <ReadyButton onPress={checkUserAnswer} />
 
         <EndRoundModal

@@ -11,6 +11,7 @@ import Animated, {
 const styles = StyleSheet.create({
   sentense: {
     flexDirection: "row",
+    flexWrap: "wrap",
   },
   word: {
     fontSize: 19,
@@ -29,6 +30,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "grey",
     zIndex: 10,
+    backgroundColor: "white",
   },
 });
 
@@ -58,7 +60,7 @@ const WordsWithTips = ({ words, style }) => {
   );
 
   return (
-    <View>
+    <View style={{ zIndex: 10 }}>
       <View style={[styles.sentense, style]}>
         {words.map((word: { word: string }, index: number) => {
           const addBlankspace =
@@ -88,14 +90,14 @@ const WordsWithTips = ({ words, style }) => {
         })}
       </View>
 
-      <View style={{ flex: 1 }}>
+      <View style={[{ flex: 1 }, style]}>
         {words.map((word: { word: string }, index: number) => {
           return (
             <Animated.View
               style={[styles.tip, positionStyles[index], animatedStyles[index]]}
               key={index}
             >
-              <Text style={{ textAlign: "center" }}>він</Text>
+              <Text style={{ textAlign: "center" }}>{word.word}</Text>
               <Text>• er</Text>
               <Text
                 style={{ color: "#354B9A", textAlign: "right" }}
