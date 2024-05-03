@@ -8,6 +8,7 @@ import GameRound from "../game_related/GameRound";
 import { sharedGameStyles } from "../../SharedGameStyles";
 import GameHeader from "../../ui_elements/game/GameHeader";
 import { UserContext } from "../../UserContext";
+import NoExercisesScreen from "../game_related/NoExercisesScreen";
 
 const EndingsGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
@@ -29,7 +30,7 @@ const EndingsGameRound = ({ route, navigation }) => {
   }, [answerIsCorrect]);
 
   if (!round.currentExercise) {
-    return <Text>Sorry, no exercises were found</Text>;
+    return <NoExercisesScreen />;
   }
 
   const [inputColors, setInputColors] = useState(

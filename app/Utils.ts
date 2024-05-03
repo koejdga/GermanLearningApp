@@ -33,7 +33,7 @@ export const getDataForGame = async (gameName: Game, user: UserInfo) => {
   //       { word: "er" },
   //       { word: "hungrig" },
   //       { word: "ist" },
-  //       { word: "Hallo" },
+  //       { word: "deshalb" },
   //     ],
   //     wordsNumberInAnswer: 9,
   //     sentenseToTranslate: [

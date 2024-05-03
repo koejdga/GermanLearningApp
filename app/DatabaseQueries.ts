@@ -152,8 +152,6 @@ export const formDoneExercisesSet = async (
       return doneExersices;
     }
 
-    // get actual data instead of just ids
-
     const ids = doneExersices.map((obj) => obj.id);
     const wordsSnapshot = await firestore()
       .collection("exercises")
@@ -180,12 +178,46 @@ export const formDoneExercisesSet = async (
           sentense: idToDocumentMap[obj.id].sentense,
         }));
 
+      case GameInDb.DRAP_DROP:
+        return doneExersices.map((obj) => ({
+          ...obj,
+          sentenseToTranslate: idToDocumentMap[obj.id].sentenseToTranslate,
+          wordsForTranslation: idToDocumentMap[obj.id].wordsForTranslation,
+          wordsNumberInAnswer: idToDocumentMap[obj.id].wordsNumberInAnswer,
+        }));
+
+      case GameInDb.WRITE_TRANSLATION:
+        return doneExersices.map((obj) => ({
+          ...obj,
+          sentenseToTranslate: idToDocumentMap[obj.id].sentenseToTranslate,
+          wordsForTranslation: idToDocumentMap[obj.id].wordsForTranslation,
+          wordsNumberInAnswer: idToDocumentMap[obj.id].wordsNumberInAnswer,
+        }));
+
       default:
-        console.log("I have to put here the same for other games");
+        console.log(
+          "ERROR: no game with such name was found in formDoneExercisesSet"
+        );
         return;
     }
   } catch (e) {
     console.log("ERROR in formLearnedWordsSet");
+    console.log(e);
+  }
+};
+
+const addGameOffset = async (uid: string, gameName: GameInDb) => {
+  try {
+    await firestore()
+      .collection("users")
+      .doc(uid)
+      .collection("game_offsets")
+      .doc(gameName)
+      .set({ offset: 0 });
+
+    console.log("INFO: added new game offset");
+  } catch (e) {
+    console.log("ERROR in addGameOffset");
     console.log(e);
   }
 };
@@ -199,7 +231,12 @@ const getGameOffset = async (user: UserInfo, gameName: GameInDb) => {
       .doc(gameName)
       .get();
 
-    return queryResponse.data().offset;
+    if (queryResponse.data() === undefined) {
+      await addGameOffset(user.uid, gameName);
+      return 0;
+    } else {
+      return queryResponse.data().offset;
+    }
   } catch (e) {
     console.log("ERROR in getGameOffset");
     console.log(e);
@@ -222,6 +259,9 @@ export const getNewExercisesForGame = async (
       .startAt(gameOffset)
       .limit(totalWordsInGame - learnedWordsLength)
       .get();
+
+    console.log("query response");
+    console.log(queryResponse.docs);
 
     return queryResponse.docs.map((x) => {
       const data = x.data();

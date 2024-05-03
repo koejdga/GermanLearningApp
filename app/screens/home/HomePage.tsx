@@ -41,7 +41,7 @@ const HomePage = () => {
           source={require("../../assets/app-logo.png")}
           style={{ width: 70, height: 70 }}
         />
-        <Text style={generalStyles.score}>{user.total_score}</Text>
+        <Text style={generalStyles.score}>{user ? user.total_score : 0}</Text>
       </View>
 
       {/* Body */}
