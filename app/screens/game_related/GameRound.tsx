@@ -1,3 +1,13 @@
+import {
+  needToMakeChanges,
+  addScoreToHistoryArticleGame,
+  updateUser,
+  addNewLearnedWords,
+  changeArticleGameOffset,
+  updateLearnedWordsMetTimes,
+} from "../../DatabaseQueries";
+import { UserInfo } from "../../UserContext";
+
 const GameRound = ({ route, navigation }) => {
   const gameName = route.params?.gameName;
   const exercises = route.params?.exercises;
@@ -6,7 +16,12 @@ const GameRound = ({ route, navigation }) => {
   const amountOfHearts = route.params?.amountOfHearts;
   const score = route.params?.score;
 
-  const loadNextRound = (answerIsCorrect: boolean, score: number) => {
+  const loadNextRound = async (
+    answerIsCorrect: boolean,
+    score: number,
+    user: UserInfo,
+    setUser: (user: UserInfo) => void
+  ) => {
     const newAmountOfHearts = !answerIsCorrect
       ? amountOfHearts - 1
       : amountOfHearts;
@@ -29,9 +44,27 @@ const GameRound = ({ route, navigation }) => {
         score,
       });
     } else {
+      user = { ...user, total_score: user.total_score + score };
+      setUser(user);
+      await updateUser(user);
+
+      const maxScore = (newExercises.length + playedExercises.length) * 10;
+      await addScoreToHistoryArticleGame(user, score / maxScore);
+
+      const allWords = newExercises.concat(playedExercises);
+
+      await updateLearnedWordsMetTimes(user, allWords);
+
+      const newWords = allWords.filter((word) => word.isNew);
+      const makeChanges = await needToMakeChanges(newWords);
+      if (makeChanges) {
+        await addNewLearnedWords(user, newWords);
+        await changeArticleGameOffset(user, setUser, newWords);
+      }
+
       navigation.push("GameEnd", {
         score,
-        maxScore: (newExercises.length + playedExercises.length) * 10,
+        maxScore,
       });
     }
   };

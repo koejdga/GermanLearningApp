@@ -13,11 +13,11 @@ import Icon from "react-native-vector-icons/Entypo";
 import { generalStyles } from "../../config/General";
 import AchievementHomePage from "../../ui_elements/home_page/Achievement";
 import Task from "../../ui_elements/home_page/Task";
-import { useContext, useEffect } from "react";
-import { formWordsetForArticleGame } from "../../Utils";
+import { useContext } from "react";
 import { UserContext } from "../../UserContext";
 
 const HomePage = () => {
+  const { user } = useContext(UserContext);
   const nav = useNavigation<NativeStackNavigationProp<any>>();
   let [fontsLoaded] = useFonts({
     Roboto_500Medium,
@@ -40,7 +40,7 @@ const HomePage = () => {
           source={require("../../assets/app-logo.png")}
           style={{ width: 70, height: 70 }}
         />
-        <Text style={generalStyles.score}>100</Text>
+        <Text style={generalStyles.score}>{user.total_score}</Text>
       </View>
 
       {/* Body */}
@@ -75,12 +75,12 @@ const HomePage = () => {
             ></Task>
           </View>
         </View>
-        <Icon
+        {/* <Icon
           name="dot-single"
           size={22}
           color="#666666"
           style={styles.navigationDot}
-        ></Icon>
+        ></Icon> */}
         <View
           style={{
             flexDirection: "row",

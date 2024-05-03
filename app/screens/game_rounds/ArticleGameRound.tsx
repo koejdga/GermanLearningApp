@@ -117,6 +117,7 @@ const styles = StyleSheet.create({
 const ArticleGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
   const { wholeDict } = useContext(DictContext);
+  const { user, setUser } = useContext(UserContext);
   const [amountOfHearts, setAmountOfHearts] = useState(round.amountOfHearts);
   const [showTranslation, setShowTranslation] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
@@ -191,9 +192,9 @@ const ArticleGameRound = ({ route, navigation }) => {
         <GameHeader amountOfHearts={amountOfHearts} score={score} />
         <Pressable
           style={styles.mainArea}
-          onPress={() => {
+          onPress={async () => {
             if (answerIsCorrect != null)
-              round.loadNextRound(answerIsCorrect, score);
+              await round.loadNextRound(answerIsCorrect, score, user, setUser);
           }}
         >
           <View style={{ marginTop: "30%", height: 260 }}>
