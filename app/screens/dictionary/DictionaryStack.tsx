@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { Button } from "react-native";
 import DictionaryWords from "./DictionaryWords";
 import WordTranslation from "./WordTranslation";
-import { DictProvider } from "../../DictContext";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +35,7 @@ const DictionaryStack = () => {
           headerStyle: {
             backgroundColor: "lightblue",
           },
+          headerBackTitle: "Назад",
         }}
       />
     </Stack.Navigator>

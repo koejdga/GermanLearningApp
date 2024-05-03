@@ -17,7 +17,8 @@ import {
 } from "react-native-gesture-handler";
 import { validateBirthdate, validateEmail } from "../../Utils";
 import { UserContext } from "../../UserContext";
-import { getArticleGameOffset, updateUser } from "../../DatabaseQueries";
+import { updateUser } from "../../DatabaseQueries";
+import Spacer from "../../ui_elements/Spacer";
 
 // TODO: add this link to literature materials
 // https://www.abstractapi.com/guides/react-native-email-validation
@@ -70,6 +71,7 @@ const EditUserProfile = ({ navigation }) => {
 
   const [openDatepicker, setOpenDatepicker] = useState(false);
 
+  const [usernameMessage, setUsernameMessage] = useState({ message: "" });
   const [emailMessage, setEmailMessage] = useState({ message: "" });
   const [dateMessage, setDateMessage] = useState({ message: "" });
 
@@ -77,10 +79,18 @@ const EditUserProfile = ({ navigation }) => {
   const [dateModalWasShown, setDateModalWasShown] = useState(false);
 
   const saveChanges = async () => {
+    setUsernameMessage({ message: "" });
     setEmailMessage({ message: "" });
     setDateMessage({ message: "" });
 
     let allValidationsPassed = true;
+
+    if (user.username != userToEdit.username) {
+      if (userToEdit.username === "") {
+        setUsernameMessage({ message: "Імʼя не може бути пустим" });
+        allValidationsPassed = false;
+      }
+    }
 
     if (user.email != userToEdit.email) {
       const emailValidation = await validateEmail(userToEdit.email);
@@ -184,6 +194,35 @@ const EditUserProfile = ({ navigation }) => {
       <View style={{ paddingHorizontal: 24, gap: 20, flex: 1 }}>
         <View>
           <TextInput
+            placeholder="Ваш юзернейм"
+            label="Імʼя"
+            value={userToEdit.username}
+            onChangeText={(text) =>
+              setUserToEdit({ ...userToEdit, username: text })
+            }
+            mode="outlined"
+            error={usernameMessage.message !== ""}
+            left={
+              <TextInput.Icon
+                icon={() => (
+                  <Ionicons
+                    name="person-outline"
+                    size={ICON_SIZE - 5}
+                    color={SECONDARY_INFO_COLOR}
+                  />
+                )}
+              />
+            }
+          />
+          {usernameMessage.message && (
+            <View style={[styles.iconAndText, { marginTop: 8, gap: 5 }]}>
+              <Ionicons name="warning-outline" size={24} color={"#b3271e"} />
+              <Text>{usernameMessage.message}</Text>
+            </View>
+          )}
+        </View>
+        <View>
+          <TextInput
             placeholder="test@gmail.com"
             label="Пошта"
             value={userToEdit.email}
@@ -252,7 +291,7 @@ const EditUserProfile = ({ navigation }) => {
           }}
         />
 
-        <View style={{ flex: 1 }}></View>
+        <Spacer />
         <GestureHandlerRootView style={{ alignItems: "center" }}>
           <RectButton
             style={[

@@ -20,12 +20,20 @@ const HomeStack = () => {
         initialParams={{
           gameName: Game.ARTICLE,
         }}
+        options={{
+          headerBackTitle: "Назад",
+          headerTitle: "Артиклі",
+        }}
       />
       <Stack.Screen
         name={Game.DRAP_DROP}
         component={GameFlow}
         initialParams={{
           gameName: Game.DRAP_DROP,
+        }}
+        options={{
+          headerBackTitle: "Назад",
+          headerTitle: "Нові слова",
         }}
       />
       <Stack.Screen
@@ -34,12 +42,20 @@ const HomeStack = () => {
         initialParams={{
           gameName: Game.WRITE_TRANSLATION,
         }}
+        options={{
+          headerBackTitle: "Назад",
+          headerTitle: "Письмо",
+        }}
       />
       <Stack.Screen
         name={Game.ENDINGS}
         component={GameFlow}
         initialParams={{
           gameName: Game.ENDINGS,
+        }}
+        options={{
+          headerBackTitle: "Назад",
+          headerTitle: "Закінчення",
         }}
       />
     </Stack.Navigator>
