@@ -14,6 +14,10 @@ export const createUser = async (
       email,
       birthdate,
       total_score: 0,
+      avatar: null,
+      perfect_games: 0,
+      total_games: 0,
+      learned_words_amount: 0,
     });
   } catch (e) {
     console.log("ERROR: unable to add new user to database");
@@ -50,6 +54,9 @@ export const dbUserToUserInfo = (dbUser) => {
     birthdate: new Date(dbUser.data().birthdate.seconds * 1000),
     total_score: dbUser.data().total_score || 0,
     avatar: dbUser.data().avatar,
+    perfect_games: dbUser.data().perfect_games || 0,
+    total_games: dbUser.data().total_games || 0,
+    learned_words_amount: dbUser.data().learned_words_amount || 0,
   };
 };
 
@@ -307,16 +314,6 @@ export const updateLearnedExercisesMetTimes = async (
     });
   } catch (e) {
     console.log("ERROR in updateLearnedWordsMetTimes");
-    console.log(e);
-  }
-};
-
-export const needToMakeChanges = async (newWords) => {
-  try {
-    const needToMakeChanges = !newWords.some((word) => !word.answeredCorrectly);
-    return needToMakeChanges;
-  } catch (e) {
-    console.log("ERROR in needToMakeChanges");
     console.log(e);
   }
 };

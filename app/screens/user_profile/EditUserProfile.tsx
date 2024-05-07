@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
 });
 
 // TODO: put this in resouces
-// https://github.com/betomoedano/React-Native-Firebase-Storage/blob/main/screens/Home.js
+// https://github.com/betomoedano/React-Native-Firebase-Storage
 
 const EditUserProfile = ({ navigation }) => {
   const { user, setUser } = useContext(UserContext);
@@ -228,7 +228,7 @@ const EditUserProfile = ({ navigation }) => {
         text: "Так, видалити",
         onPress: async () => {
           await deleteOldAvatar(user.avatar);
-          setUserToEdit({ ...userToEdit, avatar: undefined });
+          setUserToEdit({ ...userToEdit, avatar: null });
         },
       },
       {

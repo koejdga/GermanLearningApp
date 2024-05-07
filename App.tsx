@@ -2,7 +2,13 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { useContext, useState } from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import {
+  AchievementsContext,
+  AchievementsProvider,
+} from "./app/AchievementsContext";
+import { DictProvider } from "./app/DictContext";
 import { UserProvider } from "./app/UserContext";
 import Achievements from "./app/screens/achievements/Achievements";
 import DictionaryStack from "./app/screens/dictionary/DictionaryStack";
@@ -12,7 +18,6 @@ import { Login } from "./app/screens/login_signup/Login";
 import { Register } from "./app/screens/login_signup/Register";
 import { handleLogout } from "./app/screens/user_profile/UserProfile";
 import UserProfileStack from "./app/screens/user_profile/UserProfileStack";
-import { DictProvider } from "./app/DictContext";
 
 enum Screen {
   ArticleGame,
@@ -24,12 +29,23 @@ const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
 
 function MainApp() {
+  const { newAchievementsAmount, setNewAchievementsAmount } =
+    useContext(AchievementsContext);
+
   enum TabNames {
     HOME = "HomeStack",
     DICTIONARY = "Dictionary",
     ACHIEVEMENTS = "Achievements",
     ACCOUNT = "Account",
   }
+
+  const [nextTapAsBadgeRemover, setNextTapAsBadgeRemover] = useState(false);
+  const removeBadge = () => {
+    if (nextTapAsBadgeRemover) {
+      setNewAchievementsAmount(0);
+      setNextTapAsBadgeRemover(false);
+    }
+  };
 
   return (
     <DictProvider>
@@ -71,6 +87,7 @@ function MainApp() {
           tabBarInactiveTintColor: "black",
           tabBarShowLabel: false,
         })}
+        screenListeners={{ tabPress: () => removeBadge() }}
       >
         <Tab.Screen
           name={TabNames.HOME}
@@ -87,7 +104,17 @@ function MainApp() {
         <Tab.Screen
           name={TabNames.ACHIEVEMENTS}
           component={Achievements}
-          options={{ headerTitle: "Досягнення" }}
+          options={
+            newAchievementsAmount > 0
+              ? {
+                  headerTitle: "Досягнення",
+                  tabBarBadge: newAchievementsAmount,
+                }
+              : { headerTitle: "Досягнення" }
+          }
+          listeners={{
+            tabPress: () => setNextTapAsBadgeRemover(newAchievementsAmount > 0),
+          }}
         />
         <Tab.Screen
           name={TabNames.ACCOUNT}
@@ -111,40 +138,42 @@ function MainApp() {
 
 export default function App() {
   return (
-    <UserProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen
-            name="LoadingScreen"
-            component={LoadingScreen}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Login"
-            component={Login}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Register"
-            component={Register}
-            options={{
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="MainApp"
-            component={MainApp}
-            options={{
-              headerShown: false,
-            }}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </UserProvider>
+    <AchievementsProvider>
+      <UserProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen
+              name="LoadingScreen"
+              component={LoadingScreen}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Login"
+              component={Login}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="Register"
+              component={Register}
+              options={{
+                headerShown: false,
+              }}
+            />
+            <Stack.Screen
+              name="MainApp"
+              component={MainApp}
+              options={{
+                headerShown: false,
+              }}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </UserProvider>
+    </AchievementsProvider>
   );
 }
 

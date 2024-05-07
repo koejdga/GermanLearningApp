@@ -130,7 +130,9 @@ const ArticleGameRound = ({ route, navigation }) => {
   useEffect(function addArticles() {
     let article = null;
     if (wholeDict[round.currentExercise.word]) {
-      switch (wholeDict[round.currentExercise.word].part_of_speech) {
+      switch (
+        wholeDict[round.currentExercise.word].part_of_speech.split("/")[0]
+      ) {
         case "m":
           article = "der";
           break;

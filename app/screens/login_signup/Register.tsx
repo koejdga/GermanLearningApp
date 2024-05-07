@@ -32,7 +32,7 @@ export const Register = () => {
   const nav = useNavigation<NativeStackNavigationProp<any>>();
 
   const registerAndGoToMainFlow = async () => {
-    if (email && password) {
+    if (email && password && name && birthdate) {
       try {
         const response = await auth().createUserWithEmailAndPassword(
           email,

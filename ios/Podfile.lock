@@ -953,6 +953,8 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.32):
     - BoringSSL-GRPC/Interface (= 0.0.32)
   - BoringSSL-GRPC/Interface (0.0.32)
+  - BVLinearGradient (2.8.3):
+    - React-Core
   - DoubleConversion (1.1.6)
   - EXAV (13.10.6):
     - ExpoModulesCore
@@ -2339,6 +2341,7 @@ PODS:
 
 DEPENDENCIES:
   - boost (from `../node_modules/react-native/third-party-podspecs/boost.podspec`)
+  - BVLinearGradient (from `../node_modules/react-native-linear-gradient`)
   - DoubleConversion (from `../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec`)
   - EXAV (from `../node_modules/expo-av/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
@@ -2454,6 +2457,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   boost:
     :podspec: "../node_modules/react-native/third-party-podspecs/boost.podspec"
+  BVLinearGradient:
+    :path: "../node_modules/react-native-linear-gradient"
   DoubleConversion:
     :podspec: "../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec"
   EXAV:
@@ -2618,6 +2623,7 @@ SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   boost: d3f49c53809116a5d38da093a8aa78bf551aed09
   BoringSSL-GRPC: 1e2348957acdbcad360b80a264a90799984b2ba6
+  BVLinearGradient: 880f91a7854faff2df62518f0281afb1c60d49a3
   DoubleConversion: fea03f2699887d960129cc54bba7e52542b6f953
   EXAV: e4f6137431ddc4cb025895046bfefa9612025c35
   EXConstants: 988aa430ca0f76b43cd46b66e7fae3287f9cc2fc

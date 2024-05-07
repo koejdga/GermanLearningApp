@@ -1,10 +1,9 @@
 import {
-  needToMakeChanges,
-  addScoreToGameHistory,
-  updateUser,
   addNewDoneExercises,
+  addScoreToGameHistory,
   changeGameOffset,
   updateLearnedExercisesMetTimes,
+  updateUser,
 } from "../../DatabaseQueries";
 import { Game, gameToDbMapping } from "../../Game";
 import { UserInfo } from "../../UserContext";
@@ -45,10 +44,6 @@ const GameRound = ({ route, navigation }) => {
         score,
       });
     } else {
-      user = { ...user, total_score: user.total_score + score };
-      setUser(user);
-      await updateUser(user);
-
       const maxScore =
         (nextRoundExercises.length + playedExercises.length) * 10;
       await addScoreToGameHistory(
@@ -66,8 +61,11 @@ const GameRound = ({ route, navigation }) => {
       );
 
       const newExercises = allExercises.filter((exercise) => exercise.isNew);
-      const makeChanges = await needToMakeChanges(newExercises);
-      if (makeChanges) {
+      const allNewWordsAnsweredCorrectly = !newExercises.some(
+        (exercise) => !exercise.answeredCorrectly
+      );
+
+      if (allNewWordsAnsweredCorrectly) {
         await addNewDoneExercises(
           user,
           gameToDbMapping[gameName],
@@ -75,6 +73,28 @@ const GameRound = ({ route, navigation }) => {
         );
         await changeGameOffset(user, gameToDbMapping[gameName], newExercises);
       }
+
+      const isPerfectlyPlayedGame = allExercises.every(
+        (exercise) => exercise.wrongAnsweredTimes === 0
+      );
+
+      const gameWon = allExercises.every(
+        (exercise) => exercise.answeredCorrectly
+      );
+
+      user = {
+        ...user,
+        total_score: user.total_score + score,
+        perfect_games: user.perfect_games + (isPerfectlyPlayedGame ? 1 : 0),
+        total_games: user.total_games + (gameWon ? 1 : 0),
+        learned_words_amount:
+          user.learned_words_amount +
+          (allNewWordsAnsweredCorrectly && gameName === Game.ARTICLE
+            ? newExercises.length
+            : 0),
+      };
+      setUser(user);
+      await updateUser(user);
 
       navigation.push("GameEnd", {
         score,
