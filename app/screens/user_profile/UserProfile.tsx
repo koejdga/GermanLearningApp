@@ -9,9 +9,11 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Image,
 } from "react-native";
 import { UserContext } from "../../UserContext";
 import Fire from "../../ui_elements/account_page/Fire";
+import ProgressBar from "../../ui_elements/account_page/ProgressBar";
 
 const USER_IMAGE_SIZE = 158;
 const ICON_SIZE = 35;
@@ -62,6 +64,8 @@ const UserProfile = ({ navigation }) => {
     }
   }
 
+  console.log(user);
+
   useEffect(() => {
     const sub = auth().onAuthStateChanged(onAuthStateChanged);
     return sub;
@@ -73,16 +77,32 @@ const UserProfile = ({ navigation }) => {
       {user && (
         <SafeAreaView style={styles.container}>
           <View style={{ flexDirection: "row", width: "100%" }}>
-            <Ionicons
-              name="person-circle-outline"
-              size={USER_IMAGE_SIZE}
-              color={"#C7C7C7"}
-            />
+            {user.avatar && (
+              <Image
+                style={{
+                  width: USER_IMAGE_SIZE - 20,
+                  aspectRatio: 1,
+                  borderRadius: (USER_IMAGE_SIZE - 20) / 2,
+                  margin: 10,
+                }}
+                source={{
+                  uri: user.avatar,
+                }}
+              />
+            )}
+            {!user.avatar && (
+              <Ionicons
+                name="person-circle-outline"
+                size={USER_IMAGE_SIZE}
+                color={"#C7C7C7"}
+              />
+            )}
+
             <View style={styles.userNameAndScore}>
               <Text style={styles.userName}>{user.username}</Text>
               <View style={[styles.iconAndText, { gap: 3 }]}>
                 <Fire />
-                <Text style={styles.score}>100</Text>
+                <Text style={styles.score}>{user.total_score}</Text>
               </View>
             </View>
           </View>

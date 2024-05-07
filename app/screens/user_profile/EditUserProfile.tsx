@@ -1,24 +1,30 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  Button,
-  Alert,
-  SafeAreaView,
-} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import Fire from "../../ui_elements/account_page/Fire";
-import { TextInput } from "react-native-paper";
-import { useContext, useEffect, useState } from "react";
+
+import * as ImagePicker from "expo-image-picker";
+import { useContext, useState } from "react";
+import {
+  ActivityIndicator,
+  Alert,
+  Button,
+  Image,
+  Pressable,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import DatePicker from "react-native-date-picker";
 import {
   GestureHandlerRootView,
   RectButton,
 } from "react-native-gesture-handler";
-import { validateBirthdate, validateEmail } from "../../Utils";
-import { UserContext } from "../../UserContext";
+import { TextInput } from "react-native-paper";
 import { updateUser } from "../../DatabaseQueries";
+import { UserContext } from "../../UserContext";
+import { validateBirthdate, validateEmail } from "../../Utils";
 import Spacer from "../../ui_elements/Spacer";
+import storage from "@react-native-firebase/storage";
+import ProgressBar from "../../ui_elements/account_page/ProgressBar";
 
 // TODO: add this link to literature materials
 // https://www.abstractapi.com/guides/react-native-email-validation
@@ -64,12 +70,14 @@ const styles = StyleSheet.create({
   },
 });
 
+// TODO: put this in resouces
+// https://github.com/betomoedano/React-Native-Firebase-Storage/blob/main/screens/Home.js
+
 const EditUserProfile = ({ navigation }) => {
   const { user, setUser } = useContext(UserContext);
-
   const [userToEdit, setUserToEdit] = useState(user);
-
   const [openDatepicker, setOpenDatepicker] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   const [usernameMessage, setUsernameMessage] = useState({ message: "" });
   const [emailMessage, setEmailMessage] = useState({ message: "" });
@@ -77,6 +85,8 @@ const EditUserProfile = ({ navigation }) => {
 
   const [emailModalWasShown, setEmailModalWasShown] = useState(false);
   const [dateModalWasShown, setDateModalWasShown] = useState(false);
+
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const saveChanges = async () => {
     setUsernameMessage({ message: "" });
@@ -175,21 +185,127 @@ const EditUserProfile = ({ navigation }) => {
     }
   };
 
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      const reference = storage().ref(`avatars/${new Date().getTime()}`);
+      const task = reference.putFile(result.assets[0].uri);
+      setUploadingImage(true);
+
+      const oldPhotoUrl = userToEdit.avatar;
+
+      task.on(
+        "state_changed",
+        (taskSnapshot) => {
+          const progress = Math.round(
+            (taskSnapshot.bytesTransferred / taskSnapshot.totalBytes) * 100
+          );
+          console.log(`Transferred ${progress}%`);
+          setProgress(progress);
+        },
+        (error) => {
+          console.log(error);
+        },
+        async () => {
+          const url = await reference.getDownloadURL();
+          setUserToEdit({ ...userToEdit, avatar: url });
+          setUploadingImage(false);
+          await deleteOldAvatar(oldPhotoUrl);
+        }
+      );
+    }
+  };
+
+  const removeAvatar = async () => {
+    Alert.alert("Ви впевнені, що хочете видалити фото?", "", [
+      {
+        text: "Так, видалити",
+        onPress: async () => {
+          await deleteOldAvatar(user.avatar);
+          setUserToEdit({ ...userToEdit, avatar: undefined });
+        },
+      },
+      {
+        text: "Ні, залишити",
+        style: "cancel",
+      },
+    ]);
+  };
+
+  const deleteOldAvatar = async (oldPhotoUrl: string) => {
+    if (oldPhotoUrl) {
+      const oldPhotoRef = storage().refFromURL(oldPhotoUrl);
+
+      try {
+        await oldPhotoRef.delete();
+        console.log("Old photo deleted successfully");
+      } catch (error) {
+        console.log("Error deleting old photo:", error);
+      }
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", width: "100%" }}>
-        <Ionicons
-          name="person-circle-outline"
-          size={USER_IMAGE_SIZE}
-          color={"#C7C7C7"}
-        />
-        <View style={styles.userNameAndScore}>
-          <Text style={styles.userName}>{user.username}</Text>
-          <View style={[styles.iconAndText, { gap: 3 }]}>
-            <Fire />
-            <Text style={styles.score}>100</Text>
+      <View style={{ alignItems: "center" }}>
+        {!uploadingImage && userToEdit.avatar && (
+          <Pressable onPress={pickImage}>
+            <Image
+              style={{
+                width: USER_IMAGE_SIZE - 20,
+                aspectRatio: 1,
+                borderRadius: (USER_IMAGE_SIZE - 20) / 2,
+                marginTop: 10,
+              }}
+              source={{
+                uri: userToEdit.avatar,
+              }}
+            />
+            <Pressable
+              style={{
+                position: "absolute",
+                width: 40,
+                aspectRatio: 1,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 20,
+                backgroundColor: "white",
+              }}
+              onPress={removeAvatar}
+            >
+              <Ionicons name="trash-outline" size={32} color="#007aff" />
+            </Pressable>
+          </Pressable>
+        )}
+        {!uploadingImage && !userToEdit.avatar && (
+          <Ionicons
+            name="person-circle-outline"
+            size={USER_IMAGE_SIZE}
+            color={"#C7C7C7"}
+            onPress={pickImage}
+          />
+        )}
+
+        {uploadingImage && (
+          <View
+            style={{
+              height: USER_IMAGE_SIZE,
+              justifyContent: "center",
+              alignItems: "center",
+              gap: 15,
+            }}
+          >
+            <ActivityIndicator size="large" />
+            <ProgressBar progress={progress} width={USER_IMAGE_SIZE * 0.6} />
           </View>
-        </View>
+        )}
+        <Button title="Вибрати нове фото" onPress={pickImage} />
       </View>
       <View style={{ paddingHorizontal: 24, gap: 20, flex: 1 }}>
         <View>

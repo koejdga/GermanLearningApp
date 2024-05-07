@@ -27,7 +27,7 @@ export const createUser = async (
 };
 
 export const getUser = async (uid: string) => {
-  const res = await firestore().collection("users").doc(uid).get();
+  const res = (await firestore().collection("users").doc(uid).get()).data();
   return res;
 };
 
@@ -37,7 +37,7 @@ export const updateUser = async (user: UserInfo) => {
     await firestore().collection("users").doc(user.uid).update(userWithoutUid);
     console.log("INFO: user updated");
   } catch (e) {
-    console.log("ERROR: unable to update user info in database");
+    console.log("ERROR: unable to update user info in firestore");
     console.log(e);
   }
 };
@@ -49,6 +49,7 @@ export const dbUserToUserInfo = (dbUser) => {
     email: dbUser.data().email,
     birthdate: new Date(dbUser.data().birthdate.seconds * 1000),
     total_score: dbUser.data().total_score || 0,
+    avatar: dbUser.data().avatar,
   };
 };
 

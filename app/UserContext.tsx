@@ -6,6 +6,7 @@ export interface UserInfo {
   email: string;
   birthdate: Date;
   total_score: number;
+  avatar: string | undefined;
 }
 
 export const UserContext = createContext(null);
