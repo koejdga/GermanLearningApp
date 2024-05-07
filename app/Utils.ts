@@ -5,6 +5,7 @@ import {
 } from "./DatabaseQueries";
 import { UserInfo } from "./UserContext";
 import { Game, gameToDbMapping } from "./Game";
+import { amountOfExercises, maxPointsPerRound } from "./config/GamesConfig";
 
 export const shuffle = <T>(inputArray: T[]): T[] => {
   let outputArray = [...inputArray];
@@ -20,16 +21,16 @@ export const shuffle = <T>(inputArray: T[]): T[] => {
 // https://deutschlernerblog.de/uebungen-zur-adjektivdeklination-deutsch-a1-a2/
 
 export const getDataForGame = async (gameName: Game, user: UserInfo) => {
-  const totalWordsInGame = gameName === Game.ARTICLE ? 10 : 5;
+  const totalExercisesInGame = amountOfExercises[gameName];
   const doneExercises = await formDoneExercisesSet(
     user,
     gameToDbMapping[gameName],
-    Math.floor(totalWordsInGame / 2)
+    Math.floor(totalExercisesInGame / 2)
   );
   const newExercises = await getNewExercisesForGame(
     user,
     gameToDbMapping[gameName],
-    totalWordsInGame,
+    totalExercisesInGame,
     doneExercises.length
   );
 
@@ -109,9 +110,11 @@ export const sentenseFromArray = (words: string[]) => {
 };
 
 export const getPointsForAnswer = (exercise) => {
-  return exercise.wrongAnsweredTimes === 0
-    ? 10
-    : exercise.wrongAnsweredTimes === 1
-    ? 7
-    : 4;
+  const coef =
+    exercise.wrongAnsweredTimes === 0
+      ? 1
+      : exercise.wrongAnsweredTimes === 1
+      ? 0.7
+      : 0.4;
+  return maxPointsPerRound * coef;
 };

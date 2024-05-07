@@ -18,3 +18,10 @@ export const gameToDbMapping: Record<Game, GameInDb> = {
   [Game.ARTICLE]: GameInDb.ARTICLE,
   [Game.ENDINGS]: GameInDb.ENDINGS,
 };
+
+export const gameToNameMapping: Record<Game, string> = {
+  [Game.DRAP_DROP]: "Нові слова",
+  [Game.WRITE_TRANSLATION]: "Письмо",
+  [Game.ARTICLE]: "Артиклі",
+  [Game.ENDINGS]: "Закінчення",
+};

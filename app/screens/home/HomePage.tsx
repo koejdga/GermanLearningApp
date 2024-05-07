@@ -23,7 +23,7 @@ import Task from "../../ui_elements/home_page/Task";
 const HomePage = () => {
   const { user } = useContext(UserContext);
   const nav = useNavigation<NativeStackNavigationProp<any>>();
-  const [notCompletedAchievements, setNotCompletedAchievements] = useState(
+  const [notCompletedAchievements, _] = useState(
     getNotCompletedAchievements(user, achievements)
   );
 
@@ -61,12 +61,12 @@ const HomePage = () => {
           <View style={styles.tasks}>
             <View style={styles.tasksRow}>
               <Task
-                title="Закінчення"
+                gameName={Game.ENDINGS}
                 background={require("../../assets/tasks_backgrounds/pastel-gradient-bg.jpg")}
                 onPress={() => nav.navigate(Game.ENDINGS)}
               ></Task>
               <Task
-                title="Артиклі"
+                gameName={Game.ARTICLE}
                 contrastForTitle={true}
                 background={require("../../assets/tasks_backgrounds/flowers7.jpeg")}
                 onPress={() => nav.navigate(Game.ARTICLE)}
@@ -74,13 +74,13 @@ const HomePage = () => {
             </View>
             <View style={styles.tasksRow}>
               <Task
-                title="Нові слова"
+                gameName={Game.DRAP_DROP}
                 contrastForTitle={true}
                 background={require("../../assets/tasks_backgrounds/pink-flowers.png")}
                 onPress={() => nav.navigate(Game.DRAP_DROP)}
               ></Task>
               <Task
-                title="Письмо"
+                gameName={Game.WRITE_TRANSLATION}
                 background={require("../../assets/tasks_backgrounds/yellow-bg.jpeg")}
                 onPress={() => nav.navigate(Game.WRITE_TRANSLATION)}
               ></Task>
