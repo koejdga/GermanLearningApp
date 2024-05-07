@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { shuffle } from "../../Utils";
+import { getPointsForAnswer, shuffle } from "../../Utils";
 import Spacer from "../../ui_elements/Spacer";
 import DragDropWords from "../../ui_elements/drag_drop_game/DragDropWords";
 import Word from "../../ui_elements/drag_drop_game/Word";
@@ -36,7 +36,7 @@ const DragDropGameRound = ({ route, navigation }) => {
     if (answerIsCorrect === false) {
       setAmountOfHearts(amountOfHearts - 1);
     } else if (answerIsCorrect === true) {
-      setScore(score + 10);
+      setScore(score + getPointsForAnswer(round.currentExercise));
     }
   }, [answerIsCorrect]);
 

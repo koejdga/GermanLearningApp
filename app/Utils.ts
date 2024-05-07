@@ -107,3 +107,11 @@ export const sentenseFromArray = (words: string[]) => {
     return previousValue + currentValue;
   }, "");
 };
+
+export const getPointsForAnswer = (exercise) => {
+  return exercise.wrongAnsweredTimes === 0
+    ? 10
+    : exercise.wrongAnsweredTimes === 1
+    ? 7
+    : 4;
+};

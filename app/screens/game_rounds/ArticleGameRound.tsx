@@ -19,6 +19,7 @@ import { darkColor, whiteColor } from "../../config/Colors";
 import MyButton from "../../ui_elements/article_game/MyButton";
 import GameHeader from "../../ui_elements/game/GameHeader";
 import GameRound from "../game_related/GameRound";
+import { getPointsForAnswer } from "../../Utils";
 
 const bgImage = require("../../assets/article-game-bg.jpg");
 
@@ -173,7 +174,7 @@ const ArticleGameRound = ({ route, navigation }) => {
       setBoxText(wordInfo["article"] + " " + round.currentExercise.word);
     }
     if (answerIsCorrect) {
-      setScore(score + 10);
+      setScore(score + getPointsForAnswer(round.currentExercise));
     }
   }, [answerIsCorrect]);
 

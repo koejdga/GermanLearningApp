@@ -9,6 +9,7 @@ import { sharedGameStyles } from "../../SharedGameStyles";
 import GameHeader from "../../ui_elements/game/GameHeader";
 import { UserContext } from "../../UserContext";
 import NoExercisesScreen from "../game_related/NoExercisesScreen";
+import { getPointsForAnswer } from "../../Utils";
 
 const EndingsGameRound = ({ route, navigation }) => {
   const round = GameRound({ route, navigation });
@@ -25,7 +26,7 @@ const EndingsGameRound = ({ route, navigation }) => {
     if (answerIsCorrect === false) {
       setAmountOfHearts(amountOfHearts - 1);
     } else if (answerIsCorrect === true) {
-      setScore(score + 10);
+      setScore(score + getPointsForAnswer(round.currentExercise));
     }
   }, [answerIsCorrect]);
 
