@@ -4,19 +4,13 @@ import { Text, View } from "react-native";
 import Progress from "./Progress";
 import Background from "./Background";
 import { UserInfo } from "../../UserContext";
+import {
+  AchieveType,
+  Achievement,
+  getCurrentAmount,
+} from "../../AchievementLogic";
 
 const ICON_SIZE = 29;
-
-export enum AchieveType {
-  NEW_WORDS,
-  COMPLETED_GAMES,
-  PERFECT_GAMES,
-}
-
-export interface Achievement {
-  type: AchieveType;
-  amount: number;
-}
 
 interface Props {
   user: UserInfo;
@@ -51,18 +45,6 @@ const getAchieveText = (achievement: Achievement) => {
     }
   }
   return "Чудова робота";
-};
-
-export const getCurrentAmount = (user: UserInfo, achievement: Achievement) => {
-  const currentAmount =
-    achievement.type === AchieveType.COMPLETED_GAMES
-      ? user.total_games
-      : achievement.type === AchieveType.PERFECT_GAMES
-      ? user.perfect_games
-      : achievement.type === AchieveType.NEW_WORDS
-      ? user.learned_words_amount
-      : 0;
-  return currentAmount;
 };
 
 const AchievementView: React.FC<Props> = ({

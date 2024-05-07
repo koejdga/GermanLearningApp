@@ -1,45 +1,26 @@
 import { useContext, useEffect, useState } from "react";
 import { ScrollView, Text, View } from "react-native";
-import { AchievementsContext } from "../../AchievementsContext";
-import { UserContext, UserInfo } from "../../UserContext";
-import AchievementView, {
+import {
   AchieveType,
   Achievement,
-  getCurrentAmount,
-} from "../../ui_elements/achievements_page/AchievementView";
-
-const generateAchievements = (
-  type: AchieveType,
-  thresholds: number[]
-): Achievement[] => {
-  const result = thresholds.map((threshold) => ({
-    type,
-    amount: threshold,
-  }));
-  return result;
-};
-
-const isCompleted = (user: UserInfo, achievement: Achievement) => {
-  const currentAmount = getCurrentAmount(user, achievement);
-  return currentAmount >= achievement.amount;
-};
+  achievements,
+  getCompletedAchievements,
+  getNotCompletedAchievements,
+} from "../../AchievementLogic";
+import { AchievementsContext } from "../../AchievementsContext";
+import { UserContext } from "../../UserContext";
+import AchievementView from "../../ui_elements/achievements_page/AchievementView";
 
 const Achievements = () => {
   const { user } = useContext(UserContext);
   const { newAchievementsAmount, setNewAchievementsAmount } =
     useContext(AchievementsContext);
 
-  const achievements = [
-    ...generateAchievements(AchieveType.COMPLETED_GAMES, [1, 5, 10, 15, 30]),
-    ...generateAchievements(AchieveType.NEW_WORDS, [1, 10, 30, 50]),
-    ...generateAchievements(AchieveType.PERFECT_GAMES, [1, 3, 5, 10, 15]),
-  ];
-
   const [completedAchievements, setCompletedAchievements] = useState(
-    achievements.filter((a) => isCompleted(user, a))
+    getCompletedAchievements(user, achievements)
   );
   const [notCompletedAchievements, setNotCompletedAchievements] = useState(
-    achievements.filter((a) => !isCompleted(user, a))
+    getNotCompletedAchievements(user, achievements)
   );
   const [newAchievements, setNewAchievements] = useState<Achievement[]>([]);
 
